@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Build-Depends-Indep: debhelper (>= 4), dpkg-dev (>= 1.9.0)
 Maintainer: Joey Hess <joeyh@debian.org>
-Standards-Version: 3.5.7.0
+Standards-Version: 3.5.8.0
 
 Package: alien
 Architecture: all

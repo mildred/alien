@@ -331,7 +331,7 @@ to build the rpm. It defaults to rpm.
 
 sub build {
 	my $this=shift;
-	my $buildcmd=shift || 'rpm';
+	my $buildcmd=shift || 'rpmbuild';
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 	
 	# Ask rpm how it's set up. We want to know what architecture it

@@ -1,9 +1,13 @@
 alien (8.22) unstable; urgency=low
 
-UNRE
+  * Use rpmbuild -bb instead of rpm -bb, as it seems that rpm -bb has stopped
+    working in recent versions of rpm, as shipped by red hat (Debian's rpm,
+    confusingly, continues to support rpm -bb, possibly because of how I hack
+    its popt stuff up for debian.) This may fail with older, pre-rpmbuild
+    rpm's; if so you should upgrade to a more current version I guess.
   * Updated js2k patch from Gerald Turner.
 
- -- Joey Hess <joeyh@debian.org>  Sun, 27 Oct 2002 20:29:28 -0500
+ -- Joey Hess <joeyh@debian.org>  Mon,  3 Feb 2003 14:35:40 -0500
 
 alien (8.21) unstable; urgency=low
 
