@@ -1,3 +1,11 @@
+alien (8.40) unstable; urgency=low
+
+  * Include the version of alien that generated a deb or rpm in the
+    description. Closes: #220763
+  * Also put it in the changelog of debian packages.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 17 Nov 2003 20:57:44 -0500
+
 alien (8.39) unstable; urgency=low
 
   * Fix a couple more mistakes in the code added in 8.36.
