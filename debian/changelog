@@ -1,3 +1,12 @@
+alien (7.26) unstable; urgency=low
+
+  * Moved as many system calls as I can over to shellless execution.
+    There are still a lot that use shell tricks. Should deal with screwey
+    rpms and file names better though. Closes: #105283
+  * Display build logs after build failures.
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 15 Jul 2001 10:16:20 -0400
+
 alien (7.25) unstable; urgency=low
 
   * Treat 'armv4l' arch rpm's as arm architecture.

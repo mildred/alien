@@ -72,7 +72,7 @@ sub install {
 	my $this=shift;
 	my $deb=shift;
 
-	system("dpkg --no-force-overwrite -i $deb") == 0
+	system("dpkg", "--no-force-overwrite", "-i", $deb) == 0
 		or die "Unable to install";
 }
 
@@ -189,7 +189,7 @@ sub unpack {
 	my $file=$this->filename;
 
 	if ($this->have_dpkg_deb) {
-		system("dpkg-deb -x $file ".$this->unpacked_tree) == 0
+		system("dpkg-deb", "-x", $file, $this->unpacked_tree) == 0
 			or die "Unpacking of `$file' failed: $!";
 	}
 	else {
@@ -256,8 +256,8 @@ sub prep {
 		# Look for .rej files.
 		die "patch failed with .rej files; giving up"
 			if `find $dir -name "*.rej"`;
-		system('find . -name \'*.orig\' -exec rm {} \\;');
-		chmod 0755,"$dir/debian/rules";
+		system('find', '.', '-name', '*.orig', '-exec', 'rm', '{}', ';');
+		chmod 0755, "$dir/debian/rules";
 		return;
 	}
 
@@ -384,8 +384,10 @@ sub build {
 	my $this=shift;
 
 	chdir $this->unpacked_tree;
-	system("debian/rules binary >/dev/null") == 0
-		or die "package build failed: $!";
+	my $log=`debian/rules binary`;
+	if ($?) {
+		die "Package build failed. Here's the log:\n", $log;
+	}
 	chdir "..";
 
 	return $this->name."_".$this->version."-".$this->release."_".$this->arch.".deb";
@@ -401,7 +403,7 @@ sub cleantree {
         my $this=shift;
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
-	system("rm -rf $dir/debian");
+	system("rm", "-rf", "$dir/debian");
 }
 
 =item package

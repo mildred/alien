@@ -352,8 +352,11 @@ sub build {
 	}
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
-	system("cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null") == 0
-		or die "package build failed";
+	my $command="cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null";
+	my $log=`$command`;
+	if ($?) {
+		die "Package build failed. Here's the log:\n", $log;
+	}
 
 	return $rpm;
 }

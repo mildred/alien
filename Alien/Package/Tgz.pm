@@ -66,7 +66,7 @@ sub install {
 	my $tgz=shift;
 
 	if (-x "/sbin/installpkg") {
-		system("/sbin/installpkg $tgz") == 0
+		system("/sbin/installpkg", "$tgz") == 0
 			or die "Unable to install";
 	}
 	else {

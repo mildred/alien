@@ -114,7 +114,7 @@ sub install {
 	my $this=shift;
 	my $slp=shift;
 
-	system("slpi $slp") == 0
+	system("slpi", $slp) == 0
 		or die "Unable to install";
 }
 
