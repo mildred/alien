@@ -187,6 +187,132 @@ sub unpack {
 	return 1;
 }
 
+=item prep
+
+Prepare for package building by generating the spec file.
+
+=cut
+
+sub prep {
+	my $this=shift;
+	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
+
+	# Place %config in front of files that are conffiles.
+	my @conffiles = @{$this->conffiles};
+	my $filelist;
+	foreach my $fn (@{$this->filelist}) {
+		if ($fn =~ m:/$:) {
+			# a directory.
+			$filelist.="%dir \"$fn\"\n";
+		}
+		elsif (grep(m:^\Q$fn\E$:,@conffiles)) { # it's a conffile
+			$filelist.="%config $fn\n";
+		}
+		else { # normal file
+			# Quote filename in case it has spaces in it.
+			$filelist.=qq{"$fn"\n};
+		}
+	}
+
+	# Write out the spec file.
+	my $spec="$dir/".$this->name."-".$this->version."-".$this->release.".spec";
+	open (OUT, ">$spec") || die "$spec: $!";
+	my $pwd=`pwd`;
+	chomp $pwd;
+	print OUT "Buildroot: $pwd/$dir\n"; # must be absolute dirname
+	print OUT "Name: ".$this->name."\n";
+	print OUT "Version: ".$this->version."\n";
+	print OUT "Release: ".$this->release."\n";
+	print OUT "Summary: ".$this->summary."\n";
+	print OUT "Copyright: ".$this->copyright."\n";
+	print OUT "Distribution: ".$this->distribution."\n";
+	print OUT "Group: Converted/".$this->group."\n";
+	print OUT "\n";
+	print OUT "\%define _rpmdir ../\n"; # write rpm to current directory
+	print OUT "\%define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm\n";
+	print OUT "\n";
+	print OUT "\%pre\n";
+	print OUT $this->preinst."\n";
+	print OUT "\n";
+	print OUT "\%post\n";
+	print OUT $this->postinst."\n";
+	print OUT "\n";
+	print OUT "\%preun\n";
+	print OUT $this->prerm."\n";
+	print OUT "\n";
+	print OUT "\%postun\n";
+	print OUT $this->postrm."\n";
+	print OUT "\n";
+	print OUT "\%description\n";
+	print OUT $this->description."\n";
+	print OUT "\n";
+	print OUT " (Converted from a .".$this->origformat." package by alien.)\n";
+	print OUT "\n";
+	print OUT "%files\n";
+	print OUT $filelist;
+	close OUT;
+}
+
+=item build
+
+Build a rpm. If RPMBUILDOPT is set in the environement, the options in
+it are passed to rpm on its command line.
+
+=cut
+
+sub build {
+	my $this=shift;
+	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
+	
+	# Ask rpm how it's set up. We want to know what architecture it
+	# will output, and where it will place rpms.
+	my ($rpmarch, $rpmdir);
+	foreach (`rpm --showrc`) {
+		chomp;
+		if (/^build arch\s+:\s(.*)$/) {
+			$rpmarch=$1;
+		}
+		elsif (/^rpmdir\s+:\s(.*)$/) {
+			$rpmdir=$1;
+		}
+	}
+	if (!$rpmarch) {
+		die "rpm --showrc failed";
+	}
+
+	# Debian's "all" architecture is a special case, and the output rpm
+	# will be a noarch rpm.
+	$rpmarch='noarch' if $this->arch eq 'all';
+
+	my $rpm=$this->name."-".$this->version."-".$this->release.".$rpmarch.rpm";
+	my $buildarch;
+	if ($rpmdir) {
+		# Old versions of rpm toss it off in the middle of nowhere.
+		$rpm="$rpmdir/$rpmarch/$rpm";
+
+		# This is the old command line argument to make noarch
+		# rpms.
+		$buildarch="--buildarch noarch" if $rpmarch eq 'noarch';
+	}
+	else {
+		# Presumably we're delaing with rpm 3.0 or above, which
+		# doesn't output rpmdir in any format I'd care to try to
+		# parse. Instead, rpm is now of a late enough version to
+		# notice the %define's in the spec file, that will make the
+		# file end up in the directory we started in.
+		# Anyway, let's assume this is version 3 or above.
+		
+		# This is the new command line arcgument to make noarch
+		# rpms. It appeared in rpm version 3.
+		$buildarch="--target noarch" if $rpmarch eq 'noarch';
+	}
+
+	system("cd $dir; rpm $buildarch -bb $ENV{RPMBUILDOPT} ".$this->name."-".$this->version."-".$this->release.".spec") &&
+		die "package build failed: $!";
+
+	return $rpm;
+}
+
 =item version
 
 Set/get version.
@@ -218,7 +344,7 @@ sub version {
 
 Set/get script fields.
 
-When retreiving a value, we have to do some truely sick mangling. Since
+When retrieving a value, we have to do some truely sick mangling. Since
 debian/slackware scripts can be anything -- perl programs or binary files
 -- and rpm is limited to only shell scripts, we need to encode the files
 and add a scrap of shell script to make it unextract and run on the fly.

@@ -325,7 +325,7 @@ EOF
 
 =item build
 
-Build a .deb
+Build a deb.
 
 =cut
 
