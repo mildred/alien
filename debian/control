@@ -1,8 +1,9 @@
 Source: alien
 Section: admin
 Priority: extra
+Build-Depends-Indep: debhelper
 Maintainer: Joey Hess <joeyh@debian.org>
-Standards-Version: 3.1.1.0
+Standards-Version: 3.1.1.1
 
 Package: alien
 Architecture: all

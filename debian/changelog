@@ -1,3 +1,9 @@
+alien (6.52) unstable; urgency=low
+
+  * Added (very simple) build dep.
+
+ -- Joey Hess <joeyh@debian.org>  Fri,  3 Dec 1999 23:34:10 -0800
+
 alien (6.51) unstable; urgency=low
 
   * Fixes to my build system.
