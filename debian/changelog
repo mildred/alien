@@ -1,3 +1,10 @@
+alien (7.22) unstable; urgency=low
+
+  * Modification to match changes in rpm 4's parser; need to use
+    --target=noarch, rather than --target noarch.
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 10 Apr 2001 13:43:56 -0700
+
 alien (7.21) unstable; urgency=low
 
   * Deal with empty /etc/mailname, Closes: #90727

@@ -349,7 +349,7 @@ sub build {
 		
 		# This is the new command line arcgument to make noarch
 		# rpms. It appeared in rpm version 3.
-		$opts="--target noarch" if $rpmarch eq 'noarch';
+		$opts="--target=noarch" if $rpmarch eq 'noarch';
 	}
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
