@@ -16,6 +16,27 @@ use base qw(Alien::Package);
 This is an object class that represents a tgz package, as used in Slackware. 
 It is derived from Alien::Package.
 
+=head1 CLASS DATA
+
+=over 4
+
+=item scripttrans
+
+Translation table between canoical script names and the names used in
+tgz's.
+
+=cut
+
+use constant 
+	scriptrans => {
+		postinst => 'doinst.sh',
+		postrm => 'delete.sh',
+		prerm => 'predelete.sh',
+		preinst => 'predoinst.sh',
+	};
+
+=back
+
 =head1 FIELDS
 
 =over 4
@@ -48,8 +69,8 @@ sub install {
 
 =item scan
 
-Scan a tgz file for fields. Has to scan the actual filename, since
-there is little useful data in the file itself.
+Scan a tgz file for fields. Has to scan the filename for most of the
+information, since there is little useful metadata in the file itself.
 
 =cut
 
@@ -112,14 +133,8 @@ sub scan {
 	$this->filelist(\@filelist);
 
 	# Now get the scripts.
-	my %scripttrans=(
-		'postinst' => 'doinst.sh',
-		'postrm' => 'delete.sh',
-		'prerm' => 'predelete.sh',
-		'preinst' => 'predoinst.sh',
-	);
-	foreach my $script (keys(%scripttrans)) {
-		$this->$script(`tar Oxzf $file 	install/$scripttrans{$script} 2>/dev/null`);
+	foreach my $script (keys %{scripttrans()}) {
+		$this->$script(`tar Oxzf $file 	install/${scripttrans()}{$script} 2>/dev/null`);
 	}
 
 	return 1;
@@ -146,7 +161,7 @@ sub unpack {
 
 =item prep
 
-Adds a populated install/ directory to the build tree.
+Adds a populated install directory to the build tree.
 
 =cut
 
@@ -154,7 +169,20 @@ sub prep {
 	my $this=shift;
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
-	
+	my $install_made=0;
+	foreach my $script (keys %{scriptrans()}) {
+		my $data=$this->$script;
+		next if ! defined $data || $data =~ m/^\s*$/;
+		if (!$install_made) {
+			mkdir $this->unpacked_tree."/install", 0755;
+			$install_made=1;
+		}
+		open OUT (">".$this->unpacked_tree."/install/$script") ||
+			die $this->unpacked_tree."/install/$script: $!"
+		print OUT $data;
+		close OUT;
+		chmod 0755, $this->unpacked_tree."/install/$script";
+	}
 }
 
 =item build
