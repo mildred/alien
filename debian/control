@@ -1,7 +1,7 @@
 Source: alien
 Section: admin
 Priority: extra
-Maintainer: Joey Hess <joeyh@master.debian.org>
+Maintainer: Joey Hess <joeyh@debian.org>
 Standards-Version: 3.1.0.0
 
 Package: alien

@@ -1,6 +1,9 @@
+This is a package originally written by Christoph Lameter 
+<clameter@debian.org>.
 
-This is a package written by Christoph Lameter <clameter@debian.org>.
-It is now being maintained by Joey Hess <joeyh@master.debian.org>.
+Deb to rpm conversion code was taken from the Martian program by 
+Randolph Chung <rc42@cornell.edu>.
+
+This package is now maintained by Joey Hess <joeyh@debian.org>.
 
 Copyright: Most recent version of the GPL.
-
