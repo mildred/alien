@@ -1,3 +1,10 @@
+alien (8.03) unstable; urgency=low
+
+  * Should avoid warning message, Closes: #140286
+  * README and description updates.
+
+ -- Joey Hess <joey@kitenet.net>  Thu, 28 Mar 2002 14:27:10 -0500
+
 alien (8.02) unstable; urgency=low
 
   * Made more robust in the face of empty rpms. Closes: #138969

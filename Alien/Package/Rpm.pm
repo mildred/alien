@@ -89,7 +89,8 @@ sub scan {
 
 	# Get the conffiles list.
 	$this->conffiles([map { chomp; $_ } `LANG=C rpm -qcp $file`]);
-	if ($this->conffiles->[0] eq '(contains no files)') {
+	if (defined $this->conffiles->[0] &&
+	    $this->conffiles->[0] eq '(contains no files)') {
 		$this->conffiles([]);
 	}
 
@@ -97,7 +98,8 @@ sub scan {
 
 	# Get the filelist.
 	$this->filelist([map { chomp; $_ } `LANG=C rpm -qpl $file`]);
-	if ($this->filelist->[0] eq '(contains no files)') {
+	if (defined $this->filelist->[0] &&&
+	    $this->filelist->[0] eq '(contains no files)') {
 		$this->filelist([]);
 	}
 
