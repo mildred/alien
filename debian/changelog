@@ -8,11 +8,10 @@ alien (6.99) unstable; urgency=low
     class, and telling it to write the new package out! A basic alien can now
     be written using these objects in one "line" of perl -- in fact, here is
     one:
-      perl -e 'use Alien::Package::Deb; use Alien::Package::Rpm; \
-    	       $p=Alien::Package::Rpm->new(filename => shift); 
-	       $p->scan; $p->unpack;
+      perl -MAlien::Package::Deb -MAlien::Package::Rpm -e '
+      	       $p=Alien::Package::Rpm->new(filename => shift); $p->unpack;
 	       bless($p, "Alien::Package::Deb");
-	       $p->prep; $p->build;'
+	       $p->prep; $p->build'
   * Almost every line of code has been rewritten.
   * Package descriptions now include a note that they were converted with
     alien. There are other numerous changes to the converted packages, for
