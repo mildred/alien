@@ -1,9 +1,15 @@
+alien (8.33) unstable; urgency=low
+
+  * Added a new j2sdk patch that does not rename the package.
+
+ -- Joey Hess <joeyh@debian.org>  Sun,  6 Jul 2003 19:49:25 -0400
+
 alien (8.32) unstable; urgency=low
 
   * Removed the two newest j2sdk patches, which both rename the package,
     breaking alien -i. Closes: #199992
 
- -- Joey Hess <joeyh@debian.org>  Sat,  5 Jul 2003 16:57:32 -0400
+ -- Joey Hess <joeyh@debian.org>  Sun,  6 Jul 2003 19:44:45 -0400
 
 alien (8.31) unstable; urgency=low
 
