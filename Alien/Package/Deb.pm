@@ -95,7 +95,7 @@ sub getcontrolfile {
 	else {
 		# Have to handle old debs without a leading ./ and
 		# new ones with it.
-		return `ar p $file control.tar.gz | tar Oxzf - $controlfile ./$controlfile 2>/dev/null`
+		return `ar p $file control.tar.gz | gzip -dc | tar Oxf - $controlfile ./$controlfile 2>/dev/null`
 	}
 }
 
@@ -166,7 +166,7 @@ sub scan {
 	}
 	else {
 		@filelist=map { chomp; s:\./::; "/$_" }
-			  `ar p $file data.tar.gz | tar tzf -`;
+			  `ar p $file data.tar.gz | gzip -dc | tar tf -`;
 	}
 	$this->filelist(\@filelist);
 
@@ -194,7 +194,7 @@ sub unpack {
 			or die "Unpacking of `$file' failed: $!";
 	}
 	else {
-		system("ar p $file data.tar.gz | (cd ".$this->unpacked_tree."; tar zxpf -)") == 0
+		system("ar p $file data.tar.gz | gzip -dc | (cd ".$this->unpacked_tree."; tar xpf -)") == 0
 			or die "Unpacking of `$file' failed: $!";
 	}
 

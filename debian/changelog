@@ -1,3 +1,13 @@
+alien (7.24) unstable; urgency=low
+
+  * Patch from Raul Miller <moth@debian.org> to make it used gzip -dc | tar
+    everywhere it used to use tar zxvf. The problem with the latter is
+    that, on red hat anyway, tar or gzip seems to be broken, and tar does
+    not see an end-of-file marker, causing alien to hang when converting
+    rpms to debs. Closes: #96200
+
+ -- Joey Hess <joeyh@debian.org>  Wed,  9 May 2001 11:09:16 -0400
+
 alien (7.23) unstable; urgency=low
 
   * Moved files out of perl privlib, Closes: #95512

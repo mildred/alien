@@ -199,7 +199,7 @@ sub unpack {
 		system("bzip2 -d < $file | (cd ".$this->unpacked_tree."; tar xpf -)")
 	}
 	elsif ($compresstype == 1) {
-		system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)")
+		system("gzip -dc $file | (cd ".$this->unpacked_tree."; tar xpf -)")
 	}
 	else {
 		die "package uses an unknown compression type, $compresstype (please file a bug report)";
