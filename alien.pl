@@ -214,12 +214,12 @@ use Alien::Package::Slp;
 
 # Returns a list of directories to search for patches.
 sub patchdirs {
-	return '/var/lib/alien',"/usr/lib/alien/patches";
+	return '/var/lib/alien',"/usr/share/alien/patches";
 }
 
 # Display alien's version number.
 sub version {
-	my $version_string='unknown'; # VERSION_AUTOREPLACE done by Makefile, do not edit.
+	my $version_string='unknown'; # VERSION_AUTOREPLACE done by Makefile, DNE
 	print "Alien version $version_string\n";
 	exit;
 }

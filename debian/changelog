@@ -1,3 +1,10 @@
+alien (7.9) unstable; urgency=low
+
+  * Whoops, alien was still trying to use /usr/lib/alien/pactches,
+    corrected.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 16 Nov 2000 11:59:04 -0800
+
 alien (7.8) unstable; urgency=low
 
   * Use debhelper v2 for debian/rules, but not when converting 
