@@ -1,3 +1,9 @@
+alien (7.5) unstable; urgency=low
+
+  * Fixed an uninitialized value when converting from a .src.rpm.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 29 May 2000 21:42:38 -0700
+
 alien (7.4) unstable; urgency=low
 
   * Corrected typo that broke Deb.pm, Closes: #64559 

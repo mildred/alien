@@ -189,8 +189,9 @@ sub unpack {
 			# last file, after all! Second, it makes the -d
 			# test below fire, which saves us from trying to
 			# fix a parent directory twice.
-			($file)=$file=~m:(.*)/.*?:;
+			$file=$1 if $file=~m:(.*)/.*?:;
 			my $dircollect='';
+			
 			foreach my $dir (split(/\//,$file)) {
 				$dircollect.="$dir/";
 				# Use a hash to prevent duplicate chmods.
