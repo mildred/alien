@@ -1,3 +1,9 @@
+alien (8.43) unstable; urgency=low
+
+  * Added a new j2sdk_1.4.2_03-1.diff from Gerald Turner.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 19 Jan 2004 20:05:17 -0500
+
 alien (8.42) unstable; urgency=low
 
   * Do not register conffiles in /etc when generating a deb; debhelper v3
