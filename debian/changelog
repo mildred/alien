@@ -1,3 +1,9 @@
+alien (6.46) unstable; urgency=low
+
+  * Fixed alien.slp file generation.
+
+ -- Joey Hess <joeyh@master.debian.org>  Sat,  4 Sep 1999 23:49:10 -0700
+
 alien (6.45) unstable; urgency=low
 
   * Checked into cvs. Added a fixlinks script to generate all symlinks.

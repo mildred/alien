@@ -53,7 +53,7 @@ installhook:
 	cd /home/ftp/pub/code/alien; \
 		ln -sf ../debian/alien_$(VERSION).tar.gz alien_$(VER).tar.gz; \
 		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
-	$(MAKE) stampede rpm
+	fakeroot alien --to-slp /home/joey/debian/public/alien_*.deb
 	mv alien-$(VERSION).slp /home/ftp/pub/code/alien/
 	ln -s /home/ftp/pub/code/alien/alien-$(VERSION).slp \
 		/home/ftp/pub/code/alien/alien.slp

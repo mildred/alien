@@ -37,7 +37,4 @@ debian:
 rpm:
 	sudo rpm -ba -v alien.spec --target noarch
 
-stampede:
-	fakeroot alien --to-slp ../alien_$(VER)_all.deb ; \
-
 .PHONY: debian
