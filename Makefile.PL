@@ -22,11 +22,11 @@ extra_build:
 	perl -i -pe "s/\@version\@/$(VER)/g" <alien.spec.in >alien.spec
 
 extra_install:
-	install -d $(PREFIX)/usr/share/alien/patches \
-		   $(PREFIX)/var/lib/alien
-	cp -f patches/*.diff $(PREFIX)/usr/share/alien/patches/
-	-rm -f $(PREFIX)/usr/share/alien/patches/*.gz
-	gzip -qf9 $(PREFIX)/usr/share/alien/patches/*
+	install -d $(PREFIX)/share/alien/patches \
+		   $(VARPREFIX)/var/lib/alien
+	cp -f patches/*.diff $(PREFIX)/share/alien/patches/
+	-rm -f $(PREFIX)/share/alien/patches/*.gz
+	gzip -qf9 $(PREFIX)/share/alien/patches/*
 
 alien:
 	perl -pe ' \

@@ -1,3 +1,9 @@
+alien (6.99999) unstable; urgency=low
+
+  * I despise MakeMaker.
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 23 Apr 2000 21:44:05 -0700
+
 alien (6.9999) unstable; urgency=low
 
   * Major typo fix in Tgz.pm.

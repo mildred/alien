@@ -24,12 +24,12 @@ binary-indep: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	$(MAKE) pure_install PREFIX=$(shell pwd)/debian/tmp/ INSTALLDIRS=perl \
+	$(MAKE) pure_install INSTALLDIRS=perl \
+		PREFIX=$(shell pwd)/debian/tmp/$(shell perl -MConfig -e 'print $$Config{prefix}') \
 		INSTALLMAN1DIR=$(shell pwd)/debian/tmp/usr/share/man/man1 \
 		INSTALLMAN3DIR=$(shell pwd)/debian/tmp/usr/share/man/man3 \
-		INSTALLPRIVLIB=$(shell pwd)/debian/tmp/usr/lib/perl5 \
-		INSTALLSCRIPT=$(shell pwd)/debian/tmp/usr/bin \
-		INSTALLARCHLIB=$(shell pwd)/debian/tmp/killme
+		INSTALLARCHLIB=$(shell pwd)/debian/tmp/killme \
+		VARPREFIX=$(shell pwd)/debian/tmp
 	# Who does it make this empty directory? Sigh.
 	rm -rf debian/tmp/killme
 	dh_installdocs README gendiff.txt

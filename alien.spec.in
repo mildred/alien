@@ -24,11 +24,12 @@ rm -r /tmp/alien-@version@.build || true
 %install
 perl Makefile.PL
 make
-make pure_install PREFIX=$RPM_BUILD_ROOT INSTALLDIRS=perl \
-	INSTALLMAN1DIR=$RPM_BUILD_ROOT/usr/share/man/man1 \
-	INSTALLMAN3DIR=$RPM_BUILD_ROOT/usr/share/man/man3 \
-	INSTALLSCRIPT=$RPM_BUILD_ROOT/usr/bin \
-	INSTALLARCHLIB=$RPM_BUILD_ROOT/killme
+make pure_install INSTALLDIRS=perl \
+	PREFIX=$RPM_BUILD_ROOT/`perl -e 'use Config;print $Config{prefix}'` \
+	INSTALLMAN1DIR=$RPM_BUILD_ROOT/usr/man/man1 \
+	INSTALLMAN3DIR=$RPM_BUILD_ROOT/usr/man/man3 \
+	INSTALLARCHLIB=$RPM_BUILD_ROOT/killme \
+	VARPREFIX=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT/killme
 find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" > manifest
 
