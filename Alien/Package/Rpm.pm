@@ -147,6 +147,8 @@ sub unpack {
 	$this->SUPER::unpack(@_);
 	my $workdir=$this->unpacked_tree;
 	
+	
+	
 	$this->do("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>&1")
 		or die "Unpacking of '".$this->filename."' failed";
 	
@@ -178,16 +180,27 @@ sub unpack {
 			$this->do("mv", @filelist, "$workdir/".$this->prefixes)
 				or die "error moving unpacked files into the default prefix directory: $!";
 		}
+
+		# Deal with relocating conffiles.
+		my @cf;
+		foreach my $cf (@{$this->conffiles}) {
+			$cf=$this->prefixes.$cf;
+			push @cf, $cf;
+		}
+		$this->conffiles([@cf]);
 	}
 
 	# cpio does not necessarily store all parent directories in an
 	# archive, and so some directories, if it has to make them and has
-	# no permission info, may come out mode 700. Here I just chown all
-	# extracted directories to mode 755, which is more reasonable.
-	# Note that the next section overrides these default permissions,
-	# if override data exists in the rpm permissions info. And such
-	# data should always exist, so this is probably a no-op.
-	$this->do("find $workdir -type d -perm 700 -print0 | xargs --no-run-if-empty -0 chmod 700");
+	# no permission info, will come out with whatever the default mode
+	# is for the current umask. Here I just chown all such directories
+	# to mode 755, which is more reasonable. Note that the next section
+	# overrides these default permissions, if override data exists in
+	# the rpm permissions info, but it won't always exist for parent
+	# directories.
+	$this->do("find $workdir -type d -perm ".
+		(sprintf "%lo", 0777 &~ umask).
+		" -print0 | xargs --no-run-if-empty -0 chmod 755");
 	
 	# rpm files have two sets of permissions; the set in the cpio
 	# archive, and the set in the control data; which override them.
