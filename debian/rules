@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+# This is the debhelper compatability version to use.
+export DH_COMPAT=2
+
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
@@ -25,13 +28,13 @@ binary-indep: build
 	dh_testroot
 	dh_clean -k
 	$(MAKE) pure_install INSTALLDIRS=perl \
-		PREFIX=$(shell pwd)/debian/tmp/$(shell perl -MConfig -e 'print $$Config{prefix}') \
-		INSTALLMAN1DIR=$(shell pwd)/debian/tmp/usr/share/man/man1 \
-		INSTALLMAN3DIR=$(shell pwd)/debian/tmp/usr/share/man/man3 \
-		INSTALLARCHLIB=$(shell pwd)/debian/tmp/killme \
-		VARPREFIX=$(shell pwd)/debian/tmp
+		PREFIX=$(shell pwd)/debian/alien/$(shell perl -MConfig -e 'print $$Config{prefix}') \
+		INSTALLMAN1DIR=$(shell pwd)/debian/alien/usr/share/man/man1 \
+		INSTALLMAN3DIR=$(shell pwd)/debian/alien/usr/share/man/man3 \
+		INSTALLARCHLIB=$(shell pwd)/debian/alien/killme \
+		VARPREFIX=$(shell pwd)/debian/alien
 	# Who does it make this empty directory? Sigh.
-	rm -rf debian/tmp/killme
+	rm -rf debian/alien/killme
 	dh_installdocs README gendiff.txt
 	dh_installexamples
 	dh_installchangelogs

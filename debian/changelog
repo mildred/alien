@@ -1,3 +1,10 @@
+alien (7.8) unstable; urgency=low
+
+  * Use debhelper v2 for debian/rules, but not when converting 
+    packages to deb format.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 25 Sep 2000 12:36:25 -0700
+
 alien (7.7) unstable; urgency=low
 
   * Corrected return code of system check.
