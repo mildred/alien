@@ -25,7 +25,7 @@ Other things you'll need:
 
   If you want to convert packages into debian packages, you will need the
   dpkg, dpkg-dev, and debhelper (version 3 or above) packages, which are
-  available on the Debian ftp site.
+  available on http://packages.debian.org
 
   To convert to/from stampede packages, you will need bzip2, get it from
 	http://sourceware.cygnus.com/bzip2/index.html

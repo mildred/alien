@@ -56,7 +56,7 @@ lsbdev environment.
 
 =item deb
 
-For converting to (but not from) deb format, the gcc, make, debmake,
+For converting to (but not from) deb format, the gcc, make, debhelper,
 dpkg-dev, and dpkg packages must be installed.
 
 =item tgz
@@ -119,7 +119,7 @@ Generate a temporary directory suitable for building a package from, but do
 not actually create the package. This is useful if you want to move files
 around in the package before building it. The package can be built from
 this temporary directory by running "debian/rules binary", if you were creating
-a Debian package, or by running "rpm -bb <packagename>.spec" if you were
+a Debian package, or by running "rpmbuild -bb <packagename>.spec" if you were
 creating a Red Hat package.
 
 =item B<-s>, B<--single>

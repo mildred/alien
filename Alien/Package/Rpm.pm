@@ -336,7 +336,7 @@ Build a rpm. If RPMBUILDOPT is set in the environement, the options in
 it are passed to rpm on its command line.
 
 An optional parameter, if passed, can be used to specify the program to use
-to build the rpm. It defaults to rpm.
+to build the rpm. It defaults to rpmbuild.
 
 =cut
 
