@@ -319,7 +319,7 @@ sub prep {
 #export DH_VERBOSE=1
 
 # Use v3 compatability mode, so ldconfig gets added to maint scripts.
-export DH_COMAPT=3
+export DH_COMPAT=3
 
 PACKAGE=$(shell dh_listpackages)
 
@@ -350,10 +350,10 @@ binary-arch: build
 	dh_compress
 # This is too paramoid to be generally useful to alien.
 #	dh_fixperms
+	dh_makeshlibs
 	dh_installdeb
 	-dh_shlibdeps
 	dh_gencontrol
-	dh_makeshlibs
 	dh_md5sums
 	dh_builddeb
 
