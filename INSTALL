@@ -1,15 +1,7 @@
+To try alien before installing, just run ./alien from this directory. Most
+features will work prior to installation.
+
 To install alien, become root and type "make install".
 
-To use alien, you will need several other programs. Alien is a perl program,
-and requires perl version 5 or greater. You must also have the Getopt::Long
-perl module installed on your system, I believe this is a standard part of
-perl.
-
-To convert packages to rpms, you need the rpm package manager; get it from 
-Red Hat's ftp site. 
-
-If you want to convert packages to debian packages, you will need the dpkg, 
-dpkg-dev, and debmake packages, which are available on the Debian ftp site.
-You'll also need gcc, and make.
-
-Please report any bugs to the author: Joey Hess <joey@kite.ml.org>
+To use alien, you'll need a variety of other software. See the README for
+details.
