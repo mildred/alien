@@ -1,3 +1,29 @@
+alien (7.30pre) unstable; urgency=low
+
+  * Thanks to the excellent work of Mark A. Hershberger <mah@everybody.org>,
+    alien now supports converting to and from Solaris "pkg" packages (which
+    are really SysV packages). You probably need to run it on Solaris for this
+    to work, though. This brings the number of possible conversions alien can
+    do up from 12 to a monstrous 20!
+  * Documented the EMAIL environment variable. Closes: #116754
+  * Threw out a lot of old patches, circa 1999. Probably useless today.
+  * When converting to debs, move files as follows, if possible, for better 
+    FHS compliance:
+  	/usr/man	=> /usr/share/man
+        /usr/info	=> /usr/share/info
+        /usr/doc'	=> /usr/share/doc
+  * Also moves files as follows, to avoid possibly confusing dpkg with
+    installing over symlinks (?). Closes: #40012
+        /usr/bin/X11 should be /usr/X11R6/bin
+        /usr/lib/X11 should be /usr/X11R6/lib/X11
+        /usr/include/X11 should be /usr/X11R6/include/X11
+  * Reverse these moves in the cleantree stage.
+  * Debian users who have installed alien packages in the past may want to
+    re-convert and reinstall them, to take advantage of the new FHS
+    conversions.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 25 Oct 2001 20:53:33 -0400
+
 alien (7.27) unstable; urgency=low
 
   * Moved as many system calls as I can over to shellless execution.

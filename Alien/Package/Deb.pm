@@ -23,6 +23,11 @@ Alien::Package.
 
 Set to a true value if dpkg-deb is available. 
 
+=item dirtrans
+
+After the build stage, set to a hash reference of the directories we moved
+files from and to, so these moves can be reverted in the cleantree stage.
+
 =back
 
 =head1 METHODS
@@ -339,7 +344,7 @@ binary-arch: build
 	dh_installdirs
 	cp -a `ls -1 |grep -v debian` debian/$(PACKAGE)
 #
-# If you need to move files around in debian//$(PACKAGE) or do some
+# If you need to move files around in debian/$(PACKAGE) or do some
 # binary patching, do it here
 #
 	dh_installdocs
@@ -372,6 +377,28 @@ EOF
 		print OUT $data;
 		close OUT;
 	}
+
+	my %dirtrans=( # Note: no trailing slahshes on these directory names!
+		# Move files to FHS-compliant locations, if possible.
+		'/usr/man'	=> '/usr/share/man',
+		'/usr/info'	=> '/usr/share/info',
+		'/usr/doc'	=> '/usr/share/doc',
+	);
+	foreach my $olddir (keys %dirtrans) {
+		if (-d "$dir/$olddir" && ! -e "$dir/$dirtrans{$olddir}") {
+			# Ignore failure..
+			my ($dirbase)=$dirtrans{$olddir}=~/(.*)\//;
+			system("install", "-d", "$dir/$dirbase");
+			system("mv", "$dir/$olddir", "$dir/$dirtrans{$olddir}");
+			if (-d "$dir/$olddir") {
+				system("rmdir", "-p", "$dir/$olddir");
+			}
+		}
+		else {
+			delete $dirtrans{$olddir};
+		}
+	}
+	$this->dirtrans(\%dirtrans); # store for cleantree
 }
 
 =item build
@@ -403,6 +430,19 @@ sub cleantree {
         my $this=shift;
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
+	my %dirtrans=%{$this->dirtrans};
+	foreach my $olddir (keys %dirtrans) {
+		if (! -e "$dir/$olddir" && -d "$dir/$dirtrans{$olddir}") {
+			# Ignore failure.. (should I?)
+			my ($dirbase)=$dir=~/(.*)\//;
+			system("install", "-d", "$dir/$dirbase");
+			system("mv", "$dir/$dirtrans{$olddir}", "$dir/$olddir");
+			if (-d "$dir/$dirtrans{$olddir}") {
+				system("rmdir", "-p", "$dir/$dirtrans{$olddir}");
+			}
+		}
+	}
+	
 	system("rm", "-rf", "$dir/debian");
 }
 

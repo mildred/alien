@@ -11,9 +11,10 @@ alien - Convert or install an alien binary package
 =head1 DESCRIPTION
 
 B<alien> is a program that converts between Redhat rpm, Debian deb,
-Stampede slp and Slackware tgz file formats. If you want to use a package from
-another linux distribution than the one you have installed on your system,
-you can use alien to convert it to your preferred package format and install it.
+Stampede slp and Slackware tgz file formats. If you want to use a package
+from another linux distribution than the one you have installed on your
+system, you can use alien to convert it to your preferred package format
+and install it.
 
 =head1 WARNING
 
@@ -52,6 +53,12 @@ standard linux directory tree. Do NOT run alien on tar files with source
 code in them, unless you want this source code to be installed in your root
 directory when you install the package!
 
+=item pkg
+
+To manipulate packages in the Solaris pkg format (which is really the SV 
+datastream package format), you will need the Solaris pkginfo and pkgtrans
+tools.
+
 =back
 
 =head1 OPTIONS
@@ -81,6 +88,10 @@ Make tgz packages.
 =item B<--to-slp>
 
 Make slp packages.
+
+=item B<-p>, B<--to-pkg>
+
+Make Solaris pkg packages.
 
 =item B<-i>, B<--install>
 
@@ -177,12 +188,17 @@ Options to pass to rpm when it is building a package.
 
 Options to pass to rpm when it is installing a package.
 
+=item EMAIL
+
+If set, alien assumes this is your email address. Email addresses are included
+in generated debian packages.
+
 =back
 
 =head1 NOTES
 
-When using alien to convert a tgz package, all files in /etc in are assumed to be
-configuration files.
+When using alien to convert a tgz package, all files in /etc in are assumed
+to be configuration files.
 
 If alien is not run as root, the files in the generated package will have
 incorrect owners and permissions.
@@ -193,6 +209,8 @@ Alien was written by Christoph Lameter, B<<clameter@debian.org>>.
 
 deb to rpm conversion code was taken from the Martian program by
 Randolph Chung, B<<tausq@debian.org>>.
+
+The Solaris pkg code was written by Mark A. Hershberger B<<mah@everybody.org>>.
 
 Alien has been extensively rewritten (3 times) and is now maintained by
 Joey Hess, B<<joeyh@debian.org>>.
@@ -211,6 +229,7 @@ use Alien::Package::Deb;
 use Alien::Package::Rpm;
 use Alien::Package::Tgz;
 use Alien::Package::Slp;
+use Alien::Package::Pkg;
 
 # Returns a list of directories to search for patches.
 sub patchdirs {
@@ -241,6 +260,7 @@ Usage: alien [options] file [...]
   -t, --to-tgz              Generate a Slackware tgz package.
      Enables the following option:
        --description=<desc> Specify package description.
+  -p, --to-pkg              Generate a Solaris pkg package.
   -i, --install             Install generated package.
   -g, --generate            Unpack, but do not generate a new package.
   -c, --scripts             Include scripts in package.
@@ -261,6 +281,7 @@ GetOptions(
 	"to-rpm|r", sub { $destformats{rpm}=1 },
 	"to-tgz|t", sub { $destformats{tgz}=1 },
 	"to-slp",   sub { $destformats{slp}=1 },
+	"to-pkg|p", sub { $destformats{pkg}=1 },
 	"generate|g", \$generate,
 	"install|i", \$install,
 	"single|s", sub { $single=1; $generate=1 },
@@ -327,6 +348,9 @@ foreach my $file (@ARGV) {
 	}
 	elsif (Alien::Package::Slp->checkfile($file)) {
 		$package=Alien::Package::Slp->new(filename => $file);
+	}
+	elsif (Alien::Package::Pkg->checkfile($file)) {
+		$package=Alien::Package::Pkg->new(filename => $file);
 	}
 	else {
 		die "Unknown type of package, $file.\n";
