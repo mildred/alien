@@ -1,3 +1,13 @@
+alien (7.19) unstable; urgency=low
+
+  * Updated to use debhelper v3 when converting packages. This
+    automatically should make it start adding ldconfig calls
+    as appropriate to maintainer scripts. Closes: #86088
+  * It does mean you need debhelper 3.x for alien to convert to 
+    deb now, so alien-extra will need an update.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 15 Feb 2001 15:33:07 -0800
+
 alien (7.18) unstable; urgency=low
 
   * Build with debhelper v3.

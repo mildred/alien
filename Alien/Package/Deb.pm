@@ -311,12 +311,17 @@ sub prep {
 
 	# A minimal rules file.
 	open (OUT, ">$dir/debian/rules") || die "$dir/debian/rules: $!";
-	print OUT <<EOF;
+	print OUT << 'EOF';
 #!/usr/bin/make -f
 # debian/rules for alien
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+
+# Use v3 compatability mode, so ldconfig gets added to maint scripts.
+export DH_COMAPT=3
+
+PACKAGE=$(shell dh_listpackages)
 
 build:
 	dh_testdir
@@ -333,15 +338,17 @@ binary-arch: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-	cp -a `ls -1 |grep -v debian` debian/tmp
+	cp -a `ls -1 |grep -v debian` debian/$(PACKAGE)
 #
-# If you need to move files around in debian/tmp or do some
-# binary patching ... Insert it here
+# If you need to move files around in debian//$(PACKAGE) or do some
+# binary patching, do it here
 #
 	dh_installdocs
 	dh_installchangelogs
+# This has been known to break on some wacky binaries.
 #	dh_strip
 	dh_compress
+# This is too paramoid to be generally useful to alien.
 #	dh_fixperms
 	dh_installdeb
 	-dh_shlibdeps
