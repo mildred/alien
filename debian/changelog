@@ -3,6 +3,8 @@ alien (6.99.1) unstable; urgency=low
   * Major typo fix in Tgz.pm.
   * Fixed newlines in tgz filelist.
   * Fixed some undefined value warnings.
+  * Put the rpm spec file back in. Converting the debs to rpms fails
+    because rpm doesn't use the same perl include path. Bummer.
 
  -- Joey Hess <joeyh@debian.org>  Sat, 22 Apr 2000 16:12:44 -0700
 

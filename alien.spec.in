@@ -1,0 +1,36 @@
+Summary: Install Debian, Slackware, and Stampede packages with rpm.
+Name: alien
+Packager: Joey Hess <joey@kitenet.net>
+Version: @version@
+Release: 1
+Source: ftp://kitenet.net/pub/code/debian/alien_@version@.tar.gz
+Copyright: GPL
+Group: Utilities/File
+Buildroot: /tmp/alien-@version@.build
+Requires: perl
+
+%description
+Alien allows you to convert Debian, Slackware, and Stampede Packages into Red
+Hat packages, which can be installed with rpm.
+
+It can also convert into Slackware, Debian and Stampede packages.
+
+This is a tool only suitable for binary packages.
+
+%prep
+%setup -n alien
+rm -r /tmp/alien-@version@.build || true
+
+%install
+perl Makefile.PL
+make
+make pure_install PREFIX=$RPM_BUILD_ROOT INSTALLDIRS=perl \
+	INSTALLMAN1DIR=$RPM_BUILD_ROOT/usr/share/man/man1 \
+	INSTALLMAN3DIR=$RPM_BUILD_ROOT/usr/share/man/man3 \
+	INSTALLSCRIPT=$RPM_BUILD_ROOT/usr/bin \
+	INSTALLARCHLIB=$RPM_BUILD_ROOT/killme
+rm -rf $RPM_BUILD_ROOT/killme
+find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" > manifest
+
+%files -f manifest
+%doc debian/changelog COPYING README alien.lsm

@@ -18,6 +18,7 @@ VER=$(shell perl -e '$$_=<>;print m/\((.*?)\)/'<debian/changelog)
 
 extra_build:
 	perl -i -pe "s/\@version\@/$(VER)/g" <alien.lsm.in >alien.lsm
+	perl -i -pe "s/\@version\@/$(VER)/g" <alien.spec.in >alien.spec
 
 extra_install:
 	install -d $(PREFIX)/usr/share/alien/patches \
@@ -41,5 +42,5 @@ WriteMakefile(
 	'depend'	=> {'all:' => 'extra_build',
 			    'install:' => 'extra_install',
 			    'pure_install:' => 'extra_install'},
-	'clean'		=> {FILES => 'alien.lsm alien'},
+	'clean'		=> {FILES => 'alien'},
 );
