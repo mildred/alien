@@ -200,6 +200,38 @@ sub unpack {
 	return 1;
 }
 
+=item getpatch
+
+This method tries to find a patch file to use in the prep stage. If it
+finds one, it returns it.  Pass in a list of directories to search for
+patches in.
+
+=cut
+
+sub getpatch {
+	my $this=shift;
+
+	my @patches;
+	foreach my $dir (@_) {
+		push @patches,glob("$dir/".$this->name."_".$this->version."-".$this->revision."*.diff.gz");
+	}
+	unless (@patches) {
+		# Try not matching the revision, see if that helps.
+		foreach my $dir (@_) {
+			push @patches,glob("$dir/".$this->name."_".$this->version."*.diff.gz");
+		}
+		unless (@patches) {
+			# Fallback to anything that matches the name.
+			foreach my $dir (@_) {
+				push @patches,glob("$dir/".$this->name."_*.diff.gz");
+			}
+		}
+	}
+
+	# If we ended up with multiple matches, return the first.
+	return $patches[0];
+}
+
 =item prep
 
 Adds a populated debian directory the unpacked package tree, making it
