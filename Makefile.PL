@@ -36,7 +36,7 @@ extra_install:
 alien:
 	perl -pe ' \
 		$$_="" if /use lib/; \
-		$$_="\tmy \$$version_string=\"$(VER)\";\n" \
+		$$_="our \$$Version=\"$(VER)\";\n" \
 			if /VERSION_AUTOREPLACE/' alien.pl > alien
 }
 }

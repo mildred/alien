@@ -271,15 +271,18 @@ Randolph Chung, B<<tausq@debian.org>>.
 
 The Solaris pkg code was written by Mark A. Hershberger B<<mah@everybody.org>>.
 
-Alien has been extensively rewritten (3 times) and is now maintained by
+alien has been extensively rewritten (3 times) and is now maintained by
 Joey Hess, B<<joeyh@debian.org>>.
 
 =head1 COPYRIGHT
 
-Alien may be copied and modified under the terms of the GNU General Public
+alien may be copied and modified under the terms of the GNU General Public
 License.
 
 =cut
+
+package Alien;
+our $Version='unknown'; # VERSION_AUTOREPLACE done by Makefile, DNE
 
 use strict;
 use lib '.'; # For debugging, removed by Makefile.
@@ -291,16 +294,15 @@ use Alien::Package::Slp;
 use Alien::Package::Pkg;
 use Alien::Package::Lsb;
 
+# Display alien's version number.
+sub version {
+	print "alien version $Alien::Version\n";
+	exit;
+}
+
 # Returns a list of directories to search for patches.
 sub patchdirs {
 	return '/var/lib/alien',"/usr/share/alien/patches";
-}
-
-# Display alien's version number.
-sub version {
-	my $version_string='unknown'; # VERSION_AUTOREPLACE done by Makefile, DNE
-	print "Alien version $version_string\n";
-	exit;
 }
 
 # Display usage help.

@@ -310,7 +310,7 @@ sub prep {
 	print OUT "\%description\n";
 	print OUT $this->description."\n";
 	print OUT "\n";
-	print OUT "(Converted from a ".$this->origformat." package by alien.)\n";
+	print OUT "(Converted from a ".$this->origformat." package by alien version $Alien::Version.)\n";
 	print OUT "\n";
 	print OUT "%files\n";
 	print OUT $filelist if defined $filelist;

@@ -331,6 +331,7 @@ sub prep {
 	print OUT $this->name." (".$this->version."-".$this->release.") experimental; urgency=low\n";
 	print OUT "\n";
 	print OUT "  * Converted from .".$this->origformat." format to .deb\n";
+	print OUT "    by alien version $Alien::Version\n";
 	print OUT "\n";
 	print OUT " -- ".$this->username." <".$this->email.">  ".$this->date."\n";
 	print OUT "\n";
@@ -633,7 +634,7 @@ sub description {
 	}
 	$ret=~s/^\n+//g; # kill leading blank lines
 	$ret.=" .\n" if length $ret;
-	$ret.=" (Converted from a ".$this->origformat." package by alien.)";
+	$ret.=" (Converted from a ".$this->origformat." package by alien version $Alien::Version.)";
 	return $ret;
 }
 
