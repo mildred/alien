@@ -51,14 +51,6 @@ installhook:
 	cd /home/ftp/pub/code/alien; \
 		ln -sf ../debian/alien_$(VERSION).tar.gz alien_$(VERSION).tar.gz; \
 		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
-	fakeroot alien -k --to-slp /home/joey/debian/public/alien_*.deb
-	mv alien-$(VERSION).slp /home/ftp/pub/code/alien/
-	fakeroot alien -k --to-rpm /home/joey/debian/public/alien_*.deb
-	mv alien-$(VERSION)*.rpm /home/ftp/pub/code/alien/
-	ln -s /home/ftp/pub/code/alien/alien-$(VERSION)*.rpm \
-		/home/ftp/pub/code/alien/alien.rpm 
-	ln -s /home/ftp/pub/code/alien/alien-$(VERSION).slp \
-		/home/ftp/pub/code/alien/alien.slp
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary

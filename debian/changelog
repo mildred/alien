@@ -1,4 +1,4 @@
-alien (6.99.2) unstable; urgency=low
+alien (6.99.3) unstable; urgency=low
 
   * Major typo fix in Tgz.pm.
   * Fixed newlines in tgz filelist.
