@@ -21,7 +21,7 @@ and populate those fields. And they can build the actual package using the
 data stored in the fields.
 
 A typical use of this object class will be to instantiate an object from
-a class derived from this one, such as Alien::Package::Rpm Feed the object
+a class derived from this one, such as Alien::Package::Rpm. Feed the object
 a rpm file, thus populating all of its fields. Then rebless the object into
 the destination class, such as Alien::Package::Deb. Finally, ask the object
 to build a package, and the package has been converted.
@@ -124,10 +124,6 @@ The prerm script of the package.
 
 Points to a directory where the package has been unpacked.
 
-=item filename
-
-The filename of the package the object represents.
-
 =back
 
 =head1 METHODS
@@ -144,7 +140,8 @@ parameters that specify the values of any fields in the class.
 sub new {
 	my $proto = shift;
 	my $class = ref($proto) || $proto;
-	my $this=bless ({@_}, $class);
+	my $this=bless ({}, $class);
+	$this->$_(shift) while $_=shift; # run named parameters as methods
 	$this->init;
 	return $this;
 }
@@ -169,14 +166,34 @@ sub install {
 	my $this=shift;
 }
 
-=item scan
+=item filename
 
-This method looks at the actual package file the package represents, and
-populates all the fields it can from that package file. The filename field
-should already be set before this method is called.
+Set/get the filename of the package the object represents.
+
+When it is set, it performs a scan of the file, populating most other
+fields with data from it.
 
 (This is just a stub; child classes should override it to actually do
 something.)
+
+=cut
+
+sub filename {
+	my $this=shift;
+
+	# set
+	if (@_) {
+		$this->{filename} = shift;
+		$this->scan;
+	}
+
+	return $this->{filename};
+}
+
+=item scan
+
+This method scans the file associated with an object, and populates as many
+other fields as it can with data from it.
 
 =cut
 
