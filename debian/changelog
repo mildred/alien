@@ -1,3 +1,10 @@
+alien (6.55) unstable; urgency=low
+
+  * Patch from Jan Nieuwenhuizen to fix control file extraction on
+    non-debian systems. Not for frozen.
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 16 Jan 2000 14:45:31 -0800
+
 alien (6.54) unstable; urgency=low
 
   * Added metrolink motif diffs from

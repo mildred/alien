@@ -29,7 +29,9 @@ sub GetFields { my ($self,$file)=@_;
 		@control = `dpkg-deb --info $file control`;
 	}
 	else {
-		@control = `ar p $file control.tar.gz | tar Oxzf - control`;
+		# It can have one of two names, depending on the tar 
+		# version the .deb was built from.
+		@control = `ar p $file control.tar.gz | tar Oxzf - control [./]control`;
 	}
 
 	# Parse control file and extract fields.
