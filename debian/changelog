@@ -1,3 +1,14 @@
+alien (8.21) unstable; urgency=low
+
+  * Pach from Erwan MAS <erwan@mas.nom.fr> that allows specification of the
+    version of a tgz file, for files that don't have a parseable version
+    number. For consistency with --description, I made the otpino be called
+    --version -- if no argument is specified to this option, it retains its
+    old behavior of displaying alien's version, but it is now overloaded
+    if given an argument. Closes: #165584
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 20 Oct 2002 20:51:51 -0400
+
 alien (8.20) unstable; urgency=low
 
   * Added support inspired by aj for converted rpm packages that create

@@ -150,6 +150,14 @@ Do not use any patch files.
 Specifiy a description for the package. This only has an effect when
 converting from the tgz package format, which lacks descriptions.
 
+=item B<--version=>I<version>
+
+Specifiy a version for the package. This only has an effect when
+converting from the tgz package format, which may lack version
+information.
+
+Note that without an argument, this displays the version of alien instead.
+
 =item B<-c>, B<--scripts>
 
 Try to convert the scripts that are meant to be run when the
@@ -303,6 +311,7 @@ Usage: alien [options] file [...]
   -t, --to-tgz              Generate a Slackware tgz package.
      Enables the following option:
        --description=<desc> Specify package description.
+       --version=<version>  Specify package version.
   -p, --to-pkg              Generate a Solaris pkg package.
   -i, --install             Install generated package.
   -g, --generate            Unpack, but do not generate a new package.
@@ -317,7 +326,8 @@ EOF
 
 # Start by processing the parameters.
 my (%destformats, $generate, $install, $single, $scripts, $patchfile,
-    $nopatch, $tgzdescription, $keepversion, $fixperms, $test, $anypatch);
+    $nopatch, $tgzdescription, $tgzversion, $keepversion, $fixperms, $test,
+    $anypatch);
 
 # Bundling is nice anyway, and it is required or Getopt::Long will confuse
 # -T and -t.
@@ -339,10 +349,10 @@ GetOptions(
 	"nopatch", \$nopatch,
 	"anypatch", \$anypatch,
 	"description=s", \$tgzdescription,
+        "version:s", sub { length $_[1] ? $tgzversion=$_[1] : version() },
 	"keep-version|k", \$keepversion,
 	"fixperms", \$fixperms,
 	"help|h", \&usage,
-	"version|v", \&version,
 ) || usage();
 
 # Default to deb conversion.
@@ -402,6 +412,7 @@ foreach my $file (@ARGV) {
 	elsif (Alien::Package::Tgz->checkfile($file)) {
 		$package=Alien::Package::Tgz->new(filename => $file);
 		$package->description($tgzdescription) if defined $tgzdescription;
+		$package->version($tgzversion) if defined $tgzversion;
 	}
 	elsif (Alien::Package::Slp->checkfile($file)) {
 		$package=Alien::Package::Slp->new(filename => $file);
