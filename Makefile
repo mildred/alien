@@ -40,11 +40,11 @@ rpm: version
 	install -d /home/joey/src/redhat/RPMS/noarch
 	ln -sf /home/ftp/pub/code/debian/alien_$(VER).tar.gz \
 		/home/joey/src/redhat/SOURCES/alien_$(VER).tar.gz
-	sudo rpm -ba -v alien.spec --target noarch
+	fakeroot rpm -ba -v alien.spec --target noarch
 	rm -f /home/joey/src/redhat/SOURCES/alien_$(VER).tar.gz
 	mv /home/joey/src/redhat/SRPMS/* /home/ftp/pub/code/SRPMS
 	mv /home/joey/src/redhat/RPMS/noarch/* /home/ftp/pub/code/RPMS/noarch
-	sudo rm -rf /home/joey/src/redhat/SOURCES \
+	fakroot rm -rf /home/joey/src/redhat/SOURCES \
 		/home/joey/src/redhat/BUILD \
 		/home/joey/src/redhat/SRPMS \
 		/home/joey/src/redhat/RPMS/
