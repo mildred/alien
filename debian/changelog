@@ -19,6 +19,7 @@ alien (6.99) unstable; urgency=low
   * The template files were all moved inside the objects, which is actually
     cleaner and is certainly easier to deal with.
   * Usernames are now looked up the way POSIX intended.
+  * alien.1 is now generated from POD docs.
 
  -- Joey Hess <joeyh@debian.org>  Thu, 20 Apr 2000 18:52:41 -0700
 
