@@ -1,3 +1,9 @@
+alien (8.50) unstable; urgency=low
+
+  * Recognise udebs and treat them like debs. Closes: #284693
+
+ -- Joey Hess <joeyh@debian.org>  Wed,  8 Dec 2004 16:20:42 -0500
+
 alien (8.49) unstable; urgency=low
 
   * Add support for config files in relocatale directories. Relocate

@@ -74,7 +74,7 @@ sub checkfile {
 	my $this=shift;
 	my $file=shift;
 
-	return $file =~ m/.*\.deb$/;
+	return $file =~ m/.*\.u?deb$/;
 }
 
 =item install
