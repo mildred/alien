@@ -19,7 +19,7 @@ sub FixFields { my ($self,%fields)=@_;
 	foreach $field ('POSTINST', 'POSTRM', 'PREINST', 'PRERM') {
 		if ($fields{$field}) {
 			# Rpm expands %S, so escape such things.
-		`	my $f = pack("u",$fields{$field});
+			my $f = pack("u",$fields{$field});
 			$f =~ s/%/%%/g;
 			$fields{$field}=
 				"set -e\n".

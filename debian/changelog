@@ -1,3 +1,9 @@
+alien (6.59) unstable; urgency=low
+
+  * Fixed typo, Closes: #60424
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 14 Mar 2000 20:30:01 -0800
+
 alien (6.58) unstable; urgency=low
 
   * Patch from Michael Barabanov <baraban@fsmlabs.com> to make -n work by
