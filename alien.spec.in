@@ -14,7 +14,7 @@ BuildArchitectures: noarch
 Alien allows you to convert Debian, Slackware, and Stampede Packages into Red
 Hat packages, which can be installed with rpm.
 
-It can also convert into Slackware, Debian and Stampede packages.
+It can also generate Slackware, Debian and Stampede packages.
 
 This is a tool only suitable for binary packages.
 

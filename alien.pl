@@ -10,19 +10,19 @@ alien - Convert or install an alien binary package
 
 =head1 DESCRIPTION
 
-B<alien> is a program that converts between Redhat rpm, Debian deb,
+B<alien> is a program that converts between Red Hat rpm, Debian deb,
 Stampede slp, Slackware tgz, and Solaris pkg file formats. If you want to
 use a package from another linux distribution than the one you have
-installed on your system, you can use alien to convert it to your preferred
+installed on your system, you can use B<alien> to convert it to your preferred
 package format and install it. It also supports LSB packages.
 
 =head1 WARNING
 
-Despite the high version number, alien is still (and will probably always
+Despite the high version number, B<alien> is still (and will probably always
 be) rather experimental software. It's been under development for many
 years now, but there are still many bugs and limitations.
 
-Alien should not be used to replace important system packages, like
+B<alien> should not be used to replace important system packages, like
 init, libc, or other things that are essential for the functioning of
 your system. Many of these packages are set up differently by the
 different distributions, and packages from the different distributions
@@ -41,8 +41,7 @@ installed.
 
 =item lsb
 
-To convert from lsb packages, the Red Hat Package Manager must be installed.
-Unlike the other package formats, alien can handle the depenendencies of
+Unlike the other package formats, B<alien> can handle the depenendencies of
 lsb packages if the destination package format supports dependencies. Note
 that this means that the package generated from a lsb package will depend on
 a package named "lsb" -- your distribution should provide a package by that
@@ -50,7 +49,7 @@ name, if it is lsb compliant. The scripts in the lsb package will be converted
 by default as well.
 
 To generate lsb packages, the Red Hat Package Manager must be installed,
-and alien will use by preference a program named lsb-rpm, if it exists.
+and B<alien> will use by preference a program named lsb-rpm, if it exists.
 No guarantees are made that the generated lsb packages will be fully LSB
 compliant, and it's rather unlikely they will unless you build them in the
 lsbdev environment.
@@ -65,7 +64,7 @@ dpkg-dev, and dpkg packages must be installed.
 Note that when converting from the tgz format, B<alien> will simply generate an
 output package that has the same files in it as are in the tgz file. This
 only works well if the tgz file has precompiled binaries in it in a
-standard linux directory tree. Do NOT run alien on tar files with source
+standard linux directory tree. Do NOT run B<alien> on tar files with source
 code in them, unless you want this source code to be installed in your root
 directory when you install the package!
 
@@ -79,7 +78,7 @@ tools.
 
 =head1 OPTIONS
 
-Alien will convert all the files you pass into it into all the output types
+B<alien> will convert all the files you pass into it into all the output types
 you specify. If no output type is specified, it defaults to converting to
 deb format.
 
@@ -156,7 +155,7 @@ Specifiy a version for the package. This only has an effect when
 converting from the tgz package format, which may lack version
 information.
 
-Note that without an argument, this displays the version of alien instead.
+Note that without an argument, this displays the version of B<alien> instead.
 
 =item B<-c>, B<--scripts>
 
@@ -176,8 +175,8 @@ lintian's output displayed.
 
 =item B<-k>, B<--keep-version>
 
-By default, alien adds one to the minor version number of each package it
-converts. If this option is given, alien will not do this.
+By default, B<alien> adds one to the minor version number of each package it
+converts. If this option is given, B<alien> will not do this.
 
 =item B<--fixperms>
 
@@ -187,15 +186,29 @@ some things to mess with their permissions and owners to the degree this does,
 so it defaults to off. This can only be used when converting to debian
 packages.
 
+=item B<-v>, B<--verbose>
+
+Be verbose: Display each command B<alien> runs in the process of converting a
+package.
+
+=item B<--veryverbose>
+
+Be verbose as with --verbose, but also display the output of each command
+run. Some commands may generate a lot of output.
+
 =item B<-h>, B<--help>
 
 Display a short usage summary.
+
+=item B<-V>, B<--version>
+
+Display the version of B<alien>.
 
 =back
 
 =head1 EXAMPLES
 
-Here are some examples of the use of alien:
+Here are some examples of the use of B<alien>:
 
 =over 4
 
@@ -222,7 +235,7 @@ all 4 package formats.
 
 =head1 ENVIRONMENT
 
-Alien recognizes the following environemnt variables:
+B<alien> recognizes the following environemnt variables:
 
 =over 4
 
@@ -236,24 +249,24 @@ Options to pass to rpm when it is installing a package.
 
 =item EMAIL
 
-If set, alien assumes this is your email address. Email addresses are included
-in generated debian packages.
+If set, B<alien> assumes this is your email address. Email addresses are
+included in generated debian packages.
 
 =back
 
 =head1 NOTES
 
-When using alien to convert a tgz package, all files in /etc in are assumed
+When using B<alien> to convert a tgz package, all files in /etc in are assumed
 to be configuration files.
 
-If alien is not run as root, the files in the generated package will have
+If B<alien> is not run as root, the files in the generated package will have
 incorrect owners and permissions.
 
 =head1 AUTHOR
 
-Alien was written by Christoph Lameter, B<<clameter@debian.org>>.
+B<alien> was written by Christoph Lameter, B<<clameter@debian.org>>.
 
-deb to rpm conversion code was taken from the Martian program by
+deb to rpm conversion code was taken from the martian program by
 Randolph Chung, B<<tausq@debian.org>>.
 
 The Solaris pkg code was written by Mark A. Hershberger B<<mah@everybody.org>>.
@@ -296,7 +309,7 @@ sub usage {
 Usage: alien [options] file [...]
   file [...]                Package file or files to convert.
   -d, --to-deb              Generate a Debian deb package (default).
-     Enables the following options:
+     Enables these options:
        --patch=<patch>      Specify patch file to use instead of automatically
                             looking for patch in /var/lib/alien.
        --nopatch	    Do not use patches.
@@ -305,20 +318,22 @@ Usage: alien [options] file [...]
                             directory.
        --fixperms           Munge/fix permissions and owners.
        --test               Test generated packages with lintian.
-  -r, --to-rpm              Generate a RedHat rpm package.
+  -r, --to-rpm              Generate a Red Hat rpm package.
       --to-slp              Generate a Stampede slp package.
   -l, --to-lsb              Generate a LSB package.
   -t, --to-tgz              Generate a Slackware tgz package.
-     Enables the following option:
+     Enables these options:
        --description=<desc> Specify package description.
        --version=<version>  Specify package version.
   -p, --to-pkg              Generate a Solaris pkg package.
   -i, --install             Install generated package.
   -g, --generate            Unpack, but do not generate a new package.
   -c, --scripts             Include scripts in package.
+  -v, --verbose             Display each command alien runs.
+      --veryverbose         Be verbose, and also display output of run commands.
   -k, --keep-version        Do not change version of generated package.
   -h, --help                Display this help message.
-  -v, --version		    Display alien's version number.
+  -V, --version		    Display alien's version number.
 
 EOF
 	exit 1;
@@ -334,25 +349,28 @@ my (%destformats, $generate, $install, $single, $scripts, $patchfile,
 Getopt::Long::Configure("bundling");
 
 GetOptions(
-	"to-deb|d", sub { $destformats{deb}=1 },
-	"to-rpm|r", sub { $destformats{rpm}=1 },
-	"to-lsb|l", sub { $destformats{lsb}=1 },
-	"to-tgz|t", sub { $destformats{tgz}=1 },
-	"to-slp",   sub { $destformats{slp}=1 },
-	"to-pkg|p", sub { $destformats{pkg}=1 },
-	"test|T", \$test,
-	"generate|g", \$generate,
-	"install|i", \$install,
-	"single|s", sub { $single=1; $generate=1 },
-	"scripts|c", \$scripts,
-	"patch=s", \$patchfile,
-	"nopatch", \$nopatch,
-	"anypatch", \$anypatch,
-	"description=s", \$tgzdescription,
-        "version:s", sub { length $_[1] ? $tgzversion=$_[1] : version() },
-	"keep-version|k", \$keepversion,
-	"fixperms", \$fixperms,
-	"help|h", \&usage,
+	"to-deb|d"       => sub { $destformats{deb}=1 },
+	"to-rpm|r"       => sub { $destformats{rpm}=1 },
+	"to-lsb|l"       => sub { $destformats{lsb}=1 },
+	"to-tgz|t"       => sub { $destformats{tgz}=1 },
+	"to-slp"         => sub { $destformats{slp}=1 },
+	"to-pkg|p"       => sub { $destformats{pkg}=1 },
+	"test|T"         => \$test,
+	"generate|g"     => \$generate,
+	"install|i"      => \$install,
+	"single|s"       => sub { $single=1; $generate=1 },
+	"scripts|c"      => \$scripts,
+	"patch=s"        => \$patchfile,
+	"nopatch"        => \$nopatch,
+	"anypatch"       => \$anypatch,
+	"description=s"  => \$tgzdescription,
+	"V"              => \&version,
+        "version:s"      => sub { length $_[1] ? $tgzversion=$_[1] : version() },
+	"verbose|v"      => \$Alien::Package::verbose,
+	"veryverbose"    => sub { $Alien::Package::verbose=2 },
+	"keep-version|k" => \$keepversion,
+	"fixperms"       => \$fixperms,
+	"help|h"         => \&usage,
 ) || usage();
 
 # Default to deb conversion.
@@ -450,7 +468,7 @@ foreach my $file (@ARGV) {
 			# Make .orig.tar.gz directory?
 			if ($format eq 'deb' && ! $single && $generate) {
 				# Make .orig.tar.gz directory.
-				(system("cp", "-fa", "--", $package->unpacked_tree, $package->unpacked_tree.".orig") == 0)
+				Alien::Package->do("cp", "-fa", "--", $package->unpacked_tree, $package->unpacked_tree.".orig")
 					or die "cp -fa failed";
 			}
 	

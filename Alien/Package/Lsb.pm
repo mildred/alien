@@ -15,10 +15,6 @@ use base qw(Alien::Package::Rpm);
 This is an object class that represents a lsb package. It is derived from
 Alien::Package::Rpm.
 
-=head1 FIELDS
-
-=over 4
-
 =head1 METHODS
 
 =over 4
@@ -34,7 +30,7 @@ sub checkfile {
 	my $this=shift;
 	my $file=shift;
 	return unless $file =~ m/^lsb-.*\.rpm$/;
-	my @deps=`LANG=C rpm -qp -R $file`;
+	my @deps=$this->runpipe("LANG=C rpm -qp -R $file");
 	return 1 if grep { s/\s+//g; $_ eq 'lsb' } @deps;
 	return;
 }

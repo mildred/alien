@@ -104,7 +104,7 @@ sub install {
 	my $pkg=shift;
 
 	if (-x "/usr/sbin/pkgadd") {
-		(system("/usr/sbin/pkgadd", "-d .", "$pkg") == 0)
+		$this->do("/usr/sbin/pkgadd", "-d .", "$pkg")
 			or die "Unable to install";
 	}
 	else {
@@ -124,7 +124,7 @@ sub scan {
 	my $file=$this->filename;
 	my $tdir="pkg-scan-tmp.$$";
 
-	mkdir($tdir, 0755) || die "Error making $tdir: $!\n"; 
+	$this->do("mkdir", $tdir) || die "Error making $tdir: $!\n"; 
 
 	my $pkgname;
 	if (-x "/usr/bin/pkginfo" && -x "/usr/bin/pkgtrans") {
@@ -137,7 +137,7 @@ sub scan {
 		close INFO;
 
 		# Extract the files
-		(system("/usr/bin/pkgtrans -i $file $tdir $pkgname") == 0)
+		$this->do("/usr/bin/pkgtrans -i $file $tdir $pkgname")
 			|| die "Error running pkgtrans: $!\n";
 
 		open(INFO, "$tdir/$pkgname/pkginfo")
@@ -205,7 +205,7 @@ sub scan {
 			if -e "$file/".scripttrans()->{$script};
 	}
 
-	system ("rm -rf $tdir");
+	$this->do("rm -rf $tdir");
 
 	return 1;
 }
@@ -230,8 +230,8 @@ sub unpack {
 
 	if (-x "/usr/bin/pkgtrans") {
 		my $workdir = $this->name."-".$this->version;;
-		mkdir($workdir, 0755) || die "unable to mkdir $workdir: $!\n";
-		(system("/usr/bin/pkgtrans $file $workdir $pkgname") == 0)
+		$this->do("mkdir", $workdir) || die "unable to mkdir $workdir: $!\n";
+		$this->do("/usr/bin/pkgtrans $file $workdir $pkgname")
 			|| die "unable to extract $file: $!\n";
 		rename("$workdir/$pkgname", "$ {workdir}_1")
 			|| die "unable rename $workdir/$pkgname: $!\n";
@@ -257,7 +257,7 @@ sub prep {
 #  	  grep {/^\./} readdir DIR;
 #  	closedir DIR;
 
-	(system("cd $dir; find . -print | pkgproto > ./prototype") == 0)
+	$this->do("cd $dir; find . -print | pkgproto > ./prototype")
 		|| die "error during pkgproto: $!\n";
 
 	open(PKGPROTO, ">>$dir/prototype")
@@ -280,7 +280,7 @@ sub prep {
 	close PKGINFO;
 	print PKGPROTO "i pkginfo=./pkginfo\n";
 
-	mkdir("$dir/install", 0755) || die "unable to mkdir $dir/install: $!";
+	$this->do("mkdir", "$dir/install") || die "unable to mkdir $dir/install: $!";
 	open(COPYRIGHT, ">$dir/install/copyright")
 		|| die "error creating copyright: $!\n";
 	print COPYRIGHT $this->copyright;
@@ -295,7 +295,7 @@ sub prep {
 		open (OUT, ">$out") || die "$out: $!";
 		print OUT $data;
 		close OUT;
-		chmod 0755, $out;
+		$this->do("chmod", 755, $out);
 		print PKGPROTO "i $script=$out\n";
 	}
 	close PKGPROTO;
@@ -311,14 +311,14 @@ sub build {
 	my $this = shift;
 	my $dir = $this->unpacked_tree;
 
-	(system("cd $dir; pkgmk -r / -d .") == 0)
+	$this->do("cd $dir; pkgmk -r / -d .")
 		|| die "Error during pkgmk: $!\n";
 
 	my $pkgname = $this->converted_name;
 	my $name = $this->name."-".$this->version.".pkg";
-	(system("pkgtrans $dir $name $pkgname") == 0)
+	$this->do("pkgtrans $dir $name $pkgname")
 		|| die "Error during pkgtrans: $!\n";
-	rename "$dir/$name", $name;
+	$this->do("mv", "$dir/$name", $name);
 	return $name;
 }
 

@@ -9,6 +9,7 @@ Alien::Package - an object that represents a package
 package Alien::Package;
 use strict;
 use vars qw($AUTOLOAD);
+our $verbose=0;
 
 =head1 DESCRIPTION
 
@@ -143,22 +144,6 @@ yet. It will be set at unpack time.
 
 =over 4
 
-=item new
-
-Returns a new object of this class. Optionally, you can pass in named
-parameters that specify the values of any fields in the class.
-
-=cut
-
-sub new {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
-	my $this=bless ({}, $class);
-	$this->init;
-	$this->$_(shift) while $_=shift; # run named parameters as methods
-	return $this;
-}
-
 =item init
 
 This is called by new(). It's a handy place to set fields, etc, without
@@ -167,20 +152,6 @@ having to write your own new() method.
 =cut
 
 sub init {}
-
-=item checkfile
-
-This is a class method. Pass it a filename, and it will return true if it
-looks like the file is a package of the type handled by the class.
-
-=cut
-
-sub checkfile {
-	my $this=shift;
-	my $file=shift;
-
-	return ''; # children override this.
-}
 
 =item install
 
@@ -241,7 +212,7 @@ sub scan {
 	my $file=$this->filename;
 
 	if (! -e $file) {
-		die "`$file' does not exist; cannot read.";
+		die "$file does not exist; cannot read.";
 	}
 }
 
@@ -260,12 +231,12 @@ sub unpack {
 	my $this=shift;
 	
 	my $workdir = $this->name."-".$this->version;
-	mkdir($workdir, 0755) ||
+	$this->do("mkdir $workdir") or
 		die "unable to mkdir $workdir: $!";
 	# If the parent directory is suid/sgid, mkdir will make the root
 	# directory of the package inherit those bits. That is a bad thing,
 	# so explicitly force perms to 755.
-	chmod 0755, $workdir;
+	$this->do("chmod 755 $workdir");
 	$this->unpacked_tree($workdir);
 }
 
@@ -325,10 +296,10 @@ sub DESTROY {
 	return if (! defined $this->unpacked_tree || $this->unpacked_tree eq '');
 	# This should never happen, but it pays to check.
 	if ($this->unpacked_tree eq '/') {
-		die "alien internal error: unpacked_tree is set to `/'. Please file a bug report!";
+		die "alien internal error: unpacked_tree is set to '/'. Please file a bug report!";
 	}
-	(system('rm', '-rf', $this->unpacked_tree) == 0)
-		or die "unable to delete temporary directory `".$this->unpacked_tree."`: $!";
+	$this->do('rm', '-rf', $this->unpacked_tree)
+		or die "unable to delete temporary directory '".$this->unpacked_tree."': $!";
 	$this->unpacked_tree('');	
 }
 
@@ -351,6 +322,117 @@ sub AUTOLOAD {
 		return $this->{$field}=shift;
 	};
 	goto &$AUTOLOAD;
+}
+
+=back
+
+=head1 CLASS DATA
+
+=over 4
+
+=item $Alien::Package::verbose
+
+If set to a nonzero value, the shell commands that are run should be output.
+If set to a value greater than 1, any output of the commands should also be
+output.
+
+=back
+
+=head1 CLASS METHODS
+
+These methods can be called on either an object or on the class itself.
+
+=cut
+
+=over 4
+
+=item new
+
+Returns a new object of this class. Optionally, you can pass in named
+parameters that specify the values of any fields in the class.
+
+=cut
+
+sub new {
+	my $proto = shift;
+	my $class = ref($proto) || $proto;
+	my $this=bless ({}, $class);
+	$this->init;
+	$this->$_(shift) while $_=shift; # run named parameters as methods
+	return $this;
+}
+
+=item checkfile
+
+Pass it a filename, and it will return true if it looks like the file is
+a package of the type handled by the class.
+
+=cut
+
+sub checkfile {
+	my $this=shift;
+	my $file=shift;
+
+	return ''; # children override this.
+}
+
+=item do
+
+Runs a shell command. Is verbose or not depending on the value of 
+$Alien::Package::verbose. Returns true if the command succeeds,
+false on failure.
+
+=cut
+
+sub do {
+	my $whatever=shift;
+	my @command=@_;
+	if ($Alien::Package::verbose) {
+		print "\t@command\n";
+	}
+	my $pid=fork;
+	if (!$pid) {
+		# child
+		if ($Alien::Package::verbose < 2) {
+			# just closing it won't do
+			open(STDOUT, ">/dev/null");
+		}
+		exec(@command);
+		exit 1;
+	}
+	else {
+		# parent
+		return (waitpid($pid, 0) > 0);
+	}
+}
+
+=item runpipe
+
+This is similar to backticks, but honors $Alien::Package::verbose, logging
+the command run if asked to. The output of the command returned.
+
+=cut
+
+sub runpipe {
+	my $whatever=shift;
+	my @command=@_;
+	if ($Alien::Package::verbose) {
+		print "\t@command\n";
+	}
+	if (wantarray) {
+		my @ret=`@command`;
+		if ($Alien::Package::verbose >= 2) {
+			print @ret;
+		}
+		return @ret;
+	}
+	else {
+		my $ret=`@command`;
+		if ($Alien::Package::verbose >= 2) {
+			print $ret."\n";
+		}
+		return $ret;
+	}
 }
 
 =back

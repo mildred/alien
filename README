@@ -72,3 +72,6 @@ Programs that use alien:
 Please report any bugs in alien to the author: 
 
   Joey Hess <joeyh@debian.org>
+
+  It is helpful to provide a log of alien --veryverbose reproducing the
+  bug. I may also ask for the package that exposes the problem you saw.

@@ -66,7 +66,7 @@ sub install {
 	my $tgz=shift;
 
 	if (-x "/sbin/installpkg") {
-		(system("/sbin/installpkg", "$tgz") == 0)
+		$this->do("/sbin/installpkg", "$tgz")
 			or die "Unable to install";
 	}
 	else {
@@ -111,7 +111,7 @@ sub scan {
 	$this->group("unknown");
 	$this->origformat('tgz');
 	$this->changelogtext('');
-	$this->binary_info(`ls -l $file`);
+	$this->binary_info($this->runpipe("ls -l $file"));
 
 	# Now figure out the conffiles. Assume anything in etc/ is a
 	# conffile.
@@ -145,7 +145,7 @@ sub scan {
 
 	# Now get the scripts.
 	foreach my $script (keys %{scripttrans()}) {
-		$this->$script(`tar Oxzf $file 	install/${scripttrans()}{$script} 2>/dev/null`);
+		$this->$script($this->runpipe("tar Oxzf $file install/${scripttrans()}{$script} 2>/dev/null"));
 	}
 
 	return 1;
@@ -162,10 +162,10 @@ sub unpack {
 	$this->SUPER::unpack(@_);
 	my $file=$this->filename;
 
-	(system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)") == 0)
-		or die "Unpacking of `$file' failed: $!";
+	$this->do("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)")
+		or die "Unpacking of '$file' failed: $!";
 	# Delete the install directory that has slackware info in it.
-	system("cd ".$this->unpacked_tree."; rm -rf ./install");
+	$this->do("cd ".$this->unpacked_tree."; rm -rf ./install");
 
 	return 1;
 }
@@ -194,7 +194,7 @@ sub prep {
 			open (OUT, ">$out") || die "$out: $!";
 			print OUT $data;
 			close OUT;
-			chmod 0755, $out;
+			$this->do("chmod", 755, $out);
 		}
 	}
 }
@@ -209,7 +209,7 @@ sub build {
 	my $this=shift;
 	my $tgz=$this->name."-".$this->version.".tgz";
 
-	(system("cd ".$this->unpacked_tree."; tar czf ../$tgz .") == 0)
+	$this->do("cd ".$this->unpacked_tree."; tar czf ../$tgz .")
 		or die "Package build failed";
 
 	return $tgz;

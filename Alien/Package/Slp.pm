@@ -85,7 +85,7 @@ Holds the compression type used in the slp file.
 
 Holds the slp package format version of the slp file.
 
-=item 
+=back
 
 =head1 METHODS
 
@@ -114,7 +114,7 @@ sub install {
 	my $this=shift;
 	my $slp=shift;
 
-	(system("slpi", $slp) == 0)
+	$this->do("slpi", $slp)
 		or die "Unable to install";
 }
 
@@ -163,7 +163,7 @@ sub scan {
 	# Read in the file list.
 	my @filelist;
 	# FIXME: support gzip files too!
-	foreach (`bzip2 -d < $file | tar -tf -`) {
+	foreach ($this->runpipe("bzip2 -d < $file | tar -tf -")) {
 		chomp;
 		s:^\./:/:;
 		$_="/$_" unless m:^/:;
@@ -176,7 +176,7 @@ sub scan {
 	$this->distribution('Stampede');
 	$this->origformat('slp');
 	$this->changelogtext('');
-	$this->binary_info(`ls -l $file`);
+	$this->binary_info($this->runpipe("ls -l $file"));
 	
 	return 1;
 }
@@ -195,10 +195,10 @@ sub unpack {
 	my $compresstype=$this->compresstype;
 
 	if ($compresstype == 0) {
-		system("bzip2 -d < $file | (cd ".$this->unpacked_tree."; tar xpf -)")
+		$this->do("bzip2 -d < $file | (cd ".$this->unpacked_tree."; tar xpf -)")
 	}
 	elsif ($compresstype == 1) {
-		system("gzip -dc $file | (cd ".$this->unpacked_tree."; tar xpf -)")
+		$this->do("gzip -dc $file | (cd ".$this->unpacked_tree."; tar xpf -)")
 	}
 	else {
 		die "package uses an unknown compression type, $compresstype (please file a bug report)";
@@ -250,7 +250,7 @@ sub build {
 	# something like that, becuase it results in a tar file where all
 	# the files in it start with "./", which is consitent with how
 	# normal stampede files look.
-	(system("(cd ".$this->unpacked_tree."; tar cf - ./*) | bzip2 - > $slp") == 0)
+	$this->do("(cd ".$this->unpacked_tree."; tar cf - ./*) | bzip2 - > $slp")
 		or die "package build failed: $!";
 
 	# Now append the footer.

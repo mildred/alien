@@ -23,6 +23,8 @@ Alien::Package.
 
 Relocatable rpm packages have a prefixes field.
 
+=back
+
 =head1 METHODS
 
 =over 4
@@ -51,7 +53,7 @@ sub install {
 	my $this=shift;
 	my $rpm=shift;
 
-	(system("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm) == 0)
+	$this->do("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm)
 		or die "Unable to install";
 }
 
@@ -81,23 +83,23 @@ sub scan {
 
 	# Use --queryformat to pull out all the fields we need.
 	foreach my $field (keys(%fieldtrans)) {
-		$_=`LANG=C rpm -qp --queryformat \%{$field} $file`;
+		$_=$this->runpipe("LANG=C rpm -qp --queryformat \%{$field} $file");
 		$field=$fieldtrans{$field};
 		$_='' if $_ eq '(none)';
 		$this->$field($_);
 	}
 
 	# Get the conffiles list.
-	$this->conffiles([map { chomp; $_ } `LANG=C rpm -qcp $file`]);
+	$this->conffiles([map { chomp; $_ } $this->runpipe("LANG=C rpm -qcp $file")]);
 	if (defined $this->conffiles->[0] &&
 	    $this->conffiles->[0] eq '(contains no files)') {
 		$this->conffiles([]);
 	}
 
-	$this->binary_info(scalar `rpm -qpi $file`);
+	$this->binary_info(scalar $this->runpipe("rpm -qpi $file"));
 
 	# Get the filelist.
-	$this->filelist([map { chomp; $_ } `LANG=C rpm -qpl $file`]);
+	$this->filelist([map { chomp; $_ } $this->runpipe("LANG=C rpm -qpl $file")]);
 	if (defined $this->filelist->[0] &&
 	    $this->filelist->[0] eq '(contains no files)') {
 		$this->filelist([]);
@@ -145,8 +147,8 @@ sub unpack {
 	$this->SUPER::unpack(@_);
 	my $workdir=$this->unpacked_tree;
 	
-	(system("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null") == 0)
-		or die "Unpacking of `".$this->filename."' failed";
+	$this->do("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>&1")
+		or die "Unpacking of '".$this->filename."' failed";
 	
 	# If the package is relocatable. We'd like to move it to be under
 	# the $this->prefixes directory. However, it's possible that that
@@ -168,12 +170,12 @@ sub unpack {
 		foreach (split m:/:, $this->prefixes) {
 			if ($_ ne '') { # this keeps us from using anything but relative paths.
 				$collect.="/$_";
-				mkdir($collect,0755) || die "unable to mkdir $collect: $!";
+				$this->do("mkdir", $collect) || die "unable to mkdir $collect: $!";
 			}
 		}
 		# Now move all files in the package to the directory we made.
 		if (@filelist) {
-			(system("mv", @filelist, "$workdir/".$this->prefixes) == 0)
+			$this->do("mv", @filelist, "$workdir/".$this->prefixes)
 				or die "error moving unpacked files into the default prefix directory: $!";
 		}
 	}
@@ -185,7 +187,7 @@ sub unpack {
 	# Note that the next section overrides these default permissions,
 	# if override data exists in the rpm permissions info. And such
 	# data should always exist, so this is probably a no-op.
-	system("find $workdir -type d -perm 700 -print0 | xargs --no-run-if-empty -0 chmod 700");
+	$this->do("find $workdir -type d -perm 700 -print0 | xargs --no-run-if-empty -0 chmod 700");
 	
 	# rpm files have two sets of permissions; the set in the cpio
 	# archive, and the set in the control data; which override them.
@@ -215,9 +217,11 @@ sub unpack {
 		}
 		next unless -e "$workdir/$file"; # skip broken links
 		if ($> == 0) {
-			chown($uid, $gid, "$workdir/$file") || die "failed chowning $file to $uid\:$gid\: $!";
+			$this->do("chown", "$uid:$gid", "$workdir/$file") 
+				|| die "failed chowning $file to $uid\:$gid\: $!";
 		}
-		chmod($mode, "$workdir/$file") || die "failed changing mode of $file to $mode\: $!";
+		$this->do("chmod", sprintf("%lo", $mode), "$workdir/$file") 
+			|| die "failed changing mode of $file to $mode\: $!";
 	}
 	$this->owninfo(\%owninfo);
 
@@ -339,7 +343,7 @@ sub build {
 	# Ask rpm how it's set up. We want to know what architecture it
 	# will output, and where it will place rpms.
 	my ($rpmarch, $rpmdir);
-	foreach (`rpm --showrc`) {
+	foreach ($this->runpipe("rpm --showrc")) {
 		chomp;
 		if (/^build arch\s+:\s(.*)$/) {
 			$rpmarch=$1;
@@ -381,7 +385,7 @@ sub build {
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
 	my $command="cd $dir; $buildcmd -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
-	my $log=`$command 2>&1`;
+	my $log=$this->runpipe("$command 2>&1");
 	if ($?) {
 		die "Package build failed. Here's the log of the command ($command):\n", $log;
 	}

@@ -5,6 +5,8 @@ build-stamp:
 	dh_testdir
 	perl Makefile.PL
 	$(MAKE)
+	# simple smoke test
+	./alien.pl -V
 	touch build-stamp
 
 clean:

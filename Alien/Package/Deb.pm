@@ -87,7 +87,7 @@ sub install {
 	my $this=shift;
 	my $deb=shift;
 
-	(system("dpkg", "--no-force-overwrite", "-i", $deb) == 0)
+	$this->do("dpkg", "--no-force-overwrite", "-i", $deb)
 		or die "Unable to install";
 }
 
@@ -107,7 +107,7 @@ sub test {
 		return map { s/\n//; $_ }
 		       grep {
 		       		! /unknown-section alien/
-		       } `lintian $deb`;
+		       } $this->runpipe("lintian $deb");
 	}
 	else {
 		return "lintian not available, so not testing";
@@ -127,7 +127,7 @@ sub getcontrolfile {
 	my $file=$this->filename;
 	
 	if ($this->have_dpkg_deb) {
-		return `dpkg-deb --info $file $controlfile 2>/dev/null`;
+		return $this->runpipe("dpkg-deb --info $file $controlfile 2>/dev/null");
 	}
 	else {
 		# Solaris tar doesn't support O
@@ -140,7 +140,7 @@ sub getcontrolfile {
 				" cat $file; cd /; rm -rf /tmp/tar_out.$$)";
 		}
 		my $getcontrol = "ar -p $file control.tar.gz | gzip -dc | ".tar_out($controlfile)." 2>/dev/null";
-		return `$getcontrol`
+		return $this->runpipe($getcontrol);
 	}
 }
 
@@ -205,15 +205,15 @@ sub scan {
 	$this->conffiles(\@conffiles);
 
 	# Read in the list of all files.
-	# Note that tar doesn't supply a leading `/', so we have to add that.
+	# Note that tar doesn't supply a leading '/', so we have to add that.
 	my @filelist;
 	if ($this->have_dpkg_deb) {
 		@filelist=map { chomp; s:\./::; "/$_" }
-			  `dpkg-deb --fsys-tarfile $file | tar tf -`;
+			  $this->runpipe("dpkg-deb --fsys-tarfile $file | tar tf -");
 	}
 	else {
 		@filelist=map { chomp; s:\./::; "/$_" }
-			  `ar -p $file data.tar.gz | gzip -dc | tar tf -`;
+			  $this->runpipe("ar -p $file data.tar.gz | gzip -dc | tar tf -");
 	}
 	$this->filelist(\@filelist);
 
@@ -237,12 +237,12 @@ sub unpack {
 	my $file=$this->filename;
 
 	if ($this->have_dpkg_deb) {
-		(system("dpkg-deb", "-x", $file, $this->unpacked_tree) == 0)
-			or die "Unpacking of `$file' failed: $!";
+		$this->do("dpkg-deb", "-x", $file, $this->unpacked_tree)
+			or die "Unpacking of '$file' failed: $!";
 	}
 	else {
-		(system("ar -p $file data.tar.gz | gzip -dc | (cd ".$this->unpacked_tree."; tar xpf -)") == 0)
-			or die "Unpacking of `$file' failed: $!";
+		$this->do("ar -p $file data.tar.gz | gzip -dc | (cd ".$this->unpacked_tree."; tar xpf -)")
+			or die "Unpacking of '$file' failed: $!";
 	}
 
 	return 1;
@@ -293,20 +293,20 @@ sub prep {
 	my $this=shift;
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
-	mkdir("$dir/debian", 0755) ||
+	$this->do("mkdir $dir/debian") ||
 		die "mkdir $dir/debian failed: $!";
 	
 	# Use a patch file to debianize?
 	if (defined $this->patchfile) {
 		# The -f passed to zcat makes it pass uncompressed files
 		# through without error.
-		(system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") == 0)
+		$this->do("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)")
 			or die "patch error: $!";
 		# Look for .rej files.
 		die "patch failed with .rej files; giving up"
-			if `find $dir -name "*.rej"`;
-		system('find', '.', '-name', '*.orig', '-exec', 'rm', '{}', ';');
-		chmod 0755, "$dir/debian/rules";
+			if $this->runpipe("find $dir -name \"*.rej\"");
+		$this->do('find', '.', '-name', '*.orig', '-exec', 'rm', '{}', ';');
+		$this->do("chmod", 755, "$dir/debian/rules");
 
 		# It's possible that the patch file changes the debian
 		# release or version. Parse changelog to detect that.
@@ -406,6 +406,9 @@ binary-arch: build
 	dh_clean -k
 	dh_installdirs
 
+	dh_installdocs
+	dh_installchangelogs
+
 # Copy the packages's files.
 	find . -maxdepth 1 -mindepth 1 -not -name debian -print0 | \\
 		xargs -0 -r -i cp -a {} debian/\$(PACKAGE)
@@ -414,8 +417,8 @@ binary-arch: build
 # If you need to move files around in debian/\$(PACKAGE) or do some
 # binary patching, do it here
 #
-	dh_installdocs
-	dh_installchangelogs
+
+
 # This has been known to break on some wacky binaries.
 #	dh_strip
 	dh_compress
@@ -431,7 +434,7 @@ binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
 EOF
 	close OUT;
-	chmod 0755,"$dir/debian/rules";
+	$this->do("chmod", 755, "$dir/debian/rules");
 
 	# Save any scripts.
 	if ($this->usescripts) {
@@ -456,10 +459,10 @@ EOF
 		if (-d "$dir/$olddir" && ! -e "$dir/$dirtrans{$olddir}") {
 			# Ignore failure..
 			my ($dirbase)=$dirtrans{$olddir}=~/(.*)\//;
-			system("install", "-d", "$dir/$dirbase");
-			system("mv", "$dir/$olddir", "$dir/$dirtrans{$olddir}");
+			$this->do("install", "-d", "$dir/$dirbase");
+			$this->do("mv", "$dir/$olddir", "$dir/$dirtrans{$olddir}");
 			if (-d "$dir/$olddir") {
-				system("rmdir", "-p", "$dir/$olddir");
+				$this->do("rmdir", "-p", "$dir/$olddir");
 			}
 		}
 		else {
@@ -479,7 +482,7 @@ sub build {
 	my $this=shift;
 
 	chdir $this->unpacked_tree;
-	my $log=`debian/rules binary 2>&1`;
+	my $log=$this->runpipe("debian/rules binary 2>&1");
 	if ($?) {
 		die "Package build failed. Here's the log:\n", $log;
 	}
@@ -503,15 +506,15 @@ sub cleantree {
 		if (! -e "$dir/$olddir" && -d "$dir/$dirtrans{$olddir}") {
 			# Ignore failure.. (should I?)
 			my ($dirbase)=$dir=~/(.*)\//;
-			system("install", "-d", "$dir/$dirbase");
-			system("mv", "$dir/$dirtrans{$olddir}", "$dir/$olddir");
+			$this->do("install", "-d", "$dir/$dirbase");
+			$this->do("mv", "$dir/$dirtrans{$olddir}", "$dir/$olddir");
 			if (-d "$dir/$dirtrans{$olddir}") {
-				system("rmdir", "-p", "$dir/$dirtrans{$olddir}");
+				$this->do("rmdir", "-p", "$dir/$dirtrans{$olddir}");
 			}
 		}
 	}
 	
-	system("rm", "-rf", "$dir/debian");
+	$this->do("rm", "-rf", "$dir/debian");
 }
 
 =item package
@@ -643,7 +646,7 @@ Returns the date, in rfc822 format.
 sub date {
 	my $this=shift;
 
-	my $date=`822-date`;
+	my $date=$this->runpipe("822-date");
 	chomp $date;
 	if (!$date) {
 		die "822-date did not return a valid result. You probably need to install the dpkg-dev debian package";
@@ -673,7 +676,7 @@ sub email {
 		close MAILNAME;
 	}
 	if (!$mailname) {
-		$mailname=`hostname -f`;
+		$mailname=$this->runpipe("hostname -f");
 		chomp $mailname;
 	}
 	return "$login\@$mailname";

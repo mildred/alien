@@ -1,3 +1,12 @@
+alien (8.30) unstable; urgency=low
+
+  * Added -v to enable verbose mode, which lists each shell command
+    as it is run. Also added --veryverbose for verbose with command
+    output too.
+  * Use -V for version. (-v used to be documented, but never worked)
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 14 May 2003 00:12:00 -0400
+
 alien (8.26) unstable; urgency=low
 
   * alien.spec: pass PREFIX to Makefile.PL so it works on systems 
