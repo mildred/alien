@@ -1,3 +1,10 @@
+alien (8.41) unstable; urgency=low
+
+  * Generate a build tree on request even when the source and dest formats are
+    the same. Closes: #222311
+
+ -- Joey Hess <joeyh@debian.org>  Sat, 29 Nov 2003 18:29:29 -0500
+
 alien (8.40) unstable; urgency=low
 
   * Include the version of alien that generated a deb or rpm in the
