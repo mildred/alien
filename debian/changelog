@@ -1,3 +1,10 @@
+alien (8.42) unstable; urgency=low
+
+  * Do not register conffiles in /etc when generating a deb; debhelper v3
+    takes care of that.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 15 Jan 2004 22:25:48 -0500
+
 alien (8.41) unstable; urgency=low
 
   * Generate a build tree on request even when the source and dest formats are
