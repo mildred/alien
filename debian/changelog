@@ -1,3 +1,9 @@
+alien (8.13) unstable; urgency=low
+
+  * Made tgz version parsing greedier so it will match sub-versions.
+
+ -- Joey Hess <joeyh@debian.org>  Sat,  6 Jul 2002 08:05:45 -0400
+
 alien (8.12) unstable; urgency=low
 
   * Fixed slp conversion to not use uninitialized value. Closes: #150840
