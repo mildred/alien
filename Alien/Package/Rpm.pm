@@ -172,8 +172,10 @@ sub unpack {
 			}
 		}
 		# Now move all files in the package to the directory we made.
-		(system("mv", @filelist, "$workdir/".$this->prefixes) == 0)
-			or die "error moving unpacked files into the default prefix directory: $!";
+		if (@filelist) {
+			(system("mv", @filelist, "$workdir/".$this->prefixes) == 0)
+				or die "error moving unpacked files into the default prefix directory: $!";
+		}
 	}
 
 	# cpio does not necessarily store all parent directories in an

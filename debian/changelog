@@ -1,3 +1,9 @@
+alien (8.25) unstable; urgency=low
+
+  * Support rpms that contain no files. Closes: #184714
+
+ -- Joey Hess <joeyh@debian.org>  Sat, 15 Mar 2003 21:34:33 -0800
+
 alien (8.24) unstable; urgency=low
 
   * Corrected precidence problem that made alien not catch mkdir of the work
