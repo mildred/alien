@@ -223,7 +223,6 @@ sub build {
 	# (a). That is good for decoding, but not for encoding.
 	my $fmt=footer_packstring();
 	$fmt=~tr/A/a/;
-	
 	my $footer=pack($fmt,
 		$this->conffiles,
 		2, # Use priority optional for alien packages.
@@ -234,7 +233,7 @@ sub build {
 		'', # Set up script. TODO
 		$this->summary,
 		$this->description,
-		$this->depends,
+		'', # $this->depends would go here, but slp uses some weird format
 		'', # Provides.
 		$this->maintainer,
 		scalar localtime, # Use current date.

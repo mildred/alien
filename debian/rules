@@ -3,7 +3,7 @@
 build: build-stamp
 build-stamp:
 	dh_testdir
-	perl Makefile.PL INSTALLDIRS=vendor
+	perl Makefile.PL
 	$(MAKE)
 	touch build-stamp
 
@@ -21,8 +21,13 @@ binary-indep: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	$(MAKE) install PREFIX=`pwd`/debian/apt-src/usr
-	dh_installdocs
+	$(MAKE) pure_install INSTALLDIRS=vendor \
+		PREFIX=$(shell pwd)/debian/alien/$(shell perl -MConfig -e 'print $$Config{prefix}') \
+		VARPREFIX=$(shell pwd)/debian/alien
+	# Why does it make this empty directory? Sigh.
+	rm -rf debian/alien/usr/lib
+	dh_installdocs README gendiff.txt
+	dh_installexamples
 	dh_installchangelogs
 	dh_compress
 	dh_fixperms
@@ -31,6 +36,17 @@ binary-indep: build
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
+
+VERSION=$(shell expr "`dpkg-parsechangelog 2>/dev/null |grep Version:`" : '.*Version: \(.*\)')
+
+# Update the web page. Not intended for use by anyone except the author.
+installhook:
+	cp debian/changelog /home/pub/programs/alien/CHANGES
+	echo -n $(VERSION) > /home/pub/programs/alien/LATEST-VERSION-IS
+	rm /home/ftp/pub/code/alien/* || true
+	cd /home/ftp/pub/code/alien; \
+		ln -sf ../debian/alien_$(VERSION).tar.gz alien_$(VERSION).tar.gz; \
+		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
