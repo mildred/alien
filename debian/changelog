@@ -1,3 +1,11 @@
+alien (8.34) unstable; urgency=low
+
+UNRE
+  * Fixed changelog parsing regexp. Noticed by Gerald Turner who is sure
+    turning up in this changelog a lot.
+
+ -- Joey Hess <joeyh@debian.org>  Mon,  7 Jul 2003 19:23:33 -0400
+
 alien (8.33) unstable; urgency=low
 
   * Added a new j2sdk patch that does not rename the package.

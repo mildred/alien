@@ -312,7 +312,7 @@ sub prep {
 		# release or version. Parse changelog to detect that.
 		open (my $changelog, "<$dir/debian/changelog") || return;
 		my $line=<$changelog>;
-		if ($line=~/^[^ ]+\(([^)])\)\s/) {
+		if ($line=~/^[^ ]+\s+\(([^)]+)\)\s/) {
 			my $version=$1;
 			if ($version=~/(.*)-(.*)/) {
 				$version=$1;
