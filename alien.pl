@@ -312,6 +312,10 @@ EOF
 my (%destformats, $generate, $install, $single, $scripts, $patchfile,
     $nopatch, $tgzdescription, $keepversion, $fixperms, $test);
 
+# Bundling is nice anyway, and it is required or Getopt::Long will confuse
+# -T and -t.
+Getopt::Long::Configure("bundling");
+
 GetOptions(
 	"to-deb|d", sub { $destformats{deb}=1 },
 	"to-rpm|r", sub { $destformats{rpm}=1 },
