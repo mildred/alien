@@ -722,7 +722,7 @@ sub postinst {
 	return $postinst unless ref $owninfo;
 
 	# If there is no postinst, let's make one up..
-	$postinst="#!/bin/sh\n" unless defined $postinst;
+	$postinst="#!/bin/sh\n" unless length $postinst;
 	
 	my ($firstline, $rest)=split(/\n/, $postinst, 2);
 	if ($firstline !~ m/^#!\s*\/bin\/sh/) {

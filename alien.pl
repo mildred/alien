@@ -450,7 +450,7 @@ foreach my $file (@ARGV) {
 		$package->release($package->release + 1);
 		$^W=1; # Re-enable warnings.
 	}
-
+	
 	foreach my $format (keys %destformats) {
 		# Skip conversion if package is already the correct format.
 		if ($package->origformat ne $format) {

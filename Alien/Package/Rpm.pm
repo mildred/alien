@@ -217,7 +217,7 @@ sub unpack {
 			$gid=0;
 		}
 		if (defined($owninfo{$file}) && ($mode & 07000 > 0)) {
-			$modeinfo{$file} = $mode;
+			$modeinfo{$file} = sprintf "%lo", $mode;
 		}
 		next unless -e "$workdir/$file"; # skip broken links
 		if ($> == 0) {
