@@ -202,12 +202,12 @@ sub unpack {
 		my ($mode, $owner, $group, $file) = split(/ /, $_, 4);
 		$mode = $mode & 07777; # remove filetype
 		my $uid = getpwnam($owner);
-		if (! defined $uid || $> != 0) {
+		if (! defined $uid || $uid != 0) {
 			$owninfo{$file}=$owner;
 			$uid=0;
 		}
 		my $gid = getgrnam($group);
-		if (! defined $gid || $> != 0) {
+		if (! defined $gid || $gid != 0) {
 			if (exists $owninfo{$file}) {
 				$owninfo{$file}.=":$group";
 			}
