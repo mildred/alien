@@ -1,3 +1,10 @@
+alien (7.17) unstable; urgency=low
+
+  * Munge in #!/bin/sh entries at the top of rpm maintainer 
+    scripts that appear to be shell scripts. Closes: #76124
+
+ -- Joey Hess <joeyh@debian.org>  Wed,  7 Feb 2001 18:58:56 -0800
+
 alien (7.16) unstable; urgency=low
 
   * Updated motif patches again.

@@ -395,6 +395,11 @@ debian/slackware scripts can be anything -- perl programs or binary files
 -- and rpm is limited to only shell scripts, we need to encode the files
 and add a scrap of shell script to make it unextract and run on the fly.
 
+When setting a value, we do some mangling too. Rpm maitainer scripts
+are typically shell scripts, but often lack the leading #!/bin/sh
+This can confuse dpkg, so add the #!/bin/sh if it looks like there
+is no shebang magic already in place.
+
 =cut
 
 # This helper function deals with all the scripts.
@@ -403,6 +408,13 @@ sub _script_helper {
 	my $script=shift;
 
 	# set
+	if (@_) {
+		my $value=shift;
+		if (length $value and $value !~ m/#!\s*\//) {
+			$value="#!/bin/sh\n$value";
+		}
+		$this->{$script} = $value;
+	}
 	$this->{$script} = shift if @_;
 
 	# get
@@ -410,9 +422,11 @@ sub _script_helper {
 	$_=$this->{$script};
 	return '' unless defined $_;
 	return $_ if m/^\s*$/;
+	return $_ if m/#!\s*\/bin\/sh/; # looks like a shell script already
 	my $f = pack("u",$_);
 	$f =~ s/%/%%/g; # Rpm expands %S, so escape such things.
-	return "set -e\n".
+	return "#!/bin/sh\n".
+	       "set -e\n".
 	       "mkdir /tmp/alien.\$\$\n".
 	       qq{perl -pe '\$_=unpack("u",\$_)' << '__EOF__' > /tmp/alien.\$\$/script\n}.
 	       $f."__EOF__\n".
