@@ -1,6 +1,6 @@
 Source: alien
 Section: admin
-Priority: extra
+Priority: optional
 Build-Depends-Indep: debhelper
 Maintainer: Joey Hess <joeyh@debian.org>
 Standards-Version: 3.1.1.1

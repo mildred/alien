@@ -1,3 +1,10 @@
+alien (6.57) unstable; urgency=low
+
+  * Corrected priority in control file to optional; ftp admins, please take
+    note! This pakage has never belonged in extra..
+
+ -- Joey Hess <joeyh@debian.org>  Sat, 11 Mar 2000 04:08:05 -0800
+
 alien (6.56) unstable; urgency=low
 
   * Corrected a problem triggered by wordperfect's deb: rpm can't deal with
