@@ -43,13 +43,13 @@ sub install {
 		die "Unable to install: $!";
 }
 
-=item read_file
+=item scan
 
-Implement the read_file method to read a rpm file.
+Implement the scan method to read a rpm file.
 
 =cut
 
-sub read_file {
+sub scan {
 	my $this=shift;
 	$this->SUPER::read_file(@_);
 	my $file=$this->filename;
