@@ -2,3 +2,5 @@
 * alien needs to handle relocatable conffiles, partially relocatable
   packages, and packages that have maultiple parts that relocate
   differently.
+* rpm ghost file support. On conversion, make preinst move file out of the
+  way, postinst put it back. Thus emulating the behavior of rpm.

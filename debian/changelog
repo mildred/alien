@@ -1,3 +1,11 @@
+alien (8.26) unstable; urgency=low
+
+  * alien.spec: pass PREFIX to Makefile.PL so it works on systems 
+    (such as red hat 8) where the generated Makefile does not use
+    $PREFIX in all paths.
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 29 Apr 2003 23:12:32 -0400
+
 alien (8.25) unstable; urgency=low
 
   * Support rpms that contain no files. Closes: #184714

@@ -23,15 +23,9 @@ This is a tool only suitable for binary packages.
 rm -rf /tmp/alien-@version@.build
 
 %install
-perl Makefile.PL
+perl Makefile.PL PREFIX=$RPM_BUILD_ROOT/usr
 make
-make pure_install INSTALLDIRS=perl \
-	PREFIX=$RPM_BUILD_ROOT/`perl -e 'use Config;print $Config{prefix}'` \
-	INSTALLMAN1DIR=$RPM_BUILD_ROOT/usr/man/man1 \
-	INSTALLMAN3DIR=$RPM_BUILD_ROOT/usr/man/man3 \
-	INSTALLARCHLIB=$RPM_BUILD_ROOT/killme \
-	VARPREFIX=$RPM_BUILD_ROOT
-rm -rf $RPM_BUILD_ROOT/killme
+make pure_install VARPREFIX=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" | \
 	sed '/\/man\//s/$/\*/' > manifest
 
