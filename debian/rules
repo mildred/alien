@@ -47,7 +47,7 @@ installhook:
 	cp debian/changelog $(DIR)/CHANGES
 	echo -n $(VERSION) > $(DIR)/LATEST-VERSION-IS
 	rm -f $(DIR)/*.tar.gz
-	ln -sf /home/joey/debian/unstable/alien_$(VERSION).tar.gz $(DIR)
+	ln -sf /home/joey/lib/debian/unstable/alien_$(VERSION).tar.gz $(DIR)
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
