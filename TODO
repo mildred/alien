@@ -1,5 +1,1 @@
 * handling postinst script when converting to/from .slp packages.
-* alien needs to be reorganized somewhat, so it doesn't use any global
-  variables. The lib/ files are mostly ok, but should probably be regular OO
-  modules, and should be installed where regular perl modules are. Make it
-  -w safe, too.
