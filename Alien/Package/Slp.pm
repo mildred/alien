@@ -164,15 +164,19 @@ sub scan {
 	my @filelist;
 	# FIXME: support gzip files too!
 	foreach (`bzip2 -d < $file | tar -tf -`) {
+		chomp;
 		s:^\./:/:;
 		$_="/$_" unless m:^/:;
 		push @filelist, $_;
 	}
+	$this->filelist(\@filelist);
 
 	# TODO: read in postinst script.
 
 	$this->distribution('Stampede');
 	$this->origformat('slp');
+	$this->changelogtext('');
+	$this->binary_info(`ls -l $file`);
 	
 	return 1;
 }
@@ -191,12 +195,10 @@ sub unpack {
 	my $compresstype=$this->compresstype;
 
 	if ($compresstype == 0) {
-		system("bzip2 -d $file | (cd ".$this->unpacked_tree."; tar xpf -") &&
-			die "unpack failed";
+		system("bzip2 -d < $file | (cd ".$this->unpacked_tree."; tar xpf -)")
 	}
 	elsif ($compresstype == 1) {
-		system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -") &&
-			die "unpack failed";
+		system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)")
 	}
 	else {
 		die "package uses an unknown compression type, $compresstype (please file a bug report)";

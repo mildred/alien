@@ -285,7 +285,7 @@ sub prep {
 	print OUT "Depends: \${shlibs:Depends}\n";
 	print OUT "Description: ".$this->summary."\n";
 	print OUT $this->description."\n";
-	print OUT ".\n";
+	print OUT " .\n";
 	print OUT " (Converted from a .".$this->origformat." package by alien.)\n";
 	close OUT;
 
@@ -378,7 +378,7 @@ sub build {
 	my $this=shift;
 
 	chdir $this->unpacked_tree;
-	system("debian/rules binary") && die "package build failed: $!";
+	system("debian/rules binary >/dev/null") && die "package build failed: $!";
 	chdir "..";
 
 	return $this->name."_".$this->version."-".$this->release."_".$this->arch.".deb";

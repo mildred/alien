@@ -138,7 +138,7 @@ sub unpack {
 	my $workdir=$this->unpacked_tree;
 
 	system ("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null") &&
-		die "Unpacking of `".$this->filename."' failed: $!";
+		die "Unpacking of `".$this->filename."' failed";
 	
 	# If the package is relocatable. We'd like to move it to be under
 	# the $this->prefixes directory. However, it's possible that that
@@ -215,8 +215,7 @@ sub prep {
 	my $filelist;
 	foreach my $fn (@{$this->filelist}) {
 		if ($fn =~ m:/$:) {
-			# a directory.
-			$filelist.="%dir \"$fn\"\n";
+			# a directory. Skip entirely.
 		}
 		elsif (grep(m:^\Q$fn\E$:,@conffiles)) { # it's a conffile
 			$filelist.="%config $fn\n";
@@ -323,7 +322,7 @@ sub build {
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};	
 
 	system("cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null") &&
-		die "package build failed: $!";
+		die "package build failed";
 
 	return $rpm;
 }
@@ -391,19 +390,19 @@ sub _script_helper {
 }
 sub postinst {
 	my $this=shift;
-	$this->_script_helper($this, 'postinst', @_);
+	$this->_script_helper('postinst', @_);
 }
 sub postrm {
 	my $this=shift;
-	$this->_script_helper($this, 'postrm', @_);
+	$this->_script_helper('postrm', @_);
 }
 sub preinst {
 	my $this=shift;
-	$this->_script_helper($this, 'preinst', @_);
+	$this->_script_helper('preinst', @_);
 }
 sub prerm {
 	my $this=shift;
-	$this->_script_helper($this, 'prerm', @_);
+	$this->_script_helper('prerm', @_);
 }
 
 =item arch

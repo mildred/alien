@@ -114,6 +114,8 @@ sub scan {
 	$this->release(1);
 	$this->distribution("Slackware");
 	$this->origformat('tgz');
+	$this->changelogtext('');
+	$this->binary_info(`ls -l $file`);
 
 	# Now figure out the conffiles. Assume anything in etc/ is a
 	# conffile.

@@ -263,7 +263,7 @@ GetOptions(
 	"to-slp",   sub { $destformats{slp}=1 },
 	"generate|g", \$generate,
 	"install|i", \$install,
-	"single|s", sub { $single=1; $generate =1 },
+	"single|s", sub { $single=1; $generate=1 },
 	"scripts|c", \$scripts,
 	"patch|p=s", \$patchfile,
 	"nopatch", \$nopatch,
@@ -348,7 +348,28 @@ foreach my $file (@ARGV) {
 			# Mutate package into desired format.
 			bless($package, "Alien::Package::".ucfirst($format));
 		
+			if ($format eq 'deb' && ! $single && $generate) {
+				# Make .orig.tar.gz directory.
+				system("cp -fa ".$package->unpacked_tree." ".$package->unpacked_tree.".orig") &&
+					die "cp -fa failed";
+			}
+		
 			$package->prep;
+			
+			# If generating build tree only, stop here with message.
+			if ($generate) {
+				if ($format eq 'deb' && ! $single) {
+					print "Directories ".$package->unpacked_tree." and ".$package->unpacked_tree.".orig prepared.\n"
+				}
+				else {
+					print "Directory ".$package->unpacked_tree." prepared.\n";
+				}
+				# Make sure $package does not whipe out the
+				# directory when it is destroyed.
+				$package->unpacked_tree('');
+				exit;
+			}
+			
 			my $newfile=$package->build;
 			if ($install) {
 				$package->install($newfile);
@@ -364,9 +385,6 @@ foreach my $file (@ARGV) {
 			$package->install($file);
 			# Note I don't unlink it. I figure that might annoy
 			# people, since it was an input file.
-		}
-		else {
-			print "$file already exists\n";
 		}
 	}
 }
