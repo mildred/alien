@@ -359,12 +359,23 @@ foreach my $file (@ARGV) {
 			# Mutate package into desired format.
 			bless($package, "Alien::Package::".ucfirst($format));
 		
+			# Make .orig.tar.gz directory?
 			if ($format eq 'deb' && ! $single && $generate) {
 				# Make .orig.tar.gz directory.
 				system("cp -fa ".$package->unpacked_tree." ".$package->unpacked_tree.".orig") &&
 					die "cp -fa failed";
 			}
-		
+	
+			# See if a patch file should be used.
+			if ($format eq 'deb' && ! $nopatch) {
+				if (defined $patchfile) {
+					$package->patchfile($patchfile)
+				}
+				else {
+					$package->patchfile($package->getpatch);
+				}
+			}
+	
 			$package->prep;
 			
 			# If generating build tree only, stop here with message.
