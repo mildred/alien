@@ -1,12 +1,3 @@
-This is a package originally written by Christoph Lameter 
-<clameter@debian.org>.
+apt-src was written by Joey Hess <joeyh@debian.org>.
 
-Deb to rpm conversion code was taken from the Martian program by 
-Randolph Chung <rc42@cornell.edu>.
-
-The Solaris pkg code was written by Mark A. Hershberger
-<mah@everybody.org>.
-
-This package is now maintained by Joey Hess <joeyh@debian.org>.
-
-Copyright: Most recent version of the GPL.
+Copyright: GPL 2 or above
