@@ -135,6 +135,12 @@ Specify the patch to be used instead of automatically looking the patch up
 in B</var/lib/alien>. This has no effect unless a debian package is being
 built.
 
+=item B<--anypatch>
+
+Be less strict about which patch file is used, perhaps attempting to use a patch
+file for an older verson of the package. This is not guaranteed to always work;
+older patches may necessarily not work with newer packages.
+
 =item B<--nopatch>
 
 Do not use any patch files.
@@ -286,6 +292,7 @@ Usage: alien [options] file [...]
        --patch=<patch>      Specify patch file to use instead of automatically
                             looking for patch in /var/lib/alien.
        --nopatch	    Do not use patches.
+       --anypatch           Use even old version os patches.
        --single             Like --generate, but do not create .orig
                             directory.
        --fixperms           Munge/fix permissions and owners.
@@ -310,7 +317,7 @@ EOF
 
 # Start by processing the parameters.
 my (%destformats, $generate, $install, $single, $scripts, $patchfile,
-    $nopatch, $tgzdescription, $keepversion, $fixperms, $test);
+    $nopatch, $tgzdescription, $keepversion, $fixperms, $test, $anypatch);
 
 # Bundling is nice anyway, and it is required or Getopt::Long will confuse
 # -T and -t.
@@ -328,8 +335,9 @@ GetOptions(
 	"install|i", \$install,
 	"single|s", sub { $single=1; $generate=1 },
 	"scripts|c", \$scripts,
-	"patch|p=s", \$patchfile,
+	"patch=s", \$patchfile,
 	"nopatch", \$nopatch,
+	"anypatch", \$anypatch,
 	"description=s", \$tgzdescription,
 	"keep-version|k", \$keepversion,
 	"fixperms", \$fixperms,
@@ -441,7 +449,7 @@ foreach my $file (@ARGV) {
 					$package->patchfile($patchfile)
 				}
 				else {
-					$package->patchfile($package->getpatch(patchdirs()));
+					$package->patchfile($package->getpatch($anypatch, patchdirs()));
 				}
 			}
 

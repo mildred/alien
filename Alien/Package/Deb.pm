@@ -258,12 +258,13 @@ patches in.
 
 sub getpatch {
 	my $this=shift;
-
+	my $anypatch=shift;
+	
 	my @patches;
 	foreach my $dir (@_) {
 		push @patches, glob("$dir/".$this->name."_".$this->version."-".$this->release."*.diff.gz");
 	}
-	unless (@patches) {
+	if (! @patches && $anypatch) {
 		# Try not matching the revision, see if that helps.
 		foreach my $dir (@_) {
 			push @patches,glob("$dir/".$this->name."_".$this->version."*.diff.gz");
