@@ -195,8 +195,9 @@ sub unpack {
 				print STDERR "WARNING: $file is owned by a group ($group) not on this system; using group root instead";
 				$gid=0;
 			}
-			chown($uid, $gid, $file) || die "failed chowning $file to $uid\:$gid\: $!";
-			chmod($mode, $file) || die "failed changing mode of $file to $mode\: $!";
+			next unless -e "$workdir/$file"; # skip broken links
+			chown($uid, $gid, "$workdir/$file") || die "failed chowning $file to $uid\:$gid\: $!";
+			chmod($mode, "$workdir/$file") || die "failed changing mode of $file to $mode\: $!";
 		}
 	}
 
