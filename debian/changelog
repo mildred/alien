@@ -1,3 +1,9 @@
+alien (8.07) unstable; urgency=low
+
+  * Added --test parameter, Closes: #145520
+
+ -- Joey Hess <joeyh@debian.org>  Thu,  2 May 2002 20:03:21 -0400
+
 alien (8.06) unstable; urgency=low
 
   * Added --fixperms option. Closes: #142850 

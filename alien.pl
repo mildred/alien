@@ -154,6 +154,12 @@ and check to see what they do before using this option.
 
 This is enabled by default when converting from lsb packages.
 
+=item B<-T>, B<--test>
+
+Test the generated packages. Currently this is only supported for debian
+packages, which, if lintian is installed, will be tested with lintian and
+lintian's output displayed.
+
 =item B<-k>, B<--keep-version>
 
 By default, alien adds one to the minor version number of each package it
@@ -283,6 +289,7 @@ Usage: alien [options] file [...]
        --single             Like --generate, but do not create .orig
                             directory.
        --fixperms           Munge/fix permissions and owners.
+       --test               Test generated packages with lintian.
   -r, --to-rpm              Generate a RedHat rpm package.
       --to-slp              Generate a Stampede slp package.
   -l, --to-lsb              Generate a LSB package.
@@ -303,7 +310,7 @@ EOF
 
 # Start by processing the parameters.
 my (%destformats, $generate, $install, $single, $scripts, $patchfile,
-    $nopatch, $tgzdescription, $keepversion, $fixperms);
+    $nopatch, $tgzdescription, $keepversion, $fixperms, $test);
 
 GetOptions(
 	"to-deb|d", sub { $destformats{deb}=1 },
@@ -312,6 +319,7 @@ GetOptions(
 	"to-tgz|t", sub { $destformats{tgz}=1 },
 	"to-slp",   sub { $destformats{slp}=1 },
 	"to-pkg|p", sub { $destformats{pkg}=1 },
+	"test|T", \$test,
 	"generate|g", \$generate,
 	"install|i", \$install,
 	"single|s", sub { $single=1; $generate=1 },
@@ -452,6 +460,13 @@ foreach my $file (@ARGV) {
 			}
 			
 			my $newfile=$package->build;
+			if ($test) {
+				my @results = $package->test($newfile);
+				if (@results) {
+					print "Test results:\n";
+					print "\t$_\n" foreach @results;
+				}
+			}
 			if ($install) {
 				$package->install($newfile);
 				unlink $newfile;

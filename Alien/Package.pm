@@ -177,13 +177,25 @@ sub checkfile {
 
 =item install
 
-Simply installs a package file. The filename is passed on standard input.
+Simply installs a package file. The filename is passed.
 This has to be overridden in child classes.
 
 =cut
 
 sub install {
 	my $this=shift;
+}
+
+=item test
+
+Test a package file. The filename is passed, should return an array of lines
+of test results. Child classses may implement this.
+
+=cut
+
+sub test {
+	my $this=shift;
+	return;
 }
 
 =item filename

@@ -45,17 +45,23 @@ if it is available since it is a lot more future-proof.
 
 =cut
 
+sub _inpath {
+	my $this=shift;
+	my $program=shift;
+
+	foreach (split(/:/,$ENV{PATH})) {
+		if (-x "$_/$program") {
+			return 1;
+		}
+	}
+	return '';
+}
+
 sub init {
 	my $this=shift;
 	$this->SUPER::init(@_);
 
-	$this->have_dpkg_deb('');
-	foreach (split(/:/,$ENV{PATH})) {
-		if (-x "$_/dpkg-deb") {
-			$this->have_dpkg_deb(1);
-			last;
-		}
-	}
+	$this->have_dpkg_deb($this->_inpath('dpkg-deb'));
 }
 
 =item checkfile
@@ -83,6 +89,29 @@ sub install {
 
 	system("dpkg", "--no-force-overwrite", "-i", $deb) == 0
 		or die "Unable to install";
+}
+
+=item test
+
+Test a deb with lintian. Pass in the filename of the deb to test.
+
+=cut
+
+sub test {
+	my $this=shift;
+	my $deb=shift;
+
+	if ($this->_inpath("lintian")) {
+		# Ignore some lintian warnings that don't matter for
+		# aliened packages.
+		return map { s/\n//; $_ }
+		       grep {
+		       		! /unknown-section alien/
+		       } `lintian $deb`;
+	}
+	else {
+		return "lintian not available, so not testing";
+	}
 }
 
 =item getcontrolfile
