@@ -1,3 +1,9 @@
+alien (7.10) unstable; urgency=low
+
+  * Use dh_perl for automatic, correct perl dependancies, Closes: #77669
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 21 Nov 2000 15:52:08 -0800
+
 alien (7.9) unstable; urgency=low
 
   * Whoops, alien was still trying to use /usr/lib/alien/pactches,

@@ -8,7 +8,7 @@ Standards-Version: 3.2.1.0
 Package: alien
 Architecture: all
 Section: admin
-Depends: debhelper (>= 2.1.0), perl5 | perl (>= 5.004), rpm (>= 2.4.4-2), dpkg-dev, make, cpio
+Depends: debhelper (>= 2.1.0), ${perl:Depends}, rpm (>= 2.4.4-2), dpkg-dev, make, cpio
 Suggests: patch, bzip2
 Description: Install Red Hat, Stampede, and Slackware Packages with dpkg.
  Alien allows you to convert Red Hat, Stampede and Slackware Packages into
