@@ -1,3 +1,9 @@
+alien (8.05) unstable; urgency=low
+
+  * Support rpms with a description consisting of just blank lines.
+
+ -- Joey Hess <joey@kitenet.net>  Mon,  1 Apr 2002 13:36:45 -0500
+
 alien (8.04) unstable; urgency=low
 
   * Fixed an unfortunate typo in Rpm.pm, Closes: #140742

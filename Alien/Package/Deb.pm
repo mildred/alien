@@ -307,8 +307,6 @@ sub prep {
 	}
 	print OUT "Description: ".$this->summary."\n";
 	print OUT $this->description."\n";
-	print OUT " .\n";
-	print OUT " (Converted from a ".$this->origformat." package by alien.)\n";
 	close OUT;
 
 	# Copyright file.
@@ -585,7 +583,9 @@ sub description {
 		$_="." if $_ eq ''; # empty lines become dots
 		$ret.=" $_\n";
 	}
-	chomp $ret;
+	$ret=~s/^\n+//g; # kill leading blank lines
+	$ret.=" .\n" if length $ret;
+	$ret.=" (Converted from a ".$this->origformat." package by alien.)";
 	return $ret;
 }
 
