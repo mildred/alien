@@ -1,3 +1,12 @@
+alien (7.3) unstable; urgency=low
+
+  * Changed all invocations of programs to be in posix-complient form. Ie,
+    no options after args, so people who set POSIX_ME_HARDER can still use
+    alien.
+  * Bahave better if there is no /etc/mailname.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 22 May 2000 16:04:07 -0700
+
 alien (7.2) unstable; urgency=low
 
   * When reloating files from a rpm, run the mv command directly, 

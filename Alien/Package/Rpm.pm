@@ -82,7 +82,7 @@ sub scan {
 
 	# Use --queryformat to pull out all the fields we need.
 	foreach my $field (keys(%fieldtrans)) {
-		$_=`LANG=C rpm -qp $file --queryformat \%{$field}`;
+		$_=`LANG=C rpm -qp --queryformat \%{$field} $file`;
 		$field=$fieldtrans{$field};
 		$_='' if $_ eq '(none)';
 		$this->$field($_);

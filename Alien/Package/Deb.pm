@@ -545,10 +545,12 @@ sub email {
 	return $ENV{EMAIL} if exists $ENV{EMAIL};
 
 	my $login = getlogin || (getpwuid($<))[0] || $ENV{USER};
-	open (MAILNAME,"</etc/mailname");
-	my $mailname=<MAILNAME>;
-	chomp $mailname;
-	close MAILNAME;
+	myt $mailname='';
+	if (open (MAILNAME,"</etc/mailname")) {
+		$mailname=<MAILNAME>;
+		chomp $mailname;
+		close MAILNAME;
+	}
 	if (!$mailname) {
 		$mailname=`hostname -f`;
 		chomp $mailname;
