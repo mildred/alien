@@ -237,6 +237,10 @@ sub unpack {
 	my $workdir = $this->name."-".$this->version;
 	mkdir $workdir, 0755 ||
 		die "unable to mkdir $workdir: $!";
+	# If the parent directory is suid/sgid, mkdir will make the root
+	# directory of the package inherit those bits. That is a bad thing,
+	# so explicitly force perms to 755.
+	chmod 0755, $workdir;
 	$this->unpacked_tree($workdir);
 }
 

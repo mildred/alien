@@ -213,7 +213,7 @@ sub getpatch {
 
 	my @patches;
 	foreach my $dir (@_) {
-		push @patches,glob("$dir/".$this->name."_".$this->version."-".$this->revision."*.diff.gz");
+		push @patches, glob("$dir/".$this->name."_".$this->version."-".$this->release."*.diff.gz");
 	}
 	unless (@patches) {
 		# Try not matching the revision, see if that helps.

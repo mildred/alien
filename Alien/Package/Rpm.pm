@@ -84,7 +84,8 @@ sub scan {
 	foreach my $field (keys(%fieldtrans)) {
 		$_=`LANG=C rpm -qp $file --queryformat \%{$field}`;
 		$field=$fieldtrans{$field};
-		$this->$field($_) if $_ ne '(none)';
+		$_='' if $_ eq '(none)';
+		$this->$field($_);
 	}
 
 	# Get the conffiles list.
@@ -136,7 +137,7 @@ sub unpack {
 	my $this=shift;
 	$this->SUPER::unpack(@_);
 	my $workdir=$this->unpacked_tree;
-
+	
 	system ("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null") &&
 		die "Unpacking of `".$this->filename."' failed";
 	
@@ -153,31 +154,32 @@ sub unpack {
 	# Test to see if the package contains the prefix directory already.
 	if (defined $this->prefixes && ! -e "$workdir/".$this->prefixes) {
 		# Get the files to move.
-		my $filelist=join ' ',glob("$workdir/*");
+		my @filelist=glob("$workdir/*");
 
 		# Now, make the destination directory.
 		my $collect=$workdir;
 		foreach (split m:/:, $this->prefixes) {
-			if ($_ ne undef) { # this keeps us from using anything but relative paths.
+			if ($_ ne '') { # this keeps us from using anything but relative paths.
 				$collect.="$_/";
 				mkdir $collect,0755 || die "unable to mkdir $collect: $!";
 			}
 		}
 		# Now move all files in the package to the directory we made.
-		system "mv $filelist $workdir/".$this->prefixes &&
+		system "mv", @filelist, "$workdir/".$this->prefixes &&
 			die "error moving unpacked files into the default prefix directory: $!";
 	}
 
 	# When cpio extracts the file, any child directories that are
 	# present, but whose parent directories are not, end up mode 700.
-	# This next block correctsthat to 755, which is more reasonable.
+	# This next block corrects that to 755, which is more reasonable.
 	#
 	# Of course, this whole thing assumes we get the filelist in sorted
 	# order.
 	my $lastdir='';
+	my %tochmod;
 	foreach my $file (@{$this->filelist}) {
 		$file=~s/^\///;
-		if (($lastdir && $file=~m:^\Q$lastdir\E/[^/]*$: eq undef) || !$lastdir) {
+		if (($lastdir && $file !~ m:^\Q$lastdir\E/[^/]*$:) || !$lastdir) {
 			# We've found one of the nasty directories. Fix it
 			# up.
 			#
@@ -191,11 +193,13 @@ sub unpack {
 			my $dircollect='';
 			foreach my $dir (split(/\//,$file)) {
 				$dircollect.="$dir/";
-				chmod 0755,$dircollect; # TADA!
+				# Use a hash to prevent duplicate chmods.
+				$tochmod{"$workdir/$dircollect"}=1;
 			}
 		}
 		$lastdir=$file if -d "./$file";
 	}
+	chmod 0755, keys %tochmod if %tochmod;
 
 	return 1;
 }

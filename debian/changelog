@@ -1,3 +1,22 @@
+alien (7.2) unstable; urgency=low
+
+  * When reloating files from a rpm, run the mv command directly, 
+    not in a subshell; this is safer especially if odd filenames are
+    involved.
+  * When converting from rpm, only chmod each directory once, it was doing
+    it many times for some directories before.
+  * Fixed chmodding to use the correct path to the directory. This fixes
+    file permissions in rpm's converted to other formats, a bug introduced
+    at 7.0.
+  * Fixed some undefined value warnings (which pointed out real but rare
+    bugs).
+  * Fixed a rare, but bad little bug. If you ran alien in a directory that
+    had the suid/sgid bit set (as my home directory does), and generated
+    debs and probably other formats, it generated packages with the root
+    directory suid/sgid.
+
+ -- Joey Hess <joeyh@debian.org>  Tue,  9 May 2000 14:13:15 -0700
+
 alien (7.1) unstable; urgency=low
 
   * Corrected checking of system() in Deb::prep. Closes: #63396
