@@ -299,8 +299,7 @@ if ($> ne 0) {
 		die "Must run as root to convert to .deb format (or you may use fakeroot).\n";
 	}
 	print STDERR "Warning: alien is not running as root!\n";
-	print STDERR "Ownerships of files in the generated packages will\n";
-	print STDERR "probably be messed up.\n";
+	print STDERR "Ownerships of files in the generated packages will probably be messed up.\n";
 }
 
 foreach my $file (@ARGV) {
@@ -318,7 +317,7 @@ foreach my $file (@ARGV) {
 	}
 	elsif (Alien::Package::Tgz->checkfile($file)) {
 		$package=Alien::Package::Tgz->new(filename => $file);
-		$package->description($tgzdescription) if $tgzdescription ne '';
+		$package->description($tgzdescription) if defined $tgzdescription;
 	}
 	elsif (Alien::Package::Slp->checkfile($file)) {
 		$package=Alien::Package::Slp->new(filename => $file);
@@ -328,16 +327,16 @@ foreach my $file (@ARGV) {
 	}
 
 	# Kill scripts from the package, unless they were enabled.
-	unless ($scripts) {
+	unless (defined $scripts) {
 		$package->postinst('');
 		$package->postrm('');
 		$package->preinst('');
 		$package->prerm('');
 	}
 
-	# Increment revision.
-	unless ($keepversion) {
-		$package->revision($package->revision + 1);
+	# Increment release.
+	unless (defined $keepversion) {
+		$package->release($package->release + 1);
 	}
 
 	foreach my $format (keys %destformats) {

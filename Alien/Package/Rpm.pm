@@ -52,8 +52,8 @@ sub install {
 	my $this=shift;
 	my $rpm=shift;
 
-	system("rpm -ivh $ENV{RPMINSTALLOPT} $rpm") &&
-		die "Unable to install: $!";
+	system("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm) &&
+		die "Unable to install";
 }
 
 =item scan
@@ -259,7 +259,7 @@ sub prep {
 	print OUT "\%description\n";
 	print OUT $this->description."\n";
 	print OUT "\n";
-	print OUT " (Converted from a .".$this->origformat." package by alien.)\n";
+	print OUT "(Converted from a .".$this->origformat." package by alien.)\n";
 	print OUT "\n";
 	print OUT "%files\n";
 	print OUT $filelist;
@@ -298,14 +298,14 @@ sub build {
 	$rpmarch='noarch' if $this->arch eq 'all';
 
 	my $rpm=$this->name."-".$this->version."-".$this->release.".$rpmarch.rpm";
-	my $buildarch;
+	my $opts='';
 	if ($rpmdir) {
 		# Old versions of rpm toss it off in the middle of nowhere.
 		$rpm="$rpmdir/$rpmarch/$rpm";
 
 		# This is the old command line argument to make noarch
 		# rpms.
-		$buildarch="--buildarch noarch" if $rpmarch eq 'noarch';
+		$opts="--buildarch noarch" if $rpmarch eq 'noarch';
 	}
 	else {
 		# Presumably we're delaing with rpm 3.0 or above, which
@@ -317,10 +317,12 @@ sub build {
 		
 		# This is the new command line arcgument to make noarch
 		# rpms. It appeared in rpm version 3.
-		$buildarch="--target noarch" if $rpmarch eq 'noarch';
+		$opts="--target noarch" if $rpmarch eq 'noarch';
 	}
 
-	system("cd $dir; rpm $buildarch -bb $ENV{RPMBUILDOPT} ".$this->name."-".$this->version."-".$this->release.".spec") &&
+	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};	
+
+	system("cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null") &&
 		die "package build failed: $!";
 
 	return $rpm;

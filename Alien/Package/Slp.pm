@@ -115,7 +115,7 @@ sub install {
 	my $this=shift;
 	my $slp=shift;
 
-	system("slpi $slp") && die "Unable to install: $!";
+	system("slpi $slp") && die "Unable to install";
 }
 
 =item getfooter

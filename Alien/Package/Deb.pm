@@ -74,7 +74,7 @@ sub install {
 	my $deb=shift;
 
 	system("dpkg --no-force-overwrite -i $deb") &&
-		die "Unable to install: $!";
+		die "Unable to install";
 }
 
 =item scan

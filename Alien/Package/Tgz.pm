@@ -28,7 +28,7 @@ tgz's.
 =cut
 
 use constant 
-	scriptrans => {
+	scripttrans => {
 		postinst => 'doinst.sh',
 		postrm => 'delete.sh',
 		prerm => 'predelete.sh',
@@ -73,7 +73,7 @@ sub install {
 
 	if (-x "/sbin/installpkg") {
 		system("/sbin/installpkg $tgz") &&
-			die "Unable to install: $!";
+			die "Unable to install";
 	}
 	else {
 		die "Sorry, I cannot install the generated .tgz file because /sbin/installpkg is not present. You can use tar to install it yourself.\n"
@@ -183,18 +183,18 @@ sub prep {
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
 	my $install_made=0;
-	foreach my $script (keys %{scriptrans()}) {
+	foreach my $script (keys %{scripttrans()}) {
 		my $data=$this->$script();
+		my $out=$this->unpacked_tree."/install/".${scripttrans()}{$script};
 		next if ! defined $data || $data =~ m/^\s*$/;
 		if (!$install_made) {
 			mkdir $this->unpacked_tree."/install", 0755;
 			$install_made=1;
 		}
-		open (OUT, ">".$this->unpacked_tree."/install/$script") ||
-			die $this->unpacked_tree."/install/$script: $!";
+		open (OUT, ">$out") || die "$out: $!";
 		print OUT $data;
 		close OUT;
-		chmod 0755, $this->unpacked_tree."/install/$script";
+		chmod 0755, $out;
 	}
 }
 
@@ -208,7 +208,8 @@ sub build {
 	my $this=shift;
 	my $tgz=$this->name."-".$this->version.".tgz";
 
-	system("cd ".$this->unpacked_tree."; tar czf ../$tgz");
+	system("cd ".$this->unpacked_tree."; tar czf ../$tgz .") &&
+		die "Package build failed";
 
 	return $tgz;
 }
