@@ -1,0 +1,43 @@
+Alien is a program that converts rpm, dpkg, or slackware tgz packages into
+rpm or dpkg packages. If you're using Debian or Red Hat and you want to
+install a package from one of the other distributions, you can use alien to
+convert it to your preferred package format and install it.
+
+Despite the high version number, alien is still (and will probably always
+be) rather experimental software. It has been used and tested by Debian
+users for many months, but there are still many limitations. For one thing, 
+Alien only handles binary packages, not source packages. It also doesn't try
+to convert the scripts that should be run when the package installs.
+
+Alien should not be used to replace important system packages, like sysvinit, 
+shared libraries, or other things that are essential for the functioning of 
+your system. Many of these packages are set up differently by Debian and 
+Red Hat, and packages from the different distributions cannot be used 
+interchangably. In general, if you can't uninstall the package without 
+breaking your system, don't try to replace it with an alien version.
+
+Alien has successfully been used for converting add on software, such as
+Applixware, Metro X, and many other packages.
+
+Getting alien:
+
+Alien will be available on Sunsite, but it hasn't moved out of Incoming yet. 
+For now, you can get it at the alien home page:
+	http://kite.ml.org/programs/alien/
+
+You can also get rpm or deb packages of alien:
+deb: ftp://master.debian.org/debian/unstable/binary-all/admin/alien_5.0.deb
+rpm: ftp://ftp.redhat.com/pub/contrib/RPMS/alien-5.0-1.i386.rpm
+
+Other things you'll need:
+
+To use alien, you will need several other programs. Alien is a perl program,
+and requires perl version 5 or greater. You must also have the Getopt::Long
+perl module installed on your system. I believe this is a standard part of
+perl.
+
+To convert packages to or from rpms, you need the Red Hat Package Manager; 
+get it from Red Hat's ftp site.
+
+If you want to convert packages into debian packages, you will need the dpkg,
+dpkg-dev, and debmake packages, which are available on the Debian ftp site.

@@ -1,0 +1,11 @@
+Source: #NAME#
+Section: unknown
+Priority: extra
+Maintainer: #USERNAME# <#EMAIL#>
+Standards-Version: 2.1.1.0
+
+Package: #NAME#
+Architecture: #ARCH#
+Depends: ${shlibs:Depends}
+Description: Converted Slackware tgz package
+ Converted Slackware tgz package

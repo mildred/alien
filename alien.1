@@ -1,0 +1,68 @@
+.TH alien 1L "Debian Utilities" "DEBIAN" \" -*- nroff -*-
+.SH NAME
+alien \- Install / Patch an alien binary package
+.SH SYNOPSIS
+\fBalien\fP [\fB\-n\fP] \fBalien-package-file\fP
+.br
+\fBalien\fP \fB\-ppatch\fP \fBalien-package-file\fP
+.br
+\fBalien\fP \fB\-g\fP [\fB\-ppatch\fP] \fBalien-package-file\fP
+.SH DESCRIPTION
+alien allows foreign packages to be installed under the debian package
+manager.
+.br
+Commonly alien is simply called with a parameter giving the alien packagename
+to be installed. A look up will then be done in
+.B /var/lib/alien/packagename*.diff.gz .
+If such a diff exists then the alien
+package is unpacked, the patch is applied, a temporary .deb package
+generated and finally installed. If there is no such diff then alien will
+fail (unless the -n option is given).
+.PP
+With the -n option the optimistic assumption is made that the alien package
+will work without any changes under the Debian scheme of things. If things
+break then you can simply uninstall the package using the debian package
+manager.
+.PP
+With the -g option a package layout suitable for the development of patches
+is created from the alien package. A directory packagename.orig and a
+directory <packagename> is generated. Changes can be made to the packagename
+directory and all commonly used tools for sourcepackages will work on the
+packet. For example a .deb file can be generated using
+.B debian/rules binary
+and can then be installed in a regular way. Even
+.B dpkg-buildpackage
+will generate the usual files.
+.PP
+This tool probably needs to be run as superuser. Make sure that there is
+enough room in the current directory since
+.B alien
+will build a debian package in that location.
+.SH ALIEN PACKAGE FORMATS
+alien supports the Red Hat .rpm format, Slackware .tgz formant and the
+generic .tar.gz format. For the rpm format the Red Hat Package Manager must
+be installed (See
+.B rpm(8)
+).
+.SH LIMITATIONS
+Installation scripts for rpm packages are not supported.
+.PP
+You must specify a full path for the -p option.
+.PP
+All files in /etc are assumed to be configuration files.
+.SH OPTIONS
+.TP
+.I -n
+Assume the alien package can be installed without any patches.
+.TP
+.I -g
+Generate a source package suitable for patching and moving binaries around
+.TP
+.I -ppatch
+Specify the patch to be used instead of automatically looking the patch up
+in
+.B /var/lib/alien
+
+.SS AUTHOR
+Alien was written by Christoph Lameter <clameter@debian.org>
+It is now being maintained by Joey Hess <joeyh@master.debian.org>

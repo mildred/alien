@@ -1,0 +1,378 @@
+execve("/sbin/taper", ["taper"], [/* 34 vars */]) = 0
+mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40007000
+mprotect(0x40000000, 20301, PROT_READ|PROT_WRITE|PROT_EXEC) = 0
+mprotect(0x8048000, 154781, PROT_READ|PROT_WRITE|PROT_EXEC) = 0
+stat("/etc/ld.so.cache", {st_mode=S_IFREG|0644, st_size=7705, ...}) = 0
+open("/etc/ld.so.cache", O_RDONLY)      = 6
+mmap(0, 7705, PROT_READ, MAP_SHARED, 6, 0) = 0x40008000
+close(6)                                = 0
+stat("/etc/ld.so.preload", 0xbffff948)  = -1 ENOENT (No such file or directory)
+open("/usr/lib/libform.so.3.0", O_RDONLY) = 6
+read(6, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3"..., 4096) = 4096
+mmap(0, 40960, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000a000
+mmap(0x4000a000, 35349, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED, 6, 0) = 0x4000a000
+mmap(0x40013000, 3928, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 6, 0x8000) = 0x40013000
+close(6)                                = 0
+mprotect(0x4000a000, 35349, PROT_READ|PROT_WRITE|PROT_EXEC) = 0
+open("/lib/libncurses.so.3.0", O_RDONLY) = 6
+read(6, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3"..., 4096) = 4096
+mmap(0, 249856, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40014000
+mmap(0x40014000, 198134, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED, 6, 0) = 0x40014000
+mmap(0x40045000, 30592, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 6, 0x30000) = 0x40045000
+mmap(0x4004d000, 13444, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4004d000
+close(6)                                = 0
+mprotect(0x40014000, 198134, PROT_READ|PROT_WRITE|PROT_EXEC) = 0
+open("/lib/libc.so.5", O_RDONLY)        = 6
+read(6, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3"..., 4096) = 4096
+mmap(0, 761856, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40051000
+mmap(0x40051000, 528723, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED, 6, 0) = 0x40051000
+mmap(0x400d3000, 19388, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 6, 0x81000) = 0x400d3000
+mmap(0x400d8000, 205344, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x400d8000
+close(6)                                = 0
+mprotect(0x40051000, 528723, PROT_READ|PROT_WRITE|PROT_EXEC) = 0
+munmap(0x40008000, 7705)                = 0
+mprotect(0x8048000, 154781, PROT_READ|PROT_EXEC) = 0
+mprotect(0x4000a000, 35349, PROT_READ|PROT_EXEC) = 0
+mprotect(0x40014000, 198134, PROT_READ|PROT_EXEC) = 0
+mprotect(0x40051000, 528723, PROT_READ|PROT_EXEC) = 0
+mprotect(0x40000000, 20301, PROT_READ|PROT_EXEC) = 0
+personality(PER_LINUX)                  = 0
+geteuid()                               = 0
+getuid()                                = 0
+getgid()                                = 0
+getegid()                               = 0
+brk(0x80c1cb0)                          = 0x80c1cb0
+brk(0x80c2000)                          = 0x80c2000
+open("/root/taper_prefs", O_RDONLY)     = 6
+close(6)                                = 0
+open("/root/taper_prefs", O_RDONLY)     = 6
+fstat(6, {st_mode=S_IFREG|0664, st_size=1248, ...}) = 0
+mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40008000
+read(6, "append = yes\ncompress-type = 1\n"..., 4096) = 1248
+read(6, "", 4096)                       = 0
+close(6)                                = 0
+munmap(0x40008000, 4096)                = 0
+brk(0x80cb000)                          = 0x80cb000
+shmget(IPC_PRIVATE, 60, IPC_CREAT|IPC_EXCL|0x1b6|0666) = 8448
+shmat(8448, 0, 0)                       = 0x40008000
+shmget(IPC_PRIVATE, 65536, IPC_CREAT|IPC_EXCL|0x1b6|0666) = 8449
+shmat(8449, 0, 0)                       = 0x4010b000
+shmget(IPC_PRIVATE, 65536, IPC_CREAT|IPC_EXCL|0x1b6|0666) = 8450
+shmat(8450, 0, 0)                       = 0x4011b000
+mmap(0, 151552, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4012b000
+shmget(IPC_PRIVATE, 32768, IPC_CREAT|IPC_EXCL|0x1b6|0666) = 8451
+shmat(8451, 0, 0)                       = 0x40150000
+open("/root/.terminfo/x/xterm", O_RDONLY) = -1 ENOENT (No such file or directory)
+access("/root/.terminfo/x", R_OK)       = -1 ENOENT (No such file or directory)
+open("/etc/terminfo/x/xterm", O_RDONLY) = 6
+read(6, "\32\1:\0\25\0\3\0d\0013\2", 12) = 12
+read(6, "xterm|vs100|xterm terminal emula"..., 58) = 58
+read(6, "\0\1\0\0\1\0\0\0\1\0\0\0\0\1\1\0"..., 21) = 21
+read(6, "\0", 1)                        = 1
+read(6, "P\0\10\0A\0", 6)               = 6
+read(6, "\377\377\0\0\2\0\4\0\25\0\32\0\""..., 712) = 712
+read(6, "\7\0\r\0\33[%i%p1%d;%p2%dr\0\33["..., 563) = 563
+close(6)                                = 0
+ioctl(1, TCGETS, {B9600 opost isig icanon echo ...}) = 0
+ioctl(1, TCGETS, {B9600 opost isig icanon echo ...}) = 0
+ioctl(1, TIOCGWINSZ, {ws_row=28, ws_col=80, ws_xpixel=503, ws_ypixel=368}) = 0
+brk(0x80cc000)                          = 0x80cc000
+brk(0x80cd000)                          = 0x80cd000
+brk(0x80ce000)                          = 0x80ce000
+brk(0x80cf000)                          = 0x80cf000
+brk(0x80d0000)                          = 0x80d0000
+brk(0x80d1000)                          = 0x80d1000
+brk(0x80d2000)                          = 0x80d2000
+brk(0x80d3000)                          = 0x80d3000
+ioctl(1, TCGETS, {B9600 opost isig icanon echo ...}) = 0
+ioctl(1, TCGETS, {B9600 opost isig icanon echo ...}) = 0
+sigaction(SIGINT, NULL, {SIG_DFL})      = 0
+sigaction(SIGINT, {0x40037750, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTERM, NULL, {SIG_DFL})     = 0
+sigaction(SIGTERM, {0x40037750, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, NULL, {SIG_DFL})     = 0
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+ioctl(1, TCGETS, {B9600 opost isig icanon echo ...}) = 0
+ioctl(1, SNDCTL_TMR_START, {B9600 opost isig icanon -echo ...}) = 0
+ioctl(1, TCGETS, {B9600 opost isig icanon -echo ...}) = 0
+ioctl(1, SNDCTL_TMR_START, {B9600 -opost -isig -icanon -echo ...}) = 0
+ioctl(1, SNDCTL_TMR_START, {B9600 -opost -isig -icanon -echo ...}) = 0
+ioctl(1, SNDCTL_TMR_START, {B9600 -opost isig -icanon -echo ...}) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33(B\33)0\0337\33[?47h\33[H\33["..., 2408) = 2408
+write(1, "                                "..., 150) = 150
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+brk(0x80d4000)                          = 0x80d4000
+brk(0x80d5000)                          = 0x80d5000
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[2;1H\16lqqqqqqqqqqqqqqqqqqqq"..., 185) = 185
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[1;80H", 7)                = 7
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[27B", 5)                  = 5
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+write(1, "\33[?1h\33=", 7)              = 7
+write(1, "\33[?1h\33=", 7)              = 7
+sigaction(SIGINT, {0x8060590, [], SA_INTERRUPT|SA_NOMASK|SA_ONESHOT}, {0x40037750, [], SA_RESTART}) = 0
+sigaction(SIGSEGV, {0x80605b0, [], SA_INTERRUPT|SA_NOMASK|SA_ONESHOT}, {SIG_DFL}) = 0
+sigaction(SIGABRT, {0x80605b0, [], SA_INTERRUPT|SA_NOMASK|SA_ONESHOT}, {SIG_DFL}) = 0
+lstat(".", {st_mode=S_IFDIR|0775, st_size=1024, ...}) = 0
+lstat("/", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("..", {st_mode=S_IFDIR|0755, st_size=8192, ...}) = 0
+stat("..", {st_mode=S_IFDIR|0755, st_size=8192, ...}) = 0
+open("..", O_RDONLY)                    = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+brk(0x80d7000)                          = 0x80d7000
+getdents(6, /* 17 entries */, 4096)     = 416
+lstat("../alien-3.2", {st_mode=S_IFDIR|0775, st_size=1024, ...}) = 0
+close(6)                                = 0
+lstat("../..", {st_mode=S_IFDIR|S_ISUID|0775, st_size=2048, ...}) = 0
+stat("../..", {st_mode=S_IFDIR|S_ISUID|0775, st_size=2048, ...}) = 0
+open("../..", O_RDONLY)                 = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 13 entries */, 4096)     = 232
+lstat("../../build", {st_mode=S_IFDIR|0755, st_size=8192, ...}) = 0
+close(6)                                = 0
+lstat("../../..", {st_mode=S_IFDIR|0755, st_size=3072, ...}) = 0
+stat("../../..", {st_mode=S_IFDIR|0755, st_size=3072, ...}) = 0
+open("../../..", O_RDONLY)              = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 58 entries */, 4096)     = 1184
+lstat("../../../debian", {st_mode=S_IFDIR|S_ISUID|0775, st_size=2048, ...}) = 0
+close(6)                                = 0
+lstat("../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+stat("../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+open("../../../..", O_RDONLY)           = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 34 entries */, 4096)     = 596
+lstat("../../../../joey", {st_mode=S_IFDIR|0755, st_size=3072, ...}) = 0
+close(6)                                = 0
+lstat("../../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+stat("../../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+open("../../../../..", O_RDONLY)        = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 30 entries */, 4096)     = 576
+lstat("../../../../../lost+found", {st_mode=S_IFDIR|0755, st_size=12288, ...}) = 0
+lstat("../../../../../usr", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("../../../../../System.old", {st_mode=S_IFREG|0664, st_size=71282, ...}) = 0
+lstat("../../../../../etc", {st_mode=S_IFDIR|0755, st_size=6144, ...}) = 0
+lstat("../../../../../root", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../dev", {st_mode=S_IFDIR|0755, st_size=16384, ...}) = 0
+lstat("../../../../../sbin", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../var", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("../../../../../tmp", {st_mode=S_IFDIR|S_ISVTX|0777, st_size=204800, ...}) = 0
+lstat("../../../../../bin", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../proc", {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+lstat("../../../../../floppy", {st_mode=S_IFDIR|S_ISGID|0775, st_size=1024, ...}) = 0
+lstat("../../../../../boot", {st_mode=S_IFDIR|S_ISGID|0775, st_size=1024, ...}) = 0
+lstat("../../../../../lib", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../mnt", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("../../../../../home", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+close(6)                                = 0
+lstat(".", {st_mode=S_IFDIR|0775, st_size=1024, ...}) = 0
+lstat("/", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("..", {st_mode=S_IFDIR|0755, st_size=8192, ...}) = 0
+stat("..", {st_mode=S_IFDIR|0755, st_size=8192, ...}) = 0
+open("..", O_RDONLY)                    = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 17 entries */, 4096)     = 416
+lstat("../alien-3.2", {st_mode=S_IFDIR|0775, st_size=1024, ...}) = 0
+close(6)                                = 0
+lstat("../..", {st_mode=S_IFDIR|S_ISUID|0775, st_size=2048, ...}) = 0
+stat("../..", {st_mode=S_IFDIR|S_ISUID|0775, st_size=2048, ...}) = 0
+open("../..", O_RDONLY)                 = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 13 entries */, 4096)     = 232
+lstat("../../build", {st_mode=S_IFDIR|0755, st_size=8192, ...}) = 0
+close(6)                                = 0
+lstat("../../..", {st_mode=S_IFDIR|0755, st_size=3072, ...}) = 0
+stat("../../..", {st_mode=S_IFDIR|0755, st_size=3072, ...}) = 0
+open("../../..", O_RDONLY)              = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 58 entries */, 4096)     = 1184
+lstat("../../../debian", {st_mode=S_IFDIR|S_ISUID|0775, st_size=2048, ...}) = 0
+close(6)                                = 0
+lstat("../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+stat("../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+open("../../../..", O_RDONLY)           = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 34 entries */, 4096)     = 596
+lstat("../../../../joey", {st_mode=S_IFDIR|0755, st_size=3072, ...}) = 0
+close(6)                                = 0
+lstat("../../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+stat("../../../../..", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+open("../../../../..", O_RDONLY)        = 6
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+getdents(6, /* 30 entries */, 4096)     = 576
+lstat("../../../../../lost+found", {st_mode=S_IFDIR|0755, st_size=12288, ...}) = 0
+lstat("../../../../../usr", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("../../../../../System.old", {st_mode=S_IFREG|0664, st_size=71282, ...}) = 0
+lstat("../../../../../etc", {st_mode=S_IFDIR|0755, st_size=6144, ...}) = 0
+lstat("../../../../../root", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../dev", {st_mode=S_IFDIR|0755, st_size=16384, ...}) = 0
+lstat("../../../../../sbin", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../var", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("../../../../../tmp", {st_mode=S_IFDIR|S_ISVTX|0777, st_size=204800, ...}) = 0
+lstat("../../../../../bin", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../proc", {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+lstat("../../../../../floppy", {st_mode=S_IFDIR|S_ISGID|0775, st_size=1024, ...}) = 0
+lstat("../../../../../boot", {st_mode=S_IFDIR|S_ISGID|0775, st_size=1024, ...}) = 0
+lstat("../../../../../lib", {st_mode=S_IFDIR|0755, st_size=2048, ...}) = 0
+lstat("../../../../../mnt", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+lstat("../../../../../home", {st_mode=S_IFDIR|0755, st_size=1024, ...}) = 0
+close(6)                                = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[28;15HTaper 6.7.4 by Yusuf N"..., 60) = 60
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[1;26HTaper - Linux Backup fo"..., 37) = 37
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[27;80H", 8)               = 8
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[7;35H\33[7mBackup Module\33["..., 182) = 182
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+read(0, "\r", 1)                        = 1
+open("/root/taper_log", O_RDWR|O_APPEND|O_CREAT, 0600) = 6
+time(NULL)                              = 859232262
+open("/usr/lib/zoneinfo/localtime", O_RDONLY) = 7
+read(7, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 6460) = 1410
+close(7)                                = 0
+time(NULL)                              = 859232262
+write(6, "Mon Mar 24 14:37:22 1997:  Start"..., 50) = 50
+brk(0x80d8000)                          = 0x80d8000
+write(1, "\33[?1h\33=", 7)              = 7
+write(1, "\33[?1h\33=", 7)              = 7
+write(1, "\33[?1h\33=", 7)              = 7
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[2;49H\16l\17\n\10\16x\17\n\10"..., 124) = 124
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[2;48H\16k\17\n\10\16x\17\n\10"..., 229) = 229
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\r\n\16lqqqqqqqqqqqqqqqqqqqqqqqq"..., 128) = 128
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+stat("/mnt/home-and-etc.taper", 0xbffff814) = -1 ENOENT (No such file or directory)
+stat("/etc/locale/C/libc.cat", 0xbffff304) = -1 ENOENT (No such file or directory)
+stat("/usr/share/locale/C/libc.cat", 0xbffff304) = -1 ENOENT (No such file or directory)
+stat("/usr/share/locale/libc/C", 0xbffff304) = -1 ENOENT (No such file or directory)
+stat("/usr/share/locale/C/libc.cat", 0xbffff304) = -1 ENOENT (No such file or directory)
+stat("/usr/local/share/locale/C/libc.cat", 0xbffff304) = -1 ENOENT (No such file or directory)
+time(NULL)                              = 859232262
+write(6, "Mon Mar 24 14:37:22 1997:  No su"..., 81) = 81
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[10;9H\16lqqqqqqqqqqqqqqqqqqq"..., 515) = 515
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+write(1, "\33[?1h\33=", 7)              = 7
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[12;14HNo such file or direct"..., 78) = 78
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+read(0, "\r", 1)                        = 1
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\10\10\33[1mOK\33[m", 11)     = 11
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[2;48H\16qq\17\33[3;48H  \33["..., 749) = 749
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+fsync(6)                                = 0
+fstat(6, {st_mode=S_IFREG|0600, st_size=2097334, ...}) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[11;21H\16lqqqqqqqqqqqqqqqqqq"..., 354) = 354
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[14;24HLog file too big - mak"..., 41) = 41
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+lseek(6, 182, SEEK_SET)                 = 182
+getpid()                                = 3550
+stat("/usr/tmp", {st_mode=S_IFDIR|S_ISVTX|0777, st_size=12288, ...}) = 0
+geteuid()                               = 0
+stat("/usr/tmp/taper03550aaa", 0xbffff66c) = -1 ENOENT (No such file or directory)
+open("/usr/tmp/taper03550aaa", O_RDWR|O_APPEND|O_CREAT, 0600) = 7
+read(6, "Thu Mar 20 16:21:20 1997:  Backi"..., 150000) = 150000
+write(7, "Thu Mar 20 16:21:20 1997:  Backi"..., 150000) = 150000
+read(6, "ory /home/joey/mail/\nFri Mar 21"..., 150000) = 150000
+write(7, "ory /home/joey/mail/\nFri Mar 21"..., 150000) = 150000
+read(6, "5/\nFri Mar 21 16:22:50 1997:  S"..., 150000) = 150000
+write(7, "5/\nFri Mar 21 16:22:50 1997:  S"..., 150000) = 150000
+read(6, "lib/dwww/dwww.html; actual size "..., 150000) = 150000
+write(7, "lib/dwww/dwww.html; actual size "..., 150000) = 150000
+read(6, "\nSun Mar 23 16:16:14 1997:  Bac"..., 150000) = 150000
+write(7, "\nSun Mar 23 16:16:14 1997:  Bac"..., 150000) = 150000
+read(6, "shift.prp; actual size 776, on t"..., 150000) = 150000
+write(7, "shift.prp; actual size 776, on t"..., 150000) = 150000
+read(6, "esk/FileTags; actual size 2180, "..., 150000) = 150000
+write(7, "esk/FileTags; actual size 2180, "..., 150000) = 150000
+read(6, "rs/GIFEncoder.java; actual size "..., 150000) = 150000
+write(7, "rs/GIFEncoder.java; actual size "..., 150000) = 150000
+read(6, "tape size 3187.\nSun Mar 23 16:2"..., 150000) = 150000
+write(7, "tape size 3187.\nSun Mar 23 16:2"..., 150000) = 150000
+read(6, "ssion/Blood0.db; actual size 393"..., 150000) = 150000
+write(7, "ssion/Blood0.db; actual size 393"..., 150000) = 150000
+read(6, "3937, on tape size 23937.\nSun M"..., 150000) = 150000
+write(7, "3937, on tape size 23937.\nSun M"..., 150000) = 150000
+read(6, "n tape size 355.\nSun Mar 23 16:"..., 150000) = 150000
+write(7, "n tape size 355.\nSun Mar 23 16:"..., 150000) = 150000
+read(6, ".d/lambdamoo]\nSun Mar 23 17:13:"..., 150000) = 150000
+write(7, ".d/lambdamoo]\nSun Mar 23 17:13:"..., 150000) = 150000
+read(6, "size 1453, on tape size 812.\nSu"..., 150000) = 147152
+write(7, "size 1453, on tape size 812.\nSu"..., 147152) = 147152
+read(6, "", 150000)                     = 0
+close(6)                                = 0
+unlink("/root/taper_log")               = 0
+time(NULL)                              = 859232263
+write(7, "Mon Mar 24 14:37:23 1997:  Backu"..., 44) = 44
+write(7, "\n\n", 2)                     = 2
+close(7)                                = 0
+rename("/usr/tmp/taper03550aaa", "/root/taper_log") = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[28;67H", 8)               = 8
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[1;56H", 7)                = 7
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[11;21H                      "..., 337) = 337
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[7;35H\33[7mBackup Module\33["..., 182) = 182
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+read(0, "\33", 1)                       = 1
+oldselect(1, [0], NULL, NULL, {1, 0})   = 1 (in [0], left {1, 0})
+read(0, "O", 1)                         = 1
+oldselect(1, [0], NULL, NULL, {1, 0})   = 1 (in [0], left {1, 0})
+read(0, "A", 1)                         = 1
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[13DBackup Module\33[21;39H\33"..., 37) = 37
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+read(0, "\r", 1)                        = 1
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[2;1H\33[K\n\33[K\n\33[K\n\33"..., 115) = 115
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[H\33[K", 6)               = 6
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+sigaction(SIGTSTP, {SIG_IGN}, {0x40037680, [], SA_RESTART}) = 0
+write(1, "\33[27B\33[J", 8)             = 8
+sigaction(SIGTSTP, {0x40037680, [], SA_RESTART}, NULL) = 0
+write(1, "\33[28;1H\0337\33[1;28r\0338\33["..., 30) = 30
+write(1, "\33[?1l\33>", 7)              = 7
+ioctl(1, SNDCTL_TMR_START, {B9600 opost isig icanon echo ...}) = 0
+munmap(0x4012b000, 151552)              = 0
+shmdt(0x40150000)                       = 0
+shmdt(0x4010b000)                       = 0
+shmdt(0x4011b000)                       = 0
+shmdt(0x40008000)                       = 0
+shmctl(8448, IPC_RMID, 0)               = 0
+shmctl(8451, IPC_RMID, 0)               = 0
+shmctl(8449, IPC_RMID, 0)               = 0
+shmctl(8450, IPC_RMID, 0)               = 0
+sigaction(SIGINT, {SIG_DFL}, {0x8060590, [], SA_INTERRUPT|SA_NOMASK|SA_ONESHOT}) = 0
+sigaction(SIGSEGV, {SIG_DFL}, {0x80605b0, [], SA_INTERRUPT|SA_NOMASK|SA_ONESHOT}) = 0
+sigaction(SIGABRT, {SIG_DFL}, {0x80605b0, [], SA_INTERRUPT|SA_NOMASK|SA_ONESHOT}) = 0
+_exit(0)                                = ?

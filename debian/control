@@ -1,0 +1,14 @@
+Source: alien
+Section: admin
+Priority: extra
+Maintainer: Christoph Lameter <clameter@waterf.org>
+Standards-Version: 2.1.2.2
+
+Package: alien
+Architecture: all
+Section: admin
+Depends: debmake
+Recommends: rpm
+Description: Install RedHat and Slackware Packages with dpkg.
+ Allows the integration of packages from other sources (Red Hat, Slackware etc)
+ called "Aliens". This is a tool only suitable for binary packages.

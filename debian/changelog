@@ -1,0 +1,884 @@
+alien (2.79) unstable; urgency=low
+
+  * New maintainer.
+  * Updated man page with new author info.
+  * Changes to debian/rules to make current maintainer more comfortable.
+  * Improvements to follow when I find the time..
+
+ -- Joey Hess <joeyh@master.debian.org>  Mon, 27 Jan 1997 20:54:47 -0500
+
+alien (2.78) unstable; urgency=low
+
+  * Corrected Priority
+  * Cleanup debmake remnants
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 25 Jan 1997 10:51:48 -0800
+
+alien (2.77) unstable; urgency=low
+
+  * alien source package completely split off from debmake. Looking for a
+    new maintainer to provide some fresh ideas.
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 25 Jan 1997 10:23:21 -0800
+
+debmake (2.76) unstable; urgency=low
+
+  * debstd: Multi-binary support: Generate necessary subdirectories on the
+    fly from files names subpackage.filename (if such files exist) to comply
+    with Policy. This results in an alternate way of storing files for
+    sub-package generation. Remember to erase those directories in the
+    rules file if using this scheme!
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 25 Jan 1997 09:04:21 -0800
+
+debmake (2.75) unstable; urgency=low
+
+  * debchange: Fix bug introduced in 2.74
+  * debstd: support for configure script
+  * adpkg: support for package configuration before installation
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 24 Jan 1997 13:17:49 -0800
+
+debmake (2.74) unstable; urgency=low
+
+  * debstd: Output warning if scripts do not use /bin/sh as its interpreter
+    #6062
+  * bug: default to ae editor if joe is not present #5675, #6811
+  * debchange: default to ae editor if joe is not present #6794
+
+ -- Christoph Lameter <clameter@debian.org>  Thu, 23 Jan 1997 21:47:39 -0800
+
+debmake (2.73) unstable; urgency=low
+
+  * made dependant on perl
+  * Description in control file updated
+  * debchange: automatically rename native debian package directories on generating
+    the next version. Fixes some problems with warnings at package
+    generation time.
+  * alien: some minor fixes update of manpage.
+  * Document nodeps option of debstd
+  * Fixes to the way uupdate recognizes new version numbers (again!)
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 20 Jan 1997 19:51:11 -0800
+
+debmake (2.72) unstable; urgency=low
+
+  * Fix Bug #6690: release not able to handle multiple bug numbers.
+  * Fix Bug #6669
+  * debstd: check for debian/changelog and abort if not found
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 18 Jan 1997 09:24:43 -0800
+
+debmake (2.71) unstable; urgency=low
+
+  * adpkg: support for virtual package recognition
+  * lots of fixes to adpkg. Add functionality to figure out which installed
+    packages need to be updated. Rudimentary replacement for dselect.
+  * Fix to init.d template
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 17 Jan 1997 20:24:11 -0800
+
+debmake (2.70) unstable; urgency=low
+
+  * new tool: adpkg a front end to dpkg which will install all depending
+    packages, locate packages on its own and install packages one by one in order
+    to insure minimum downtime for daemons on mission critical servers.
+  * bug: give a correct errormessage if packagename not specified instead of
+    failing with a shell error.
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 17 Jan 1997 15:40:01 -0800
+
+debmake (2.62) unstable; urgency=low
+
+  * Sue Campbell contributes a HOWTO.first_time
+  * new tools: todo and done by Hakan Ardo
+  * Automatically install a debian/TODO if present
+
+ -- Christoph Lameter <clameter@debian.org>  Thu, 16 Jan 1997 22:07:10 -0800
+
+debmake (2.61) unstable; urgency=low
+
+  * debstd: fix recognition of .so in manpages
+
+ -- Christoph Lameter <clameter@debian.org>  Thu, 16 Jan 1997 09:18:26 -0800
+
+debmake (2.60) unstable; urgency=low
+
+  * new tools: deb2asc, asc2deb and asc2debinst allowing the conversion
+    and easy modification of already packed up debian packages. Also
+    allows writing of packages with an editor. asc2debinst does not yet
+    work as intended.
+  * release: change Bug number matching to match #[0-9]{4,5}.
+
+ -- Christoph Lameter <clameter@debian.org>  Tue, 14 Jan 1997 10:02:07 -0800
+
+debmake (2.59) unstable; urgency=low
+
+  * release: update manpage.
+  * release: bug clearing did not work right... sigh....
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 13 Jan 1997 22:28:59 -0800
+
+debmake (2.58) unstable; urgency=low
+
+  * release: Check for Bug# in changes files and ask maintainer if these
+    bugs ought to be cleared. (Test Bug#4711)
+  * debstd: 2.57 broke library scan functionality
+  * uupdate: allow + characters in upstream packagename
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 13 Jan 1997 21:08:03 -0800
+
+debmake (2.57) unstable; urgency=low
+
+  * bug: Bug#5619 treat conffiles without \n at the end correctly
+  * debstd: install maintainer generated shlibs file. Skip Library scan for
+    that case
+  * better directory name matching when looking for undocumented binaries.
+  * link to undocumented.7.gz instead of undoc.7
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 11 Jan 1997 21:15:27 -0800
+
+debmake (2.56) unstable; urgency=low
+
+  * bug: -z option added to forbid removal of comments and empty lines from
+    configfiles.
+  * debstd: look for manpages also in /usr/X11R6/man
+
+ -- Christoph Lameter <clameter@debian.org>  Thu, 9 Jan 1997 07:35:10 -0800
+
+debmake (2.55) unstable; urgency=low
+
+  * deb-make: Support specialities for native packages (such as copyright
+    file for example)
+  * debstd: reverse function of the -u option. Default is now no symlinks
+    for undocumented binaries.
+  * build: allow passing of options to dpkg-buildpackage
+  * patch of Roman Hodek for some problems in debstd
+
+ -- Christoph Lameter <clameter@debian.org>  Tue, 7 Jan 1997 10:49:19 -0800
+
+debmake (2.54) unstable; urgency=low
+
+  * debstd: Wrong warnings about a package not having executables fixed
+  * two packages bug and alien split out from debmake. Dependencies
+    reworked.
+  * debstd: recognize games as a valid location for binaries and
+    put links into section 6 for those binaries.
+  * deb-make: fix to package name parsing
+  * bug: Christian Schwarz: Ability to redirect bug report to stdout.
+  * deb-make: Fix to document recognition by Christian Schwarz
+  * uupdate: Diagnostics for existing original archives
+
+ -- Christoph Lameter <clameter@debian.org>  Sun, 5 Jan 1997 21:17:23 -0800
+
+debmake (2.53) unstable; urgency=low
+
+  * made a template from Lars example manpage for debian. Thanks!
+    template will be customized with packagename, emailname, maintainername
+  * uupdate: Fix version number recognition for tar files.
+
+ -- Christoph Lameter <clameter@debian.org>  Sun, 5 Jan 1997 18:46:16 -0800
+
+debmake (2.52) unstable; urgency=low
+
+  * uupdate: Fixes to the way the upstream version is recognized
+  * uupdate: Figure out the new upstream version from patchname.
+  * uupdate: Fixes to allow using a patch rather than a new archive.
+  * uupdate: clean archive before patching it.
+
+ -- Christoph Lameter <clameter@debian.org>  Thu, 2 Jan 1997 20:14:41 -0800
+
+debmake (2.51) unstable; urgency=low
+
+  * debstd: sometimes the associated manpage to a binary was not found
+    and an undocumented.7 link installed despite of the presence of a manpage!
+  * debstd: if first parameter was not the package name that documentation
+    file was not installed.
+  * deb-make: Better matching for documentation
+
+ -- Christoph Lameter <clameter@debian.org>  Wed, 1 Jan 1997 17:40:54 -0800
+
+debmake (2.50) unstable; urgency=low
+
+  * deb-make: probe for common forms of documentation in a sourcecode
+    package and generate a rules file to install those by default.
+  * debian/rules templates updated to reflect changes.
+  * debstd: generate /usr/doc/package/changelog for native packages
+  * debstd: does not need packagename anymore on invocation
+  * debstd: Generate manpage symlinks for executables without corresponding
+    manpages.
+  * debchange: Fix bug #6380.
+  * changelog fixed to spell Santiago's name correctly etc.
+
+ -- Christoph Lameter <clameter@debian.org>  Wed, 1 Jan 1997 13:12:11 -0800
+
+debmake (2.41) unstable; urgency=low
+
+  * Check for /etc/suid.conf instead for /usr/bin/suidregister for suid
+    binaries to avoid pre-dependency problems for suidmanager.
+  * strip -g only for libraries instead of a full strip (Santiago Vila)
+  * Changes to the rules template according to suggestion by Santiago Vila.
+
+ -- Christoph Lameter <clameter@debian.org>  Sun, 29 Dec 1996 12:43:11 -0800
+
+debmake (2.40) unstable; urgency=low
+
+  * uscan watch template provided.
+  * new tool uscan: Scan upstream ftp sites for new releases and then
+    dowload upstream releases, perform upstream update (using "uupdate"),
+    rebuild package(s) (using "build") and upload new package (using
+    "release") (Actions customizable, full automatic operation discouraged).
+    Experimental status right now.
+
+ -- Christoph Lameter <clameter@debian.org>  Wed, 25 Dec 1996 12:06:32 -0800
+
+debmake (2.30) unstable; urgency=low
+
+  * debchange: -v option to set the version number provided
+  * new tool uupdate: automatize upstream updates for sourcecode packages
+
+ -- Christoph Lameter <clameter@debian.org>  Tue, 24 Dec 1996 22:33:02 -0800
+
+debmake (2.21) unstable; urgency=low
+
+  * debstd: shlib generation: .shlibs file does not belong into -dev
+    package as previously claimed. .shlibs file put into library package
+    restoring what previous versions of debmake did. The versions 2.17-2.20
+    produced unusable .shlibs files!
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 23 Dec 1996 19:59:16 -0800
+
+debmake (2.20) unstable; urgency=low
+
+  * debstd: examples / docs documents were moved with directory.
+  * Bug in inetd.conf postrm handling
+
+ -- Christoph Lameter <clameter@debian.org>  Sun, 22 Dec 1996 16:26:32 -0800
+
+debmake (2.19) unstable; urgency=low
+
+  * example .forward file for the exim mailer provided
+  * debstd: diversions set the wrong package name
+  * build: use gid=0 when building packages to avoid generating wrong
+    ownerships.
+
+ -- Christoph Lameter <clameter@debian.org>  Thu, 19 Dec 1996 10:17:33 -0800
+
+debmake (2.18) unstable; urgency=low
+
+  * check dependencies of provided sharable libraries in addition to
+    executables when calling dpkg-shlibdeps for a package.
+  * info.ex: wrong spelling
+  * debstd: manpage updated.
+  * debstd: generate a changelog entry if debian/RELEASED is present.
+  * shlibs management cleaned up.
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 16 Dec 1996 22:21:56 -0800
+
+debmake (2.17) unstable; urgency=low
+
+  * deb-make: add capability to copy sample libraries. Samples for
+    multi-binary and library revised.
+  * If first documentation file for debstd has "change" in its name install
+    that file as changelog.upstream (according to standard).
+    Please be sure in the future to list the upstream changelog first after
+    the package name
+  * Changed Library Templates according to Guy's advice
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 16 Dec 1996 21:14:56 -0800
+
+debmake (2.16) unstable; urgency=low
+
+  * Library link for library.so was not generated.
+  * Message regarding tar of debstd cleaned up.
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 16 Dec 1996 10:02:40 -0800
+
+debmake (2.15) unstable; urgency=low
+
+  * added instruction regarding tar problem
+  * .shlibs file not correctly generated (Major Number screwed up)
+
+ -- Christoph Lameter <clameter@debian.org>  Mon, 16 Dec 1996 08:01:43 -0800
+
+debmake (2.14) unstable; urgency=low
+
+  * deb-make asks for the type of package (single,multi,library) to generate
+    and does not clutter the debian directory so much with .ex files.
+  * Templates updated to use easier method for generating directories
+    through a "dirs" file in the debian directory listing all necessary
+    directories.
+  * Incorrect menu template
+  * Update Standards number to current
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 14 Dec 1996 18:08:03 -0800
+
+debmake (2.13) unstable; urgency=low
+
+  * debstd: bug in processing of menus
+  * deb-make gave an errormessage about not finding a file. Did not
+    affect functionality.
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 14 Dec 1996 10:04:50 -0800
+
+debmake (2.12) unstable; urgency=low
+
+  * Prototype for library rules simplified
+  * debstd: strip static libraries
+  * debstd: automatically generate symlinks for sharable elf libraries
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 14 Dec 1996 04:25:14 -0800
+
+debmake (2.11) unstable; urgency=low
+
+  * Automatically strip libraries found.
+  * Prototypes provided for ELF Library development
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 13 Dec 1996 21:08:32 -0800
+
+debmake (2.10) unstable; urgency=low
+
+  * menu package support: deb-make installs an template for the menu
+    package.
+  * debstd: Clean up package by removing empty directories if a file "clean" exists.
+  * Joey: Support for Joost's menu package.
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 13 Dec 1996 18:24:35 -0800
+
+debmake (2.09) unstable; urgency=low
+
+  * debstd: bug in info file processing
+  * debstd multi-binary support: package tmp directory was not created.
+    The control file "files" used to fail.
+  * debstd manpage revised .
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 13 Dec 1996 10:42:40 -0800
+
+debmake (2.08) unstable; urgency=low
+
+  * template inetd.conf.ex updated with example how to place an entry in a
+    section
+  * release: post the processed control file from debian/tmp/DEBIAN instead
+    of the one from the debian directory when announcing packages.
+  * debstd: warn if empty /usr/info
+
+ -- Christoph Lameter <clameter@debian.org>  Thu, 12 Dec 1996 05:24:39 -0800
+
+debmake (2.07) unstable; urgency=low
+
+  * debstd: manpage updated
+  * inetd.conf processor added (allows specification of sections and multiple entries)
+
+ -- Christoph Lameter <clameter@debian.org>  Wed, 11 Dec 1996 21:01:19 -0800
+
+debmake (2.06) unstable; urgency=low
+
+  * debstd: support for adding sections to /etc/aliases
+  * bug: manpage + errormessage updated for filing bug reports as root
+
+ -- Christoph Lameter <clameter@debian.org>  Wed, 11 Dec 1996 08:43:48 -0800
+
+debmake (2.05) unstable; urgency=low
+
+  * debstd: Dont install copyright file if already installed by maintainer
+  * debstd: Do not compress .gif and .html.
+    New switch -c to switch off all compression for docs since there might
+    be other html stuff not to be compressed.
+  * release: Check environment variable DEBIAN_RELEASE_DESTINATION and
+    uploads to that site. Default to master.
+  * release: Consults a database of possible upload sites in
+    /usr/lib/deb-make/upload.sites. Need to have the data for chiark!
+
+ -- Christoph Lameter <clameter@debian.org>  Sun, 8 Dec 1996 20:18:29 -0800
+
+debmake (2.04) unstable; urgency=low
+
+  * bug: set -v was accidentally left in the script
+
+ -- Christoph Lameter <clameter@debian.org>  Sun, 8 Dec 1996 19:16:01 -0800
+
+debmake (2.03) unstable; urgency=low
+
+  * added the possibility to upload to other hosts using scp
+    (ftp.fuller.edu and lalug.org available right now. Could someone sent me
+    the data on chiark?)
+  * depend on package file
+  * debstd: info files not in main distribution directory were not installed.
+
+ -- Christoph Lameter <clameter@debian.org>  Wed, 4 Dec 1996 20:56:35 -0800
+
+debmake (2.02) unstable; urgency=low
+
+  * bug: some more changes to the way subject lines are handled
+  * debstd: some bugfixes relating to suid processing pointed out by Johnie Ingram
+  * bug: Follow symlinks when trying to figure out the type of configfile
+  * bug: Subject line can be edited when in the editor.
+  * bug: debug switch (-d) added to send mail to postmaster@localhost
+  * bug: manpage updated
+  * fix some issues with multi-binary packages in debstd
+  * template rules.multi updated
+
+ -- Christoph Lameter <clameter@debian.org>  Sat, 23 Nov 1996 07:01:17 -0800
+
+debmake (2.01) experimental; urgency=low
+
+  * debstd manpage updated regarding suidmanager processing.
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 22 Nov 1996 16:22:19 -0800
+
+debmake (2.00) experimental; urgency=low
+
+  * Support for suidmanager (Generated scripts will check for presence of
+    suidmanager and not use it if no suidmanager exists).
+    A package can simply be rebuild and will use suidmanager if any
+    setsid or setgid binaries are present. (ppp 2.3 is an example)
+    Not documented yet.
+  * debmake uses suidmanager to register build and debpkg with REGULAR
+    permissions so that they can be changed in /etc/suid.conf
+  * deb-make: Message on completion of debmake did not display intended text
+  * bug: allow maintonly (-m) or quiet (-q) bug reports
+  * bug: wrong matches on dependency parenthesis
+  * bug: check if called with UID=0 and abort
+  * control files reworked
+  * Manual Pages updated
+  * Multi-Binary capabilities now available from debstd. debmstd ceases to
+    exist.
+
+ -- Christoph Lameter <clameter@debian.org>  Tue, 19 Nov 1996 11:28:38 -0800
+
+debmake (1.99) unstable; urgency=low
+
+  * procmail examples for filtering debian mailing lists included
+  * README.debian revised: Made it clearer that debmake does not
+    install any setuid programs.
+  * build: include path for X11 binaries
+  * bug: check if options given AFTER the packagename and give an
+    errormessage if this is the case
+
+ -- Christoph Lameter <clameter@debian.org>  Fri, 15 Nov 1996 12:18:45 -0800
+
+debmake (1.98) unstable; urgency=low
+
+  * bug: artistics to figure out versions of virtual packages (Thanks to the
+    support by Joey + Guy). Not sure if this will work for all packages though.
+  * debmstd: add analysis of executable formats and warn if unknown.
+  * bug: add options to suppress config files and supply a subject
+  * bug: dont list configfiles that are binaries
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 14 Nov 1996 18:02:16 -0800
+
+debmake (1.97) unstable; urgency=low
+
+  * bug: speedup (circumvents dpkg now)
+  * bug: allows filing a bug report against anything
+
+ -- Christoph Lameter <clameter@waterf.org>  Tue, 12 Nov 1996 20:51:37 -0800
+
+debmake (1.96) unstable; urgency=low
+
+  * release: use dupload if installed
+    (One always needs to specify the host to upload to though.)
+  * bug: removed some lines from the bugreports that were not really
+    essential.
+
+ -- Christoph Lameter <clameter@waterf.org>  Tue, 12 Nov 1996 13:22:14 -0800
+
+debmake (1.95) unstable; urgency=low
+
+  * release: Changes file was not uploaded (why is it not listed in the
+    changesfile itself if it is to be uploaded ????)
+
+ -- Christoph Lameter <clameter@waterf.org>  Mon, 11 Nov 1996 21:30:20 -0800
+
+debmake (1.94) unstable; urgency=low
+
+  * alien: bug when building rpm packages
+  * deb-make does no longer accept strange characters in directorynames.
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 8 Nov 1996 19:41:30 -0800
+
+debmake (1.93) unstable; urgency=low
+
+  * bug: Depends: field was required in the description of the package
+    processed.
+  * debstd: bug in info processing. copied from debian instead of the main
+    sourcedirectory.
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 8 Nov 1996 15:44:33 -0800
+
+debmake (1.92) unstable; urgency=low
+
+  * build: manpage updated
+  * build: add support for targets binary-indep and binary-arch
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 8 Nov 1996 06:12:18 -0800
+
+debmake (1.91) unstable; urgency=low
+
+  * suidwrappers will be disabled on installation/upgrade. Instructions are
+    provided on how to use these wrappers from sudo, super or directly in
+    README.debian.
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 7 Nov 1996 13:39:50 -0800
+
+debmake (1.90) unstable; urgency=low
+
+  * depend on dpkg and dpkg-dev
+  * debmstd: New command for experimental support of multi-binary packages
+    (debmstd will replace debstd when tested and found stable)
+  * debmake: Generates templates for multi-binary packages
+  * release: improved handling of files for multi-binary support
+  * Example setup for multi-binary support included (mgetty)
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 6 Nov 1996 10:06:41 -0800
+
+debmake (1.23) unstable; urgency=low
+
+  * release: add an option "announce" to manually specify that
+    debian/control should be posted.
+  * bug in release: Announcement generated for releases
+
+ -- Christoph Lameter <clameter@waterf.org>  Tue, 5 Nov 1996 10:54:34 -0800
+
+debmake (1.22) unstable; urgency=low
+
+  * New directive in init scripts: NO_RESTART_ON_UPGRADE
+  * Location of check for conffiles moved in debstd
+
+ -- Christoph Lameter <clameter@waterf.org>  Tue, 5 Nov 1996 06:26:27 -0800
+
+debmake (1.21) unstable; urgency=low
+
+  * control prototype: standards made current
+  * rules prototype chmod changed (Brian C. White)
+
+ -- Christoph Lameter <clameter@waterf.org>  Mon, 4 Nov 1996 09:13:54 -0800
+
+debmake (1.20) unstable; urgency=low
+
+  * debclean: can be called as a regular user
+  * build: Added clean option
+
+ -- Christoph Lameter <clameter@waterf.org>  Mon, 4 Nov 1996 05:42:37 -0800
+
+debmake (1.19) unstable; urgency=low
+
+  * build: Fixed behavior in case invoked in the wrong directory
+  * debstd: Build /usr/doc/package/buildinfo.Debian with information
+    regarding the system it was build on. (Chris Fearnley)
+  * rules prototype revised
+  * Removed junk from changelog prototype
+
+ -- Christoph Lameter <clameter@waterf.org>  Sun, 3 Nov 1996 16:54:09 -0800
+
+debmake (1.18) unstable; urgency=low
+
+  * debc does both dpkg -I and dpkg -c
+
+ -- Christoph Lameter <clameter@waterf.org>  Sun, 3 Nov 1996 16:04:35 -0800
+
+debmake (1.17) unstable; urgency=low
+
+  * deb-make + alien: Username lookup now possible via NIS
+
+ -- Christoph Lameter <clameter@waterf.org>  Sat, 2 Nov 1996 17:29:14 -0800
+
+debmake (1.16) unstable; urgency=low
+
+  * Some fixes to README.debian
+  * Fixed bugs in the way debian/changelog is located in debi,debc,release
+
+ -- Christoph Lameter <clameter@waterf.org>  Sat, 2 Nov 1996 09:52:59 -0800
+
+debmake (1.15) unstable; urgency=low
+
+  * New: "debi" installs generated .deb file (convenience script)
+  * New: "debc" views contents of generated .deb file (convenience script)
+  * Typical developmental cycle documented in README.debian
+  * release: print scp error message and the e-mail address the announcement goes to
+
+ -- Christoph Lameter <clameter@waterf.org>  Sat, 2 Nov 1996 08:48:25 -0800
+
+debmake (1.14) unstable; urgency=low
+
+  * New: "build" a suid wrapper for dpkg-buildpackage and "debian/rules binary"
+  * New: "debpkg" a suid wrapper for dpkg.
+  * debmake includes C code now and thus is architecture dependent
+  * Suid wrappers accessible for users of group "root" only.
+  * Complete development cycle possible from a regular account without
+    having to "su".
+  * Added check for the presence of ssh to "release" before trying
+    do to an upload to master.
+  * bug: filters comments and empty lines out of conffiles so that the
+    included conffiles are not that long anymore.
+
+ -- Christoph Lameter <clameter@waterf.org>  Sat, 2 Nov 1996 06:27:15 -0800
+
+debmake (1.13) unstable; urgency=low
+
+  * Bug in release: Announce to wrong mailing list+ Bruces suggestions
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 1 Nov 1996 15:54:08 -0800
+
+debmake (1.12) unstable; urgency=low
+
+  * debchange: RELEASED file not erased
+  * More errorchecking in release
+  * Removed creation of /etc from prototype
+  * Updated docs
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 1 Nov 1996 11:21:24 -0800
+
+debmake (1.11) unstable; urgency=low
+
+  * release script was not included
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 1 Nov 1996 11:15:23 -0800
+
+debmake (1.10) unstable; urgency=low
+
+  * Added a new tool "release" which will upload to master announce changes
+    and record the fact that a release has been done in debian/RELEASED.
+  * debchange: Generate a new release without specifically told so if
+    the software has been released and a debian/RELEASED file is present.
+  * debmake now takes the "Did I already upload this or not?" worry from you.
+    and manages releases on its own.
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 1 Nov 1996 11:03:53 -0800
+
+debmake (1.09) unstable; urgency=low
+
+  * bug tool reworked: It now automatically includes Debian Version, Kernel
+    version, a list of the version numbers of packages this package depends
+    on and includes all modified conffiles.
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 1 Nov 1996 09:58:11 -0800
+
+debmake (1.08) unstable; urgency=low
+
+  * Bug in etc.postrm
+  * Made sure that documentation is installed mode 644 owned by root.
+  * Updated Docs
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 31 Oct 1996 15:06:22 -0800
+
+debmake (1.07) unstable; urgency=low
+
+  * check for EDITOR environment variable
+  * debstd warn on /etc files not in conffiles and conffiles not
+    provided in /etc and on having files in /etc but no conffile (Bruce)
+  * exceptions for library dependencies possible
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 31 Oct 1996 10:32:26 -0800
+
+debmake (1.06) unstable; urgency=low
+
+  * structure of alien .orig file changes to be more or less conformant with
+    the way source .orig files are done. Diffs better readable now and the
+    customization includes the generators e-mail and name into the control
+    files.
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 31 Oct 1996 06:08:50 -0800
+
+debmake (1.05) unstable; urgency=low
+
+  * rpminstall, tgzinstall replaced by alien command
+  * alien structure allows moving around of binaries and patching them
+    in debian/rules.
+  * alien command needs testing and some real life experiences
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 30 Oct 1996 21:43:35 -0800
+
+debmake (1.04) unstable; urgency=low
+
+  * bug in generation of modifications for files in /etc
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 30 Oct 1996 17:46:35 -0800
+
+debmake (1.03) unstable; urgency=low
+
+  * debchange: no output in batch mode anymore
+  * rpminstall, tgzinstall: -d option switches of calling debian/rules binary
+  * debstd bug when giving the -m option.
+  * On Bruces advice: advanced stripping of all binaries
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 30 Oct 1996 08:02:30 -0800
+
+debmake (1.02) unstable; urgency=low
+
+  * Revised description in control
+  * If the package provides libraries those are detected, appropriate
+    information is generated for dpkg in "DEBIAN/shlibs" and a call to ldconfig
+    is placed into the automatically generated postinst script.
+
+ -- Christoph Lameter <clameter@waterf.org>  Mon, 28 Oct 1996 09:23:05 -0800
+
+debmake (1.01) unstable; urgency=low
+
+  * new command tgzinstall: Converts / installs a Slackware .tgz package
+    with dpkg using the same technique as rpminstall.
+  * rpminstall: diverse fixes
+  * Bug: debmake installed X11 manpages twice and did not compress them
+  * rpminstall generated .deb not erased
+
+ -- Christoph Lameter <clameter@waterf.org>  Sun, 27 Oct 1996 14:20:25 -0800
+
+debmake (1.00) unstable; urgency=low
+
+  * rpminstall : convert a package to debian (semi)sourcepackage, build it
+    and install with dpkg. Does not do installation scripts right now.
+    I was able to install gated like a debian package.
+  * rpminstall enables a direct installation of Red Hat packages into the
+    debian package maintenance system! All dpkg commands will work on it!
+  * rpminstall uses debstd and thus compresses manpages + documentation and
+    computes dependencies according to the libraries referenced by the 
+    ELF binaries in the Red Hat package.
+
+ -- Christoph Lameter <clameter@waterf.org>  Sun, 27 Oct 1996 12:17:51 -0800
+
+debmake (0.99) unstable; urgency=low
+
+  * debstd gives message for unstripped binaries and strips them
+
+ -- Christoph Lameter <clameter@waterf.org>  Sat, 26 Oct 1996 19:20:58 -0700
+
+debmake (0.98) unstable; urgency=low
+
+  * New command bug to assist in sending bug reports
+  * debchange: added batch mode f.e. : dch -n Bug fixed
+    reults in generating a new release number and putting "bug fixed" in
+    the correct place in changelog
+
+ -- Christoph Lameter <clameter@waterf.org>  Sat, 26 Oct 1996 09:42:00 -0700
+
+debmake (0.97) unstable; urgency=low
+
+  * Example file for inetd.conf configuration provided
+  * Recognize package names with a -
+  * Manpages reworked. Manpage for debclean added
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 25 Oct 1996 09:37:17 -0700
+
+debmake (0.96) unstable; urgency=low
+
+  * debstd seaches for all executable binaries in package and runs
+    dpkg-shlibdeps on all ELF binaries. No need to separately run
+    dpkg-shlibdeps anymore.
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 24 Oct 1996 19:45:44 -0700
+
+debmake (0.95) unstable; urgency=low
+
+  * bugs in deb-make fixed. Checks for existing .orig archive
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 24 Oct 1996 14:33:07 -0700
+
+debmake (0.94) unstable; urgency=low
+
+  * Set executable bit on debian/rules
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 23 Oct 1996 17:57:51 -0700
+
+debmake (0.93) unstable; urgency=low
+
+  * bug in deb-make. Failed with cannot find X
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 23 Oct 1996 10:39:11 -0700
+
+debmake (0.92) unstable; urgency=low
+
+  * backup files removed
+  * use /etc/mailname to figure out e-mail address
+
+ -- Christoph Lameter <clameter@waterf.org>  Tue, 22 Oct 1996 20:06:46 -0700
+
+debmake (0.91) unstable; urgency=low
+
+  * inetd.conf script generation added
+  * Got rid of all temp files to speed up debstd
+  * Updated debstd manpage
+  * Fixed diversions so that they really work.
+  * Added -m option to switch of the automatic installation of manpages
+
+ -- Christoph Lameter <clameter@waterf.org>  Tue, 22 Oct 1996 16:29:17 -0700
+
+debmake (0.9) unstable; urgency=low
+
+  * Generate scripts for diversions (not sure if the code is up to standard)
+  * Cleanup debstd
+  * 822-date instead of date used to generate the date info.
+  * Ability to generate scripts to add to config files in /etc included
+  * example files and documentation files can be listed in file in debian
+
+ -- Christoph Lameter <clameter@waterf.org>  Tue, 22 Oct 1996 00:41:08 -0800
+
+debmake (0.8) unstable; urgency=low
+
+  * Generates maintenance scripts for info files, init.d scripts, purging of
+    files.
+
+ -- Christoph Lameter <clameter@waterf.org>  Mon, 21 Oct 1996 09:20:23 -0800
+
+debmake (0.7) unstable; urgency=low
+
+  * Updated documentation
+  * Progress indicator
+  * Some errormessages from gzip avoided
+  * converts manpages just having .so <othermanpage> in it to symlinks
+  * Gzipping separated for manpages (all), info (all) and docs (>4K)
+    so we can easily adapt in case of future changes of policies.
+
+ -- Christoph Lameter <clameter@waterf.org>  Sun, 20 Oct 1996 14:51:06 -0800
+
+debmake (0.6) unstable; urgency=low
+
+  * debmake did not install scripts in debian directory!
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 17 Oct 1996 06:47:16 -0800
+
+debmake (0.5) unstable; urgency=low
+
+  * Manpages were installed as executables
+  * Display of redirected links was not correct
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 16 Oct 1996 22:12:56 -0800
+
+debmake (0.4) unstable; urgency=low
+
+  * Added automatic compression of documentation in /usr/man and /usr/doc
+    if files are >1K.
+  * Checks for dangling symlinks and redirects symlinks to filenames that 
+    were changed due to compression.
+  * Added rc.boot handling
+  * Permissions for documentation were set to executable when debstd was
+    used.
+
+ -- Christoph Lameter <clameter@waterf.org>  Wed, 16 Oct 1996 08:44:26 -0800
+
+debmake (0.3) unstable; urgency=low
+
+  * Added a perl script debchanges which does maintenance of
+    debian/changelog
+  * Added manpage for debchanges and an alias "dch" since it is frequently
+    used.
+
+ -- Christoph Lameter <clameter@waterf.org>  Fri, 11 Oct 1996 14:00:15 -0800
+
+debmake (0.2) unstable; urgency=low
+
+  * Added a native mode to have a package that does not need an .orig directory
+  * Put debstd into /usr/bin so that it does not have to be included in the
+    source archives.
+  * Added manpages for debstd and deb-make
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 10 Oct 1996 13:21:48 -0800
+
+debmake (0.1) experimental; urgency=low
+
+  * Initial Release.
+
+ -- Christoph Lameter <clameter@waterf.org>  Thu, 10 Oct 1996 13:21:48 -0800
+
+Local variables:
+mode: debian-changelog
+End:

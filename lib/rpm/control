@@ -1,0 +1,11 @@
+Source: #PACKAGE#
+Section: unknown
+Priority: extra
+Maintainer: #USERNAME# <#EMAIL#>
+Standards-Version: 2.1.1.0
+
+Package: #PACKAGE#
+Architecture: #ARCHIT#
+Depends: ${shlibs:Depends}
+Description: Converted RPM package
+ Not available
