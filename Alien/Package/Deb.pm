@@ -343,6 +343,7 @@ sub prep {
 export DH_COMPAT=3
 
 PACKAGE=$(shell dh_listpackages)
+PKGFILES=$(shell ls -1 |grep -v debian)
 
 build:
 	dh_testdir
@@ -359,7 +360,12 @@ binary-arch: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-	cp -a `ls -1 |grep -v debian` debian/$(PACKAGE)
+
+# Copy the packages's files, if any.
+ifneq "$(PKGFILES)" ""
+	cp -a $(PKGFILES) debian/$(PACKAGE)
+endif
+
 #
 # If you need to move files around in debian/$(PACKAGE) or do some
 # binary patching, do it here
@@ -369,7 +375,7 @@ binary-arch: build
 # This has been known to break on some wacky binaries.
 #	dh_strip
 	dh_compress
-# This is too paramoid to be generally useful to alien.
+# This is too paranoid to be generally useful to alien.
 #	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
@@ -397,7 +403,7 @@ EOF
 		}	
 	}
 	
-	my %dirtrans=( # Note: no trailing slahshes on these directory names!
+	my %dirtrans=( # Note: no trailing slashes on these directory names!
 		# Move files to FHS-compliant locations, if possible.
 		'/usr/man'	=> '/usr/share/man',
 		'/usr/info'	=> '/usr/share/info',

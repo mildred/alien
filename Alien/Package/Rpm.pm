@@ -88,12 +88,18 @@ sub scan {
 	}
 
 	# Get the conffiles list.
-	$this->conffiles([map { chomp; $_ } `rpm -qcp $file`]);
+	$this->conffiles([map { chomp; $_ } `LANG=C rpm -qcp $file`]);
+	if ($this->conffiles->[0] eq '(contains no files)') {
+		$this->conffiles([]);
+	}
 
 	$this->binary_info(scalar `rpm -qpi $file`);
 
 	# Get the filelist.
-	$this->filelist([map { chomp; $_ } `rpm -qpl $file`]);
+	$this->filelist([map { chomp; $_ } `LANG=C rpm -qpl $file`]);
+	if ($this->filelist->[0] eq '(contains no files)') {
+		$this->filelist([]);
+	}
 
 	# Sanity check and sanitize fields.
 	unless (defined $this->summary) {
@@ -246,7 +252,8 @@ sub prep {
 	print OUT "Name: ".$this->name."\n";
 	print OUT "Version: ".$this->version."\n";
 	print OUT "Release: ".$this->release."\n";
-	print OUT "Requires: ".$this->depends."\n" if length $this->depends;
+	print OUT "Requires: ".$this->depends."\n"
+		if defined $this->depends && length $this->depends;
 	print OUT "Summary: ".$this->summary."\n";
 	print OUT "Copyright: ".$this->copyright."\n";
 	print OUT "Distribution: ".$this->distribution."\n";
@@ -283,7 +290,7 @@ sub prep {
 	print OUT "(Converted from a ".$this->origformat." package by alien.)\n";
 	print OUT "\n";
 	print OUT "%files\n";
-	print OUT $filelist;
+	print OUT $filelist if defined $filelist;
 	close OUT;
 }
 

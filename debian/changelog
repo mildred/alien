@@ -1,3 +1,9 @@
+alien (8.02) unstable; urgency=low
+
+  * Made more robust in the face of empty rpms. Closes: #138969
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 19 Mar 2002 11:29:23 -0500
+
 alien (8.01) unstable; urgency=low
 
   * The "vmware and dpkg on drugs" release.
