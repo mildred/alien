@@ -49,28 +49,28 @@ This is a list of all the fields in the order they appear in the footer.
 
 =cut
 
-use constant footer_size => 3784,
-	footer_packstring => "A756IIIIA128A128A80A1536A512A512A30A30IA20A20III",
-	footer_version => 5,
-	archtrans => {
+use constant footer_size => 3784;
+use constant footer_packstring => "A756IIIIA128A128A80A1536A512A512A30A30IA20A20III";
+use constant footer_version => 5;
+use constant archtrans => {
 		0 => 'all',
 		1 => 'i386',
 		2 => 'sparc',
 		3 => 'alpha',
 		4 => 'powerpc',
 		5 => 'm68k',
-	},
-	copyrighttrans => {
+	};
+use constant copyrighttrans => {
 		0 => 'GPL',
 		1 => 'BSD',
 		2 => 'LGPL',
 		3 => 'unknown',
 		254 => 'unknown',
-	},
-	fieldlist => [qw{conffiles priority compresstype release copyright
-			 conflicts setupscript summary description depends
-			 provides author date compiler version name arch
-			 group slpkgversion}];
+	};
+use constant fieldlist => [qw{conffiles priority compresstype release copyright
+			      conflicts setupscript summary description depends
+			      provides maintainer date compiler version name
+			      arch group slpkgversion}];
 
 =back
 
@@ -192,11 +192,11 @@ sub unpack {
 
 	if ($compresstype == 0) {
 		system("bzip2 -d $file | (cd ".$this->unpacked_tree."; tar xpf -") &&
-			die "unpack failed: $!";
+			die "unpack failed";
 	}
 	elsif ($compresstype == 1) {
 		system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -") &&
-			die "unpack failed: $!";
+			die "unpack failed";
 	}
 	else {
 		die "package uses an unknown compression type, $compresstype (please file a bug report)";
@@ -221,7 +221,7 @@ sub build {
 	# (a). That is good for decoding, but not for encoding.
 	my $fmt=footer_packstring();
 	$fmt=~tr/A/a/;
-
+	
 	my $footer=pack($fmt,
 		$this->conffiles,
 		2, # Use priority optional for alien packages.
@@ -230,10 +230,11 @@ sub build {
 		254, # Don't try to guess copyright, just use unknown.
 		'', # Conflicts.
 		'', # Set up script. TODO
+		$this->summary,
 		$this->description,
 		'', # Depends.
 		'', # Provides.
-		$this->author,
+		$this->maintainer,
 		scalar localtime, # Use current date.
 		252, # Unknown compiler.
 		$this->version,
@@ -319,8 +320,9 @@ sub arch {
 
 	# set
 	if (@_) {
-		$this->{arch}=${archtrans()}{shift};
-		die "unknown architecture" if ! $this->{arch};
+		my $arch=shift;
+		$this->{arch}=${archtrans()}{$arch};
+		die "unknown architecture $arch" unless defined $this->{arch};
 	}
 
 	# get
@@ -344,7 +346,7 @@ sub release {
 	my $this=shift;
 
 	# set
-	$this->{release}=shift;
+	$this->{release}=shift if @_;
 
 	# get
 	return unless defined wantarray; # optimization

@@ -27,8 +27,7 @@ tgz's.
 
 =cut
 
-use constant 
-	scripttrans => {
+use constant scripttrans => {
 		postinst => 'doinst.sh',
 		postrm => 'delete.sh',
 		prerm => 'predelete.sh',

@@ -365,5 +365,8 @@ foreach my $file (@ARGV) {
 			# Note I don't unlink it. I figure that might annoy
 			# people, since it was an input file.
 		}
+		else {
+			print "$file already exists\n";
+		}
 	}
 }
