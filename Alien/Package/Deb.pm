@@ -251,7 +251,7 @@ sub unpack {
 =item getpatch
 
 This method tries to find a patch file to use in the prep stage. If it
-finds one, it returns it.  Pass in a list of directories to search for
+finds one, it returns it. Pass in a list of directories to search for
 patches in.
 
 =cut
@@ -264,12 +264,12 @@ sub getpatch {
 	foreach my $dir (@_) {
 		push @patches, glob("$dir/".$this->name."_".$this->version."-".$this->release."*.diff.gz");
 	}
-	if (! @patches && $anypatch) {
-		# Try not matching the revision, see if that helps.
+	if (! @patches) {
+		# Try not matching the release, see if that helps.
 		foreach my $dir (@_) {
 			push @patches,glob("$dir/".$this->name."_".$this->version."*.diff.gz");
 		}
-		unless (@patches) {
+		if (@patches && $anypatch) {
 			# Fallback to anything that matches the name.
 			foreach my $dir (@_) {
 				push @patches,glob("$dir/".$this->name."_*.diff.gz");
@@ -307,6 +307,21 @@ sub prep {
 			if `find $dir -name "*.rej"`;
 		system('find', '.', '-name', '*.orig', '-exec', 'rm', '{}', ';');
 		chmod 0755, "$dir/debian/rules";
+
+		# It's possible that the patch file changes the debian
+		# release or version. Parse changelog to detect that.
+		open (my $changelog, "<$dir/debian/changelog") || return;
+		my $line=<$changelog>;
+		if ($line=~/^[^ ]+\(([^)])\)\s/) {
+			my $version=$1;
+			if ($version=~/(.*)-(.*)/) {
+				$version=$1;
+				$this->release($2);
+			}
+			$this->version($1);
+		}
+		close $changelog;
+		
 		return;
 	}
 

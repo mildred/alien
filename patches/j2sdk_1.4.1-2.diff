@@ -1,0 +1,306 @@
+--- j2sdk-1.4.1.orig/debian/changelog
++++ j2sdk-1.4.1/debian/changelog
+@@ -0,0 +1,30 @@
++j2sdk (1.4.1-2) experimental; urgency=low
++
++  * Added java-common Depends
++  * Added java-virtual-machine, java2-runtime, java-compiler, and
++    java2-compiler Provides
++  * Added netscape and mozilla Suggests
++
++ -- Gerald Turner <gturner@newedgenetworks.com>  Thu, 23 Aug 2002 09:07:09 -0700
++
++j2sdk (1.4.1-1) experimental; urgency=low
++
++  * New upstream release
++  * Detection and installation of j2sdk-1_4_1-rc-doc.zip (must be downloaded
++    and copied to the same directory where alien is executed)
++
++ -- Gerald Turner <gturner@newedgenetworks.com>  Thu, 22 Aug 2002 16:22:33 -0700
++
++j2sdk (1.4.0_01-1) experimental; urgency=low
++
++  * New upstream release
++  * Detection and installation of j2sdk-1_4_0-doc.zip (must be downloaded
++    and copied to the same directory where alien is executed)
++
++ -- Gerald Turner <gturner@newedgenetworks.com>  Thu, 22 Aug 2002 15:44:54 -0700
++
++j2sdk (1.4.0-1) experimental; urgency=low
++
++  * Converted from .rpm format to .deb
++
++ -- Gerald Turner <gturner@newedgenetworks.com>  Wed, 22 May 2002 12:46:34 -0700
+--- j2sdk-1.4.1.orig/debian/control
++++ j2sdk-1.4.1/debian/control
+@@ -0,0 +1,31 @@
++Source: j2sdk
++Section: alien
++Priority: extra
++Maintainer: Gerald Turner <gturner@newedgenetworks.com>
++
++Package: j2sdk
++Architecture: i386
++Depends: java-common, ${shlibs:Depends}
++Provides: java-virtual-machine, java2-runtime, java-compiler, java2-compiler
++Suggests: netscape | mozilla (>= 0.9.3+0-1)
++Description: Java(TM) 2 Software Development Kit, Standard Edition
++ The Java 2 SDK, Standard Edition includes the Java
++ Virtual Machine, core class libraries and tools used
++ by programmers to develop Java software applets and
++ applications. The SDK also provides the foundation
++ for IDE (Integrated Development Environment) tools
++ such as Sun's Forte for Java, Community Edition,
++ the Java(TM) 2 Platform, Enterprise Edition (J2EE),
++ Java-based application servers and more.
++ The Java 2 Software Development Kit, SDK, is a
++ development environment for building applications,
++ applets, and components that can be deployed on
++ the Java platform. The Java 2 SDK software includes
++ tools useful for developing and testing programs
++ written in the Java programming language and running
++ on the Java platform.  These tools are designed to
++ be used from the command line.  Except for
++ appletviewer, these tools do not provide a
++ graphical user interface.
++ .
++ (Converted from a rpm package by alien.)
+--- j2sdk-1.4.1.orig/debian/copyright
++++ j2sdk-1.4.1/debian/copyright
+@@ -0,0 +1,35 @@
++This package was debianized by the alien program by converting
++a binary .rpm package on Thu, 22 Aug 2002 15:46:33 -0700
++
++Copyright: 1994-2001 Sun Microsystems, Inc.
++
++Information from the binary package:
++Name        : j2sdk                        Relocations: (not relocateable)
++Version     : 1.4.1                             Vendor: Sun Microsystems
++Release     : rc                            Build Date: Thu Aug  8 03:24:51 2002
++Install date: (not installed)               Build Host: localhost.localdomain
++Group       : Development/Tools             Source RPM: j2sdk-1.4.1-rc.src.rpm
++Size        : 83010311                         License: 1994-2001 Sun Microsystems, Inc.
++Packager    : Java Software <j2se-comments@java.sun.com>
++URL         : http://java.sun.com/linux
++Summary     : Java(TM) 2 Software Development Kit, Standard Edition
++Description :
++The Java 2 SDK, Standard Edition includes the Java
++Virtual Machine, core class libraries and tools used
++by programmers to develop Java software applets and
++applications. The SDK also provides the foundation
++for IDE (Integrated Development Environment) tools
++such as Sun's Forte for Java, Community Edition,
++the Java(TM) 2 Platform, Enterprise Edition (J2EE),
++Java-based application servers and more.
++The Java 2 Software Development Kit, SDK, is a
++development environment for building applications,
++applets, and components that can be deployed on
++the Java platform. The Java 2 SDK software includes
++tools useful for developing and testing programs
++written in the Java programming language and running
++on the Java platform.  These tools are designed to
++be used from the command line.  Except for
++appletviewer, these tools do not provide a
++graphical user interface.
++
+--- j2sdk-1.4.1.orig/debian/rules
++++ j2sdk-1.4.1/debian/rules
+@@ -0,0 +1,76 @@
++#!/usr/bin/make -f
++# debian/rules for alien
++
++# Uncomment this to turn on verbose mode.
++#export DH_VERBOSE=1
++
++# Use v3 compatability mode, so ldconfig gets added to maint scripts.
++export DH_COMPAT=3
++
++PACKAGE=$(shell dh_listpackages)
++
++build:
++	dh_testdir
++
++clean:
++	dh_testdir
++	dh_testroot
++	dh_clean
++
++binary-indep: build
++
++binary-arch: build
++	dh_testdir
++	dh_testroot
++	dh_clean -k
++	dh_installdirs
++
++# Copy the packages's files.
++	find . -maxdepth 1 -mindepth 1 -not -name debian -print0 | \
++		xargs -0 -r -i cp -a {} debian/$(PACKAGE)
++
++#
++# If you need to move files around in debian/$(PACKAGE) or do some
++# binary patching, do it here
++#
++
++	mv debian/$(PACKAGE)/usr/java/j2sdk1.4.1 \
++	   debian/$(PACKAGE)/usr/lib/j2sdk1.4
++	rmdir debian/$(PACKAGE)/usr/java
++
++	mv debian/$(PACKAGE)/usr/lib/j2sdk1.4/man/* \
++           debian/$(PACKAGE)/usr/share/man
++	rmdir debian/$(PACKAGE)/usr/lib/j2sdk1.4/man
++
++	rm debian/$(PACKAGE)/usr/share/man/ja
++	mv debian/$(PACKAGE)/usr/share/man/ja_JP.eucJP \
++           debian/$(PACKAGE)/usr/share/man/ja
++
++	for i in `find debian/$(PACKAGE)/usr/share/man -type f` ;       \
++            do mv $$i `echo $$i | sed 's/\.\([^.]*\)$$/.j2sdk14.\1/'` ; \
++	done
++
++	if [ -f ../j2sdk-1_4_1-rc-doc.zip ] ; then                          \
++	    unzip -q -d debian/$(PACKAGE)/usr/share/doc                     \
++                  ../j2sdk-1_4_1-rc-doc.zip ;                               \
++	    mv debian/$(PACKAGE)/usr/share/doc/docs                         \
++               debian/$(PACKAGE)/usr/share/doc/$(PACKAGE) ;                 \
++	else                                                                \
++	    echo j2sdk-1_4_1-rc-doc.zip not found, skipping documentation ; \
++	fi
++
++	dh_installdocs
++	dh_installchangelogs
++# This has been known to break on some wacky binaries.
++#	dh_strip
++	dh_compress
++	dh_fixperms
++	dh_makeshlibs
++	dh_installdeb
++	-dh_shlibdeps
++	dh_gencontrol
++	dh_md5sums
++	dh_builddeb
++
++binary: binary-indep binary-arch
++.PHONY: build clean binary-indep binary-arch binary
+--- j2sdk-1.4.1.orig/debian/dirs
++++ j2sdk-1.4.1/debian/dirs
+@@ -0,0 +1,4 @@
++usr/share/doc
++usr/share/man
++usr/lib/netscape/plugins-libc6
++usr/lib/mozilla/plugins
+--- j2sdk-1.4.1.orig/debian/postinst
++++ j2sdk-1.4.1/debian/postinst
+@@ -0,0 +1,75 @@
++#!/bin/sh
++
++case "`uname -m`" in
++    i[3-7]86 | ia32 | ia64)
++        ARCH=i386
++        ;;
++    sparc*)
++        ARCH=sparc
++        ;;
++    *)
++        ARCH="`uname -m`"
++        ;;
++esac
++
++if [ $1 = configure ]
++then
++    for i in appletviewer extcheck idlj jar jarsigner java javac javadoc \
++             javah javap jdb keytool kinit klist ktab native2ascii orbd  \
++             policytool rmic rmid rmiregistry serialver servertool       \
++             tnameserv ControlPanel HtmlConverter
++    do
++        if [ -e /usr/share/man/man1/$i.j2sdk14.1.gz ]
++        then
++            if [ -e /usr/share/man/ja/man1/$i.j2sdk14.1.gz ]
++            then
++                update-alternatives \
++                    --install \
++                        /usr/bin/$i \
++                        $i \
++                        /usr/lib/j2sdk1.4/bin/$i \
++                        1401 \
++                    --slave \
++                        /usr/share/man/man1/$i.1.gz \
++                        $i.1.gz \
++                        /usr/share/man/man1/$i.j2sdk14.1.gz \
++                    --slave \
++                        /usr/share/man/ja/man1/$i.1.gz \
++                        $i.ja.1.gz \
++                        /usr/share/man/ja/man1/$i.j2sdk14.1.gz
++            else
++                update-alternatives \
++                    --install \
++                        /usr/bin/$i \
++                        $i \
++                        /usr/lib/j2sdk1.4/bin/$i \
++                        1401 \
++                    --slave \
++                        /usr/share/man/man1/$i.1.gz \
++                        $i.1.gz \
++                        /usr/share/man/man1/$i.j2sdk14.1.gz
++            fi
++        else
++            update-alternatives \
++                --install \
++                    /usr/bin/$i \
++                    $i \
++                    /usr/lib/j2sdk1.4/bin/$i \
++                    1401
++        fi
++    done
++
++    update-alternatives \
++        --install \
++        /usr/lib/netscape/plugins-libc6/javaplugin.so \
++        javaplugin.so \
++        /usr/lib/j2sdk1.4/jre/plugin/${ARCH}/ns4/javaplugin.so \
++        1401
++
++    update-alternatives \
++        --install \
++        /usr/lib/mozilla/plugins/javaplugin_oji.so \
++        javaplugin_oji.so \
++        /usr/lib/j2sdk1.4/jre/plugin/${ARCH}/ns610/libjavaplugin_oji.so \
++        1401
++fi
+--- j2sdk-1.4.1.orig/debian/prerm
++++ j2sdk-1.4.1/debian/prerm
+@@ -0,0 +1,34 @@
++#!/bin/sh
++
++case "`uname -m`" in
++    i[3-7]86 | ia32 | ia64)
++        ARCH=i386
++        ;;
++    sparc*)
++        ARCH=sparc
++        ;;
++    *)
++        ARCH="`uname -m`"
++        ;;
++esac
++
++if [ $1 = remove ]
++then
++    for i in appletviewer extcheck idlj jar jarsigner java javac javadoc \
++             javah javap jdb keytool kinit klist ktab native2ascii orbd  \
++             policytool rmic rmid rmiregistry serialver servertool       \
++             tnameserv ControlPanel HtmlConverter
++    do
++        update-alternatives --remove $i /usr/lib/j2sdk1.4/bin/$i
++    done
++
++    update-alternatives \
++        --remove \
++        javaplugin.so \
++        /usr/lib/j2sdk1.4/jre/plugin/${ARCH}/ns4/javaplugin.so
++
++    update-alternatives \
++        --remove \
++        javaplugin_oji.so \
++        /usr/lib/j2sdk1.4/jre/plugin/${ARCH}/ns610/libjavaplugin_oji.so
++fi
