@@ -40,13 +40,12 @@ binary-indep: build
 VERSION=$(shell expr "`dpkg-parsechangelog 2>/dev/null |grep Version:`" : '.*Version: \(.*\)')
 
 # Update the web page. Not intended for use by anyone except the author.
+DIR=/home/web/kitenet.net/programs/alien
 installhook:
-	cp debian/changelog /home/pub/programs/alien/CHANGES
-	echo -n $(VERSION) > /home/pub/programs/alien/LATEST-VERSION-IS
-	rm /home/ftp/pub/code/alien/* || true
-	cd /home/ftp/pub/code/alien; \
-		ln -sf ../debian/alien_$(VERSION).tar.gz alien_$(VERSION).tar.gz; \
-		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
+	cp debian/changelog $(DIR)/CHANGES
+	echo -n $(VERSION) > $(DIR)/LATEST-VERSION-IS
+	rm -f $(DIR)/*.tar.gz
+	ln -sf /home/joey/debian/unstable/alien_$(VERSION).tar.gz
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
