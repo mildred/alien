@@ -58,7 +58,7 @@ sub GetFields { my ($self,$file)=@_;
 		$i++;
 	}
 
-	$fields{COPYRIGHT}="see /usr/doc/$fields{NAME}/copyright";
+	$fields{COPYRIGHT}="see /usr/share/doc/$fields{NAME}/copyright";
 	$fields{GROUP}="unknown" if (!$fields{GROUP});
 	$fields{DISTRIBUTION}="Debian";
 	if ($fields{VERSION} =~ /(.+)-(.+)/) {

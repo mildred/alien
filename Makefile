@@ -22,8 +22,8 @@ install:
 	cp -f patches/* $(DESTDIR)/$(PREFIX)/lib/alien/patches/
 	-rm -f $(DESTDIR)/$(PREFIX)/lib/alien/patches/*.gz
 	gzip -qf9 $(DESTDIR)/$(PREFIX)/lib/alien/patches/*
-	install -d $(DESTDIR)/$(PREFIX)/man/man1
-	cp -f alien.1 $(DESTDIR)/$(PREFIX)/man/man1
+	install -d $(DESTDIR)/$(PREFIX)/share/man/man1
+	cp -f alien.1 $(DESTDIR)/$(PREFIX)/share/man/man1
 
 # This updates the version number in various files.
 version:

@@ -1,14 +1,18 @@
 Source: alien
 Section: admin
 Priority: extra
-Maintainer: Christoph Lameter <clameter@waterf.org>
-Standards-Version: 2.1.2.2
+Maintainer: Joey Hess <joeyh@master.debian.org>
+Standards-Version: 3.0.1.1
 
 Package: alien
 Architecture: all
 Section: admin
-Depends: debmake
-Recommends: rpm
-Description: Install RedHat and Slackware Packages with dpkg.
- Allows the integration of packages from other sources (Red Hat, Slackware etc)
- called "Aliens". This is a tool only suitable for binary packages.
+Depends: debhelper (>= 0.88), perl5 | perl (>= 5.004), rpm (>= 2.4.4-2), dpkg-dev, make, cpio
+Suggests: patch, bzip2
+Description: Install Red Hat, Stampede, and Slackware Packages with dpkg.
+ Alien allows you to convert Red Hat, Stampede and Slackware Packages into
+ Debian packages, which can be installed with dpkg. 
+ .
+ It can also convert into Slackware, Red Hat, and Stampede packages.
+ .
+ This is a tool only suitable for binary packages.

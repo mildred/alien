@@ -15,8 +15,8 @@
      echo "Copying .odbc.ini to $HOME"
 -    test -f /usr/doc/packages/axbase/.odbc.ini && \
 -	cp /usr/doc/packages/axbase/.odbc.ini ${HOME}/.odbc.ini
-+    test -f /usr/doc/axbase/.odbc.ini && \
-+	cp /usr/doc/axbase/.odbc.ini ${HOME}/.odbc.ini
++    test -f /usr/share/doc/axbase/.odbc.ini && \
++	cp /usr/share/doc/axbase/.odbc.ini ${HOME}/.odbc.ini
  fi
  
  #
@@ -147,4 +147,4 @@
 --- axbase-4.4.1.orig/debian/menu
 +++ axbase-4.4.1/debian/menu
 @@ -0,0 +1 @@
-+?package(applix):needs="x11" section="Apps/Editors" title="Applixware" command="applixware"
++?package(axbase):needs="x11" section="Apps/Editors" title="Applixware" command="applixware"
