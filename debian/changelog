@@ -233,8 +233,8 @@ alien (6.99) unstable; urgency=low
     one:
       perl -MAlien::Package::Deb -MAlien::Package::Rpm -e '
       	       $p=Alien::Package::Rpm->new(filename => shift); $p->unpack;
-	       bless($p, "Alien::Package::Deb");
-	       $p->prep; $p->build'
+               bless($p, "Alien::Package::Deb");
+               $p->prep; $p->build'
   * Almost every line of code has been rewritten.
   * Package descriptions now include a note that they were converted with
     alien. There are other numerous changes to the converted packages, for
@@ -1927,7 +1927,3 @@ debmake (0.1) experimental; urgency=low
   * Initial Release.
 
  -- Christoph Lameter <clameter@waterf.org>  Thu, 10 Oct 1996 13:21:48 -0800
-
-Local variables:
-mode: debian-changelog
-End:
