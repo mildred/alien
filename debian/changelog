@@ -1,3 +1,10 @@
+alien (7.15) unstable; urgency=low
+
+  * Removed dh_suidregister call -- bitten my by own program! :-)
+    Closes: #82230
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 14 Jan 2001 14:12:49 -0800
+
 alien (7.14) unstable; urgency=low
 
   * Added rpm spec file fix.

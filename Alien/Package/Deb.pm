@@ -343,7 +343,6 @@ binary-arch: build
 #	dh_strip
 	dh_compress
 #	dh_fixperms
-	dh_suidregister
 	dh_installdeb
 	-dh_shlibdeps
 	dh_gencontrol
