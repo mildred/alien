@@ -61,6 +61,7 @@ Using dpkg-deb is a lot more future-proof, but the system may not have it.
 sub read_file {
 	my $this=shift;
 	$this->SUPER::read_file(@_);
+	my $file=$this->filename;
 
 	# Extract the control file from the deb file.
 	my @control;
@@ -164,6 +165,7 @@ Implment the unpack method to unpack a deb file.
 sub unpack {
 	my $this=shift;
 	$this->SUPER::unpack(@_);
+	my $file=$this->filename;
 
 	if ($this->have_dpkg_deb) {
 		system("dpkg-deb -x $file ".$this->unpacked_tree) &&
