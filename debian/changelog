@@ -1,3 +1,15 @@
+alien (8.44) unstable; urgency=low
+
+  * Don't add line about permissions fixup code to postinst if there is not
+    code to add.
+  * Don't assume that just because we know of a user or are root, that files
+    can go into the deb owned by that user, and come out right on install.
+    Instead, assume that any non-root user will not be on the target system
+    the rpm is installed on, and that it might be created in the preinst or
+    something, so add permissions fixup code for all such users.
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 24 Mar 2004 22:51:48 -0500
+
 alien (8.43) unstable; urgency=low
 
   * Added a new j2sdk_1.4.2_03-1.diff from Gerald Turner.
