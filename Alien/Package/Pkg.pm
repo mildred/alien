@@ -196,6 +196,7 @@ sub scan {
 		}
 	}
 
+	$this->filelist(\@filelist);
 	$this->conffiles(\@conffiles);
 
 	# Now get the scripts.
