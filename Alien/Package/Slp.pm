@@ -43,6 +43,10 @@ compatable with.)
 This is a translation table between architectures and the number
 that represents them in a slp package.
 
+=item fieldlist
+
+This is a list of all the fields in the order they appear in the footer.
+
 =cut
 
 use constant footer_size => 3784,
@@ -62,13 +66,27 @@ use constant footer_size => 3784,
 		2 => 'LGPL',
 		3 => 'unknown',
 		254 => 'unknown',
-	};
+	},
+	fieldlist => [qw{conffiles priority compresstype release copyright
+			 conflicts setupscript summary description depends
+			 provides author date compiler version name arch
+			 group slpkgversion}];
 
 =back
 
 =head1 FIELDS
 
 =over 4
+
+=item compresstype
+
+Holds the compression type used in the slp file.
+
+=item slpkgversion
+
+Holds the slp package format version of the slp file.
+
+=item 
 
 =head1 METHODS
 
@@ -86,6 +104,24 @@ sub install {
 
 }
 
+=item getfooter
+
+Pulls the footer out of the slp file and returns it.
+
+=cut
+
+sub getfooter {
+	my $this=shift;
+	my $file=$this->filename;
+
+	open (SLP,"<$file") || die "$file: $!";
+	# position at beginning of footer (2 = seek from EOF)
+	seek SLP,(- footer_size),2;
+	read SLP,$_,footer_size;
+	close SLP;
+	return $_;
+}
+
 =item scan
 
 Implement the scan method to read a slp file.
@@ -97,13 +133,40 @@ sub scan {
 	$this->SUPER::scan(@_);
 	my $file=$this->filename;
 
+	# Decode the footer.
+	my @values=unpack(footer_packstring,$this->getfooter);
+	# Populate fields.
+	foreach my $field (@{fieldlist}) {
+		$_=shift @values;
+		$this->$field($_);
+	}
 
+	# A simple sanity check.
+	if (! defined $this->slpkgversion || $this->slpkgversion < footer_version) {
+		die "unsupported stampede package version";
+	}
+
+	# Read in the file list.
+	my @filelist;
+	# FIXME: support gzip files too!
+	foreach (`bzip2 -d < $file | tar -tf -`) {
+		s:^\./:/:;
+		$_="/$_" unless m:^/:;
+		push @filelist, $fn;
+	}
+
+	# TODO: read in postinst script.
+
+	$this->distribution('Stampede');
+	$this->origformat('slp');
+	
 	return 1;
 }
 
 =item unpack
 
-Implment the unpack method to unpack a slp file.
+Unpack a slp file. They can be compressed in various ways, depending on
+what is in the compresstype field.
 
 =cut
 
@@ -111,7 +174,19 @@ sub unpack {
 	my $this=shift;
 	$this->SUPER::unpack(@_);
 	my $file=$this->filename;
+	my $compresstype=$this->compresstype;
 
+	if ($compresstype == 0) {
+		system("bzip2 -d $file | (cd ".$this->unpacked_tree."; tar xpf -") &&
+			die "unpack failed: $!";
+	}
+	elsif ($compresstype == 1) {
+		system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -") &&
+			die "unpack failed: $!";
+	}
+	else {
+		die "package uses an unknown compression type, $compresstype (please file a bug report)";
+	}
 
 	return 1;
 }
@@ -137,6 +212,71 @@ sub build {
 	my $this=shift;
 
 	return # filename
+}
+
+=item conffiles
+
+Set/get conffiles.
+
+When the conffiles are set, the format used by slp (a colon-delimited list)
+is turned into the real list that is used internally.
+
+=cut
+
+sub conffiles {
+	my $this=shift;
+
+	# set
+	$this->{conffiles}=[split /:/, shift]; if @_;
+
+	# get
+	return unless defined wantarray; # optimization
+	return $this->{conffiles};
+}
+
+=item copyright
+
+Set/get copyright.
+
+When the copyright is set, the number used by slp is changed into a textual
+description. This is changed back into a number when the value is
+retreived.
+
+=cut
+
+sub copyright {
+	my $this=shift;
+
+	# set
+	$this->{copyright}=(${copyrighttrans}{shift} || 'unknown') if @_;
+	
+	# get
+	return unless defined wantarray; # optimization
+	return $this->{copyright};
+}
+
+=item arch
+
+Set/get arch.
+
+When the arch is set, the number used by slp is changed into a textual
+description. This is changed back into a number when the value is
+retreived.
+
+=cut
+
+sub arch {
+	my $this=shift;
+
+	# set
+	if (@_) {
+		$this->{arch}=(${archtrans}{shift};
+		die "unknown architecture" if ! $this->{arch};
+	}
+
+	# get
+	return unless defined wantarray; # optimization
+	return $this->{arch};
 }
 
 =head1 AUTHOR
