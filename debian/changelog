@@ -1,3 +1,10 @@
+alien (8.09) unstable; urgency=low
+
+  * Deal with packages with strange characters in their filenames.
+    Closes: #146017
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 23 May 2002 22:35:25 -0400
+
 alien (8.08) unstable; urgency=low
 
   * Gerald Turner <gturner@newedgenetworks.com> contributed a .diff file for

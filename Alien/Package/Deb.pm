@@ -375,7 +375,6 @@ sub prep {
 export DH_COMPAT=3
 
 PACKAGE=\$(shell dh_listpackages)
-PKGFILES=\$(shell ls -1 |grep -v debian)
 
 build:
 	dh_testdir
@@ -393,10 +392,9 @@ binary-arch: build
 	dh_clean -k
 	dh_installdirs
 
-# Copy the packages's files, if any.
-ifneq "\$(PKGFILES)" ""
-	cp -a \$(PKGFILES) debian/\$(PACKAGE)
-endif
+# Copy the packages's files.
+	find . -maxdepth 1 -mindepth 1 -not -name debian -print0 | \\
+		xargs -0 -r -i cp -a {} debian/\$(PACKAGE)
 
 #
 # If you need to move files around in debian/\$(PACKAGE) or do some
