@@ -27,4 +27,4 @@ chown -R root.root $RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" > manifest
 
 %files -f manifest
-%doc CHANGES COPYING README alien.lsm
+%doc denbian/changelog COPYING README alien.lsm
