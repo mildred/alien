@@ -55,6 +55,7 @@ installhook:
 		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
 	fakeroot alien --to-slp /home/joey/debian/public/alien_*.deb
 	mv alien-$(VERSION).slp /home/ftp/pub/code/alien/
+	make rpm
 	ln -s /home/ftp/pub/code/alien/alien-$(VERSION).slp \
 		/home/ftp/pub/code/alien/alien.slp
 
