@@ -1,3 +1,9 @@
+alien (8.31) unstable; urgency=low
+
+  * Updated the j2sdk patch for version 1.4.2. (From Gerald Turner.)
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 30 Jun 2003 20:55:10 -0400
+
 alien (8.30) unstable; urgency=low
 
   * Added -v to enable verbose mode, which lists each shell command
