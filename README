@@ -32,8 +32,9 @@ Other things you'll need:
   Attention, Slackware, Red Hat, and Stampede users: Bruce S. Babcock
   <babcock@math.psu.edu> has put together an "alien-extra"
   package of all the extra files you need to use alien on
-  a Red Hat or Slackware system. (Debian systems automatically have the
+  a Red Hat or Slackware system. (Debian systems automatically have all
   required files.)
+  
   The Slackware version is at 
   	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.tgz
   The RedHat version is at
@@ -59,6 +60,8 @@ Programs that use alien:
   I know of one program that acts as a frontend to alien - kpackviewer is a
   package viewer that can convert between package formats by using alien. Its
   homepage is at http://www.momentus.com.br/users/hook/kpackviewer.html
+
+  Corel also appears to have something in Corel linux that uses alien.
 
 Please report any bugs in alien to the author: 
 

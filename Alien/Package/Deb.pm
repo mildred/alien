@@ -73,8 +73,8 @@ sub install {
 	my $this=shift;
 	my $deb=shift;
 
-	system("dpkg --no-force-overwrite -i $deb") &&
-		die "Unable to install";
+	system("dpkg --no-force-overwrite -i $deb") == 0
+		or die "Unable to install";
 }
 
 =item getcontrolfile
@@ -190,12 +190,12 @@ sub unpack {
 	my $file=$this->filename;
 
 	if ($this->have_dpkg_deb) {
-		system("dpkg-deb -x $file ".$this->unpacked_tree) &&
-			die "Unpacking of `$file' failed: $!";
+		system("dpkg-deb -x $file ".$this->unpacked_tree) == 0
+			or die "Unpacking of `$file' failed: $!";
 	}
 	else {
-		system ("ar p $file data.tar.gz | (cd ".$this->unpacked_tree."; tar zxpf -)") &&
-			die "Unpacking of `$file' failed: $!";
+		system("ar p $file data.tar.gz | (cd ".$this->unpacked_tree."; tar zxpf -)") == 0
+			or die "Unpacking of `$file' failed: $!";
 	}
 
 	return 1;
@@ -252,8 +252,8 @@ sub prep {
 	if (defined $this->patchfile) {
 		# The -f passed to zcat makes it pass uncompressed files
 		# through without error.
-		system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") &&
-			die "patch error: $!";
+		system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") == 0
+			or die "patch error: $!";
 		# Look for .rej files.
 		die "patch failed with .rej files; giving up"
 			if `find $dir -name "*.rej"`;
@@ -379,7 +379,8 @@ sub build {
 	my $this=shift;
 
 	chdir $this->unpacked_tree;
-	system("debian/rules binary >/dev/null") && die "package build failed: $!";
+	system("debian/rules binary >/dev/null") == 0
+		or die "package build failed: $!";
 	chdir "..";
 
 	return $this->name."_".$this->version."-".$this->release."_".$this->arch.".deb";

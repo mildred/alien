@@ -293,8 +293,8 @@ sub DESTROY {
 	if ($this->unpacked_tree eq '/') {
 		die "alien internal error: unpacked_tree is set to `/'. Please file a bug report!";
 	}
-	system ('rm', '-rf', $this->unpacked_tree) &&
-		die "unable to delete temporary directory `".$this->unpacked_tree."`: $!";
+	system('rm', '-rf', $this->unpacked_tree) == 0
+		or die "unable to delete temporary directory `".$this->unpacked_tree."`: $!";
 	$this->unpacked_tree('');	
 }
 

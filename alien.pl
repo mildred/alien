@@ -364,8 +364,8 @@ foreach my $file (@ARGV) {
 			# Make .orig.tar.gz directory?
 			if ($format eq 'deb' && ! $single && $generate) {
 				# Make .orig.tar.gz directory.
-				system("cp -fa ".$package->unpacked_tree." ".$package->unpacked_tree.".orig") &&
-					die "cp -fa failed";
+				system("cp -fa ".$package->unpacked_tree." ".$package->unpacked_tree.".orig") == 0
+					or die "cp -fa failed";
 			}
 	
 			# See if a patch file should be used.

@@ -52,8 +52,8 @@ sub install {
 	my $this=shift;
 	my $rpm=shift;
 
-	system("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm) &&
-		die "Unable to install";
+	system("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm) == 0
+		or die "Unable to install";
 }
 
 =item scan
@@ -138,8 +138,8 @@ sub unpack {
 	$this->SUPER::unpack(@_);
 	my $workdir=$this->unpacked_tree;
 	
-	system ("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null") &&
-		die "Unpacking of `".$this->filename."' failed";
+	system("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null") == 0
+		or die "Unpacking of `".$this->filename."' failed";
 	
 	# If the package is relocatable. We'd like to move it to be under
 	# the $this->prefixes directory. However, it's possible that that
@@ -160,13 +160,13 @@ sub unpack {
 		my $collect=$workdir;
 		foreach (split m:/:, $this->prefixes) {
 			if ($_ ne '') { # this keeps us from using anything but relative paths.
-				$collect.="$_/";
+				$collect.="/$_";
 				mkdir $collect,0755 || die "unable to mkdir $collect: $!";
 			}
 		}
 		# Now move all files in the package to the directory we made.
-		system "mv", @filelist, "$workdir/".$this->prefixes &&
-			die "error moving unpacked files into the default prefix directory: $!";
+		system("mv", @filelist, "$workdir/".$this->prefixes) == 0
+			or die "error moving unpacked files into the default prefix directory: $!";
 	}
 
 	# When cpio extracts the file, any child directories that are
@@ -345,8 +345,8 @@ sub build {
 	}
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
-	system("cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null") &&
-		die "package build failed";
+	system("cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null") == 0
+		or die "package build failed";
 
 	return $rpm;
 }

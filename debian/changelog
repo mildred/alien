@@ -1,3 +1,11 @@
+alien (7.7) unstable; urgency=low
+
+  * Corrected return code of system check.
+  * Corrected logic error in relocatable rpm handling that was making
+    converting such rpms not work. (Closes: #71155)
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 11 Sep 2000 16:19:22 -0700
+
 alien (7.6) unstable; urgency=low
 
   * Added a note about a sticky library dependancy issue that I can't fix.
@@ -5,6 +13,7 @@ alien (7.6) unstable; urgency=low
     names, spaces in conffile names (!!), and accented characters
     everywhere in deb -> rpm conversions.
   * Fixed numerous problems when converting from .deb w/o dpkg installed.
+  * Fixed "2 files on 1 line" error when converting deb -> rpm.
 
  -- Joey Hess <joeyh@debian.org>  Thu, 20 Jul 2000 15:12:08 -0700
 
