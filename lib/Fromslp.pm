@@ -2,22 +2,12 @@
 #
 # Package for converting from a .slp (Stampede) file.
 
+# Pull in details on the binary footer.
+use Slp;
+
 package From::slp;
 
 use strict;
-
-# Becuase .slp files are a binary format we parse by hand, I need to code in
-# the details of the structure here.
-
-	# Complete sizeof(slpformat) from slp.h in the stampede package manager source.
-	$From::slp::footer_size=3784;
-
-	# This is the pack format string for the footer.
-	$From::slp::footer_packstring="A756IIIIA128A128A80A1536A512A512A30A30IA20A20III";
-
-	# What package format are we up to now? (Lowest one this is still compatable
-	# with.)
-	$From::slp::footer_version=5;
 
 # Pass it a chunk of footer, it will attempt a decode and spit back the result
 # in a hash, %fields.
@@ -43,11 +33,11 @@ sub DecodeFooter { my $footer=shift;
 	 $fields{ARCH},
 	 $fields{GROUP},
 	 $fields{SLPKGVERSION},
-	)=unpack($From::slp::footer_packstring,$footer);
+	)=unpack($slp::footer_packstring,$footer);
 
 	# A simple sanity check.
-	if (! $fields{SLPKGVERSION} || $fields{SLPKGVERSION} < $From::slp::footer_version) {
-		Alien::Error("This is not a V$From::slp::footer_version or greater Stampede package");
+	if (! $fields{SLPKGVERSION} || $fields{SLPKGVERSION} < $slp::footer_version) {
+		Alien::Error("This is not a V$slp::footer_version or greater Stampede package");
 	}
 
 	return %fields;
@@ -57,8 +47,8 @@ sub DecodeFooter { my $footer=shift;
 # in a scalar.
 sub GetFooter { my ($filename)=@_;
 	open (SLP,"<$filename") || Alien::Error("unable to read $filename: $!");
-	seek SLP,(-1 * $From::slp::footer_size),2; # position at beginning of footer (2 = seek from EOF)
-	read SLP,$_,$From::slp::footer_size;
+	seek SLP,(-1 * $slp::footer_size),2; # position at beginning of footer (2 = seek from EOF)
+	read SLP,$_,$slp::footer_size;
 	close SLP;
 	return $_;
 }
@@ -74,54 +64,34 @@ sub GetFields { my ($self,$file)=@_;
 		$fields{CONFFILES}.="\n";
 	}
 
-	if ($fields{COPYRIGHT} == 0) {
-		$fields{COPYRIGHT}="GPL";
-	}
-	elsif ($fields{COPYRIGHT} == 1) {
-		$fields{COPYRIGHT}="BSD";
-	}
-	elsif ($fields{COPYRIGHT} == 2) {
-		$fields{COPYRIGHT}="LGPL";
-	}
-	elsif ($fields{COPYRIGHT} == 3) {
-		$fields{COPYRIGHT}="unknown";
+	if ($$slp::copyrighttrans{$fields{COPYRIGHT}}) {
+		$fields{COPYRIGHT}=$$slp::copyrighttrans{$fields{COPYRIGHT}};
 	}
 	else {
 		Alien::Warning("I don't know what copyright type \"$fields{COPYRIGHT}\" is.");
 		$fields{COPYRIGHT}="unknown";
 	}
 
-	if ($fields{ARCH} == 0) {
-		$fields{ARCH}='all';		
-	}
-	elsif ($fields{ARCH} == 1) {
-		$fields{ARCH}='i386';
-	}
-	elsif ($fields{ARCH} == 2) {
-		$fields{ARCH}='sparc';
-	}
-	elsif ($fields{ARCH} == 3) {
-		$fields{ARCH}='alpha';
-	}
-	elsif ($fields{ARCH} == 4) {
-		$fields{ARCH}='powerpc';
-	}
-	elsif ($fields{ARCH} == 5) {
-		$fields{ARCH}='m68k';
+	if ($$slp::archtrans{$fields{ARCH}}) {
+		$fields{ARCH}=$$slp::archtrans{$fields{ARCH}};
 	}
 	else {
-		Alien::Error("An unknown architecture of \"$fields{ARCH}\" was specified.");
+		Alien::Error("An unknown architecture, \"$fields{ARCH}\" was specified.");
 	}
 
 	$fields{RELEASE}++ unless $main::keep_version;
 	$fields{DISTRIBUTION}="Stampede";
 
 	# Read in the list of all files.
-	# Note that they will have a leading "." we don't want.
 	$fields{FILELIST}=undef;
 	my $fn;
-	foreach $fn (`tar -Itf $file`) {
-		$fn=~s/^\.//;
+	foreach $fn (`bzip2 -d < $file | tar -tf -`) {
+		# They may have a leading "." we don't want.
+		$fn=~s:^\./:/:;
+		# Ensure there is always a leading '/'.
+		if ($fn=~m:^/: eq undef) {
+			$fn="/$fn";
+		}
 		$fields{FILELIST}.="$fn\n";
 	}
 
@@ -131,9 +101,20 @@ sub GetFields { my ($self,$file)=@_;
 }
 
 # Unpack a slp file.
-sub Unpack { my ($self,$file,%fields)=@_;
-	# Note it's a .tar.bz2, this the -I
-	Alien::SafeSystem ("(cd ..;cat $file) | tar Ixpf -","Error unpacking $file\n");
+# They can be compressed in various ways, depending on what is in
+# $fields{COMPRESSTYPE}.
+sub Unpack { my ($self,$file,$nopatch,%fields)=@_;
+	if ($fields{COMPRESSTYPE} eq 0) {
+		Alien::SafeSystem ("(cd ..;cat $file) | bzip2 -d | tar xpf -","Error unpacking $file\n");
+	}
+	elsif ($fields{COMPRESSTYPE} eq 1) {
+		# .gz
+		Alien::SafeSystem ("(cd ..;cat $file) | tar zxpf -","Error unpacking $file\n");
+	}
+	else {
+		# Seems .zip might be a possibility, but I have no way of testing it.
+		Alien::Error("This packages uses an unknown compression type, $fields{COMPRESSTYPE}.");
+	}
 }
 
 1

@@ -38,10 +38,6 @@ sub GetFields { my ($self,$file)=@_;
 		$fields{$fieldtrans{$field}}=$_ if $_ ne '(none)';
 	}
 
-	# DEFAULTPREFIX is special because it only exists in old versions of rpm.
-	$_=`rpm -qp $file --queryformat \%{PREFIXES} 2>/dev/null`;
-	$fields{PREFIXES}=$_ if $_ ne '' && $_ ne '(none)';
-
 	if ($main::scripts) {
 		# Fix up the scripts - they are always shell scripts, so make them so.
 		foreach $field ('PREINST','POSTINST','PRERM','POSTRM') {
@@ -116,20 +112,21 @@ sub GetFields { my ($self,$file)=@_;
 }
 
 # Unpack a rpm file.
-sub Unpack { my ($self,$file,%fields)=@_;
+sub Unpack { my ($self,$file,$nopatch,%fields)=@_;
 	Alien::SafeSystem("(cd ..;rpm2cpio $file) | cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time",
   	"Error unpacking $file\n");
 
-
 	# If the package is relocatable. We'd like to move it to be under the
-	# PREFIXES directory. However, it's possible that that directory is in the
-	# package - it seems some rpm's are marked as relocatable and unpack already
-	# in the directory they can relocate to, while some are marked relocatable
-	# and the directory they can relocate to is removed from all filenames in the
-	# package. I suppose this is due to some change between versions of rpm, but
-	# none of this is adequatly documented, so we'll just muddle through.
+	# PREFIXES directory. However, it's possible that that directory is in
+	# the package - it seems some rpm's are marked as relocatable and
+	# unpack already in the directory they can relocate to, while some are
+	# marked relocatable and the directory they can relocate to is removed
+	# from all filenames in the package. I suppose this is due to some
+	# vchange between versions of rpm, but none of this is adequatly
+	# documented, so we'll just muddle through.
 	# 
 	# Test to see if the package contains the PREFIXES directory already.
+	print "----$fields{PREFIXES}\n";
 	if ($fields{PREFIXES} ne undef && ! -e "./$fields{PREFIXES}") {
 		print "Moving unpacked files into $fields{PREFIXES}\n";
 		

@@ -15,7 +15,7 @@ sub GetFields { my ($self,$file)=@_;
 	my ($basename)=('/'.$file)=~m#^/?.*/(.*?)$#;
 
 	# Strip out any tar extentions.
-	$basename=~s/\.(tgz|tar\.gz)$//;
+	$basename=~s/\.(tgz|tar\.(gz|Z))$//;
 
 	if ($basename=~m/(.*)-(.*)/ ne undef) {
 		$fields{NAME}=$1;
@@ -26,7 +26,7 @@ sub GetFields { my ($self,$file)=@_;
 		$fields{VERSION}=1;
 	}
 
-	$fields{ARCH}='i386';
+	$fields{ARCH}='all';
 	if ($main::tgzdescription eq undef) {
 		$fields{SUMMARY}='Converted Slackware tgz package';
 	}
@@ -56,8 +56,8 @@ sub GetFields { my ($self,$file)=@_;
 	}
 	close FILELIST;
 
-	# Now get the whole filelist. We have to add leading /'s to the filenames.
-  # We have to ignore all files under /install/
+	# Now get the whole filelist. We have to add leading /'s to the 
+	# filenames. We have to ignore all files under /install/
 	$fields{FILELIST}='';
 	open (FILELIST, "tar ztf $file |");
 	while (<FILELIST>) {
@@ -86,7 +86,7 @@ sub GetFields { my ($self,$file)=@_;
 }
 
 # Handles unpacking of tgz's.
-sub Unpack { my ($self,$file)=@_;
+sub Unpack { my ($self,$nopatch,$file)=@_;
 	Alien::SafeSystem ("(cd ..;cat $file) | tar zxpf -","Error unpacking $file\n");
 
 	# Delete this install directory that has slackware info in it.
