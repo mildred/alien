@@ -1,3 +1,11 @@
+alien (8.37) unstable; urgency=low
+
+  * Make sure the working directory's subdirs have sane modes before trying
+    to delete it, in case it has unwritable dirs and alien is not running
+    as root. Closes: #217330
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 28 Oct 2003 15:45:31 -0500
+
 alien (8.36) unstable; urgency=low
 
   * Patch from aj to fix permissions of setuid files that have their owners
