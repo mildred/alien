@@ -1,9 +1,0 @@
-#PACKAGE# (#VERSION#-#DELTA#) unstable; urgency=low
-
-  * Converted from RPM binary format to debian
-
- -- #USERNAME# <#EMAIL#>  #DATE#
-
-Local variables:
-mode: debian-changelog
-End:
