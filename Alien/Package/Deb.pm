@@ -8,7 +8,6 @@ Alien::Package::Deb - an object that represents a deb package
 
 package Alien::Package::Deb;
 use strict;
-use Alien::Package; # perlbug
 use base qw(Alien::Package);
 
 =head1 DESCRIPTION

@@ -8,7 +8,6 @@ Alien::Package::Tgz - an object that represents a tgz package
 
 package Alien::Package::Tgz;
 use strict;
-use Alien::Package; # perlbug
 use base qw(Alien::Package);
 
 =head1 DESCRIPTION

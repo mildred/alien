@@ -8,7 +8,6 @@ Alien::Package::Rpm - an object that represents a rpm package
 
 package Alien::Package::Rpm;
 use strict;
-use Alien::Package; # perlbug
 use base qw(Alien::Package);
 
 =head1 DESCRIPTION

@@ -8,7 +8,6 @@ Alien::Package::Slp - an object that represents a slp package
 
 package Alien::Package::Slp;
 use strict;
-use Alien::Package; # perlbug
 use base qw(Alien::Package);
 
 =head1 DESCRIPTION
