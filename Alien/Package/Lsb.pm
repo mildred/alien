@@ -96,7 +96,7 @@ sub revert {
 
 =item build
 
-Uses the parent's build command. If a lsb-rpm is available, uses it to build
+Uses the parent's build method. If a lsb-rpm is available, uses it to build
 the package.
 
 =cut
