@@ -342,7 +342,9 @@ foreach my $file (@ARGV) {
 
 	# Increment release.
 	unless (defined $keepversion) {
+		$^W=0; # Shut of possible "is not numeric" warning.
 		$package->release($package->release + 1);
+		$^W=1; # Re-enable warnings.
 	}
 
 	foreach my $format (keys %destformats) {
