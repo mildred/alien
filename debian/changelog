@@ -1,3 +1,10 @@
+alien (8.32) unstable; urgency=low
+
+  * Removed the two newest j2sdk patches, which both rename the package,
+    breaking alien -i. Closes: #199992
+
+ -- Joey Hess <joeyh@debian.org>  Sat,  5 Jul 2003 16:57:32 -0400
+
 alien (8.31) unstable; urgency=low
 
   * Updated the j2sdk patch for version 1.4.2. (From Gerald Turner.)
