@@ -251,7 +251,7 @@ sub prep {
 	if (defined $this->patchfile) {
 		# The -f passed to zcat makes it pass uncompressed files
 		# through without error.
-		system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") ||
+		system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") &&
 			die "patch error: $!";
 		# Look for .rej files.
 		die "patch failed with .rej files; giving up"

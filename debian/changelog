@@ -1,3 +1,9 @@
+alien (7.1) unstable; urgency=low
+
+  * Corrected checking of system() in Deb::prep. Closes: #63396
+
+ -- Joey Hess <joeyh@debian.org>  Mon,  1 May 2000 19:42:01 -0700
+
 alien (7.0) unstable; urgency=low
 
   * This is a fully rewritten version, now belived to be stable enough for
