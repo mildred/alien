@@ -54,8 +54,14 @@ sub Convert { my ($self,$workdir,$nopatch,%fields)=@_;
 				$filelist.="%config $fn\n";
 			}
 			else { # normal file
-				$filelist.="$fn\n";
+				# Filename must be quoted so rpm can handle
+				# spaces.
+				$filelist.="\"$fn\"\n";
 			}
+		}
+		else {
+			# Add directories too.
+			$filelist.="%dir \"$fn\"\n";
 		}
 	}
 	$fields{FILELIST}=$filelist;

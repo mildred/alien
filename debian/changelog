@@ -1,3 +1,11 @@
+alien (6.56) unstable; urgency=low
+
+  * Corrected a problem triggered by wordperfect's deb: rpm can't deal with
+    files that have spaces, unless they are quoted. Thus, quote all filenames.
+  * Handles empty directories now when converting to rpm.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 20 Jan 2000 16:25:27 -0800
+
 alien (6.55) unstable; urgency=low
 
   * Patch from Jan Nieuwenhuizen to fix control file extraction on
