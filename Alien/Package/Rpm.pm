@@ -51,7 +51,7 @@ Implement the scan method to read a rpm file.
 
 sub scan {
 	my $this=shift;
-	$this->SUPER::read_file(@_);
+	$this->SUPER::scan(@_);
 	my $file=$this->filename;
 
 	my %fieldtrans=(

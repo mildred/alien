@@ -72,7 +72,7 @@ Implement the scan method to read a deb file.
 
 sub scan {
 	my $this=shift;
-	$this->SUPER::read_file(@_);
+	$this->SUPER::scan(@_);
 	my $file=$this->filename;
 
 	# Extract the control file from the deb file.
