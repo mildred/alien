@@ -1,0 +1,10 @@
+#!/bin/sh -e
+# Clean up after cvs's dreadful symlink handling, by making all the symlinks
+# this package needs.
+ln -sf ../rpm/rules lib/to-deb/tgz/rules
+ln -sf ../rpm/conffiles lib/to-deb/tgz/conffiles
+ln -sf ../rpm/conffiles lib/to-deb/slp/conffiles
+ln -sf ../rpm/rules lib/to-deb/slp/rules
+ln -sf ../deb/spec lib/to-rpm/tgz/spec
+ln -sf ../deb/spec lib/to-rpm/slp/spec
+ln -sf debian/changelog CHANGES

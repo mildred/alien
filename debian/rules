@@ -1,126 +1,62 @@
 #!/usr/bin/make -f
-##############################################################################
-# Generic debian/rules file. Based on:
-#
-#> Sample debian.rules file - for GNU Hello (1.3).
-#> Copyright 1994,1995 by Ian Jackson.
-#> I hereby give you perpetual unlimited permission to copy,
-#> modify and relicense this file, provided that you do not remove
-#> my name from the file itself.  (I assert my moral right of
-#> paternity under the Copyright, Designs and Patents Act 1988.)
-#
-# Heavily modified by Joey Hess <joeyh@master.debian.org>
-#
-##############################################################################
-#
-# NOTE: You shouldn't have to edit this file. Edit debian/config instead.
-# If you must edit this file to get your package to build properly, then
-# I have failed. Let me know; mail me.
-#
-# (Currently not handled: multiple binary packages from 1 source package,
-# and binary-indep rule.)
-#
-# NOTE: This file is designed so it doesn't need to be run as root. For
-# actions that require that the user be root, the root password will be
-# prompted for, if you're not already root.
-#
-##############################################################################
-#
-# Changelog:
-# * Use build-stamp instead of build.
-# * New email address.
-# * Added changelog.
-#
-##############################################################################
+# Sample debian/rules that uses debhelper. GNU copyright 1997 by Joey Hess.
 
-# Include config file.
-include debian/config
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
 
-# Generate a makefile (via configure scriopt or xmkmf).
-makefile-stamp:
-  ifeq ($(strip $(use_imakefile)),y)
-	xmkmf -a
-  endif 
-	$(use_configure)
-	touch makefile-stamp
-
-# Preserve some files that may get deleted/overwritten/modified otherwise.
-preserve-stamp:
-  ifneq ($(strip $(preserve_files)),)
-	$(foreach file,$(preserve_files),-cp $(file) $(file).preserved)
-  endif
-	touch preserve-stamp
-
-build-stamp: preserve-stamp makefile-stamp
-	$(checkdir)
-	$(build_command)
+build: link-stamp build-stamp
+build-stamp:
+	dh_testdir
+	$(MAKE) version
 	touch build-stamp
 
-build: build-stamp
-
-clean: preserve-stamp makefile-stamp
-	$(checkdir)
-  # Do actual cleaning up here.
-	-rm -f build-stamp
-	$(clean_command)
-	-rm -rf *~ debian/*~ debian/files* $(clean_files)
-	$(clean_tmp)
-  # Remove Makefile that xmkmf creates.
-  ifeq ($(strip $(use_imakefile)),y)
-	-rm -f Makefile
-  endif
-  # If we preserved some files, we need to restore them now.
-  ifneq ($(strip $(preserve_files)),)
-	$(foreach file,$(preserve_files),-mv -f $(file).preserved $(file))
-  endif
-	-rm -f preserve-stamp makefile-stamp
-
-# Build architecture-independent files here.
-# (not yet set up to be used)
-binary-indep: build
-	$(checkdir)
+clean: link-stamp
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	dh_clean
 
 # Build architecture-dependent files here.
-binary-arch: build
-	$(checkdir)
-	$(clean_tmp)
-	$(install_command)
-  # Debstd handles lots of nasty details. This requires that the debmake
-  # package is installed.
-	debstd $(package) $(docs)
+binary-arch: link-stamp build
+# We have nothing to do by default.
 
-  # Generate control file.
-	dpkg-gencontrol
-  # Set permissions.
-	@[ "`whoami`" != root ] && \
-		echo -e "\n ** Enter root password to set file permissions."; \
-	sudo debian/rules setperms
-  # Actually build the .deb file.
-	dpkg --build debian/tmp ..
+# Build architecture-independent files here.
+binary-indep: link-stamp build
+	dh_testdir
+	dh_testroot
+	dh_clean
+	$(MAKE) DESTDIR=debian/tmp install
+	dh_installdocs README gendiff.txt
+	dh_installexamples
+	dh_installmenu
+	dh_installmanpages
+	dh_installchangelogs
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
 
-# This must be run suid root, it sets the file permissions in debian/tmp
-setperms:
-	chown -R root.root debian/tmp
-	chmod -R g-ws debian/tmp
-	$(ch_commands)
+# Fix links when checking out of cvs by calling this target.
+link-stamp:
+	sh -e debian/fixlinks
+	touch link-stamp
 
-define checkdir
-	@test -f $(test_file) -a -f debian/rules || (echo -e "\n\
-	** \"$(test_file)\" or \"debian/rules\" does not exist.\n\
-	** Either \"$(package)\" is not unpacked in this directory, or\n\
-	** an incorrect test_file is specified in debian/config.\n" && false)
-endef
+VERSION=$(shell expr "`dpkg-parsechangelog 2>/dev/null |grep Version:`" : '.*Version: \(.*\)')
 
-# This rm's the debian/tmp directory.
-define clean_tmp
-	-rm -rf debian/tmp >/dev/null 2>&1
-	@if [ -d debian/tmp ]; then \
-		if  [ "`whoami`" != root ]; then \
-			echo -e "\n ** Enter root password to remove debian/tmp."; \
-		fi; \
-		sudo rm -rf debian/tmp; \
-	fi
-endef
+# Update the web page. Not intended for use by anyone except the author.
+installhook:
+	cp debian/changelog /home/pub/programs/alien/CHANGES
+	echo $(VERSION) > /home/pub/programs/alien/LATEST-VERSION-IS
+	rm /home/ftp/pub/code/alien/* || true
+	cd /home/ftp/pub/code/alien; \
+		ln -sf ../debian/alien_$(VERSION).tar.gz alien_$(VER).tar.gz; \
+		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
+	$(MAKE) stampede rpm
+	mv alien-$(VERSION).slp /home/ftp/pub/code/alien/
+	ln -s /home/ftp/pub/code/alien/alien-$(VERSION).slp \
+		/home/ftp/pub/code/alien/alien.slp
 
 binary: binary-indep binary-arch
-.PHONY: clean setperms binary
+.PHONY: build clean binary-indep binary-arch binary
