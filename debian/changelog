@@ -1,4 +1,4 @@
-alien (7.26) unstable; urgency=low
+alien (7.27) unstable; urgency=low
 
   * Moved as many system calls as I can over to shellless execution.
     There are still a lot that use shell tricks. Should deal with screwey
