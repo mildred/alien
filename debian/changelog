@@ -1,3 +1,10 @@
+alien (6.54) unstable; urgency=low
+
+  * Added metrolink motif diffs from
+    Andreas Voegele <andreas.voegele@nikocity.de>
+
+ -- Joey Hess <joeyh@debian.org>  Mon,  3 Jan 2000 13:57:47 -0800
+
 alien (6.53) unstable; urgency=low
 
   * Fixed the problem I thought I fixed in 6.50. Hmm. Closes: #52402
