@@ -265,6 +265,19 @@ sub prep {
 	close OUT;
 }
 
+=item cleantree
+
+Delete the spec file.
+
+=cut
+
+sub cleantree {
+	my $this=shift;
+	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
+	
+	unlink "$dir/".$this->name."-".$this->version."-".$this->release.".spec";
+}
+
 =item build
 
 Build a rpm. If RPMBUILDOPT is set in the environement, the options in
@@ -376,7 +389,8 @@ sub _script_helper {
 	# get
 	return unless defined wantarray; # optimization
 	$_=$this->{$script};
-	return $_ if ! defined $_ || m/^\s*$/;
+	return '' unless defined $_;
+	return $_ if m/^\s*$/;
 	my $f = pack("u",$_);
 	$f =~ s/%/%%/g; # Rpm expands %S, so escape such things.
 	return "set -e\n".

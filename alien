@@ -283,7 +283,7 @@ if (($generate || $single) && $install) {
 	die "You can not use --generate or --single with --install.\n";
 }
 if (($generate || $single) && keys %destformats > 1) {
-	die "--generate and --single may noly be used when converting to a single format.\n";
+	die "--generate and --single may only be used when converting to a single format.\n";
 }
 if ($patchfile && ! -f $patchfile) {
 	die "Specified patch file, \"$patchfile\" cannot be found.\n";
@@ -298,11 +298,11 @@ unless (@ARGV) {
 
 # Check alien's working anvironment.
 if (! -w '.') {
-	die("Cannot write to current directory. Try changing to /tmp and re-running alien.\n");
+	die("Cannot write to current directory. Try moving to /tmp and re-running alien.\n");
 }
 if ($> ne 0) {
 	if ($destformats{deb} && ! $generate && ! $single) {
-		die "Must run as root to convert to .deb format (or you may use fakeroot).\n";
+		die "Must run as root to convert to deb format (or you may use fakeroot).\n";
 	}
 	print STDERR "Warning: alien is not running as root!\n";
 	print STDERR "Ownerships of files in the generated packages will probably be messed up.\n";
@@ -349,7 +349,12 @@ foreach my $file (@ARGV) {
 		# Skip conversion if package is already the correct format.
 		if ($package->origformat ne $format) {
 			# Only unpack once.
-			$package->unpack unless $package->unpacked_tree;
+			if ($package->unpacked_tree) {
+				$package->cleantree;
+			}
+			else {
+				$package->unpack;
+			}
 			
 			# Mutate package into desired format.
 			bless($package, "Alien::Package::".ucfirst($format));
@@ -370,7 +375,7 @@ foreach my $file (@ARGV) {
 				else {
 					print "Directory ".$package->unpacked_tree." prepared.\n";
 				}
-				# Make sure $package does not whipe out the
+				# Make sure $package does not wipe out the
 				# directory when it is destroyed.
 				$package->unpacked_tree('');
 				exit;

@@ -384,6 +384,19 @@ sub build {
 	return $this->name."_".$this->version."-".$this->release."_".$this->arch.".deb";
 }
 
+=item cleantree
+
+Delete the entire debian/ directory.
+
+=cut
+
+sub cleantree {
+        my $this=shift;
+	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
+
+	system("rm -rf $dir/debian");
+}
+
 =item package
 
 Set/get package name. 

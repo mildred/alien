@@ -253,6 +253,15 @@ to produce a suitable build tree.
 
 sub prep {}
 
+=item cleantree
+
+This method should clean the unpacked_tree of any effects the prep and
+build methods might have on it.
+
+=cut
+
+sub cleantree {}
+
 =item build
 
 This method takes a prepped build tree, and simply builds a package from
