@@ -10,7 +10,7 @@ Architecture: all
 Section: admin
 Depends: debhelper (>= 3), ${perl:Depends}, rpm (>= 2.4.4-2), dpkg-dev, make, cpio
 Suggests: patch, bzip2, lsb-rpm
-Description: Install LSB, Red Hat, Stampede, and Slackware Packages with dpkg.
+Description: install non-native packages with dpkg
  Alien allows you to convert LSB, Red Hat, Stampede and Slackware Packages
  into Debian packages, which can be installed with dpkg.
  .

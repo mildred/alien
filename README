@@ -20,7 +20,8 @@ Other things you'll need:
   with alien!
 
   To convert packages to or from rpms, you need the Red Hat Package Manager;
-  get it from Red Hat's ftp site.
+  get it from Red Hat's ftp site. If your distribution (eg, Red Hat)
+  provides a rpm-build package, you will need it as well to generate rpms.
 
   If you want to convert packages into debian packages, you will need the
   dpkg, dpkg-dev, and debhelper (version 3 or above) packages, which are
