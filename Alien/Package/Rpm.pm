@@ -255,18 +255,26 @@ sub prep {
 	print OUT "\%define _rpmdir ../\n"; # write rpm to current directory
 	print OUT "\%define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm\n";
 	print OUT "\n";
-	print OUT "\%pre\n";
-	print OUT $this->preinst."\n";
-	print OUT "\n";
-	print OUT "\%post\n";
-	print OUT $this->postinst."\n";
-	print OUT "\n";
-	print OUT "\%preun\n";
-	print OUT $this->prerm."\n";
-	print OUT "\n";
-	print OUT "\%postun\n";
-	print OUT $this->postrm."\n";
-	print OUT "\n";
+	if ($this->preinst) {
+		print OUT "\%pre\n";
+		print OUT $this->preinst."\n";
+		print OUT "\n";
+	}
+	if ($this->postinst) {
+		print OUT "\%post\n";
+		print OUT $this->postinst."\n";
+		print OUT "\n";
+	}
+	if ($this->prerm) {
+		print OUT "\%preun\n";
+		print OUT $this->prerm."\n";
+		print OUT "\n";
+	}
+	if ($this->postun) {
+		print OUT "\%postun\n";
+		print OUT $this->postrm."\n";
+		print OUT "\n";
+	}
 	print OUT "\%description\n";
 	print OUT $this->description."\n";
 	print OUT "\n";
