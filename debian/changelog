@@ -1,3 +1,10 @@
+alien (8.22) unstable; urgency=low
+
+UNRE
+  * Updated js2k patch from Gerald Turner.
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 27 Oct 2002 20:29:28 -0500
+
 alien (8.21) unstable; urgency=low
 
   * Pach from Erwan MAS <erwan@mas.nom.fr> that allows specification of the
