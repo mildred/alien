@@ -455,7 +455,9 @@ foreach my $file (@ARGV) {
 	
 	foreach my $format (keys %destformats) {
 		# Skip conversion if package is already the correct format.
-		if ($package->origformat ne $format) {
+		# Howver, generate build tree even if the format is
+		# unchanged.
+		if ($package->origformat ne $format || $generate) {
 			# Only unpack once.
 			if ($package->unpacked_tree) {
 				$package->cleantree;
@@ -488,7 +490,8 @@ foreach my $file (@ARGV) {
 			
 			$package->prep;
 			
-			# If generating build tree only, stop here with message.
+			# If generating build tree only, stop here
+			# with message.
 			if ($generate) {
 				if ($format eq 'deb' && ! $single) {
 					print "Directories ".$package->unpacked_tree." and ".$package->unpacked_tree.".orig prepared.\n"
