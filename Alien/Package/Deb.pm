@@ -709,7 +709,7 @@ sub username {
 =item postinst
 
 Returns the postinst. This may include generated shell code to set owners
-and groups from the owninfo field.
+and groups from the owninfo field, and update modes from the modeinfo field.
 
 =cut
 
@@ -717,6 +717,7 @@ sub postinst {
 	my $this=shift;
 
 	my $owninfo = $this->owninfo;
+	my $modeinfo = $this->modeinfo;
 	my $postinst = $this->{postinst};
 	return $postinst unless ref $owninfo;
 
@@ -730,10 +731,12 @@ sub postinst {
 	}
 
 	my $permscript="# alien added permissions fixup code\n";
-	foreach my $file (keys %$owninfo) {
+	foreach my $file (sort keys %$owninfo) {
 		my $quotedfile=$file;
 		$quotedfile=~s/'/'"'"'/g; # no single quotes in single quotes..
 		$permscript.="chown '$owninfo->{$file}' '$quotedfile'\n";
+		$permscript.="chmod '$modeinfo->${file}' '$quotedfile'\n"
+			if (defined $modeinfo->{$file});
 	}
 	return "$firstline\n$permscript\n$rest";
 }

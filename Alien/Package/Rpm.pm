@@ -195,6 +195,7 @@ sub unpack {
 	# Some permissions setting may have to be postponed until the
 	# postinst.
 	my %owninfo = ();
+	my %modeinfo = ();
 	open (GETPERMS, 'rpm --queryformat \'[%{FILEMODES} %{FILEUSERNAME} %{FILEGROUPNAME} %{FILENAMES}\n]\' -qp '.$this->filename.' |');
 	while (<GETPERMS>) {
 		chomp;
@@ -215,6 +216,9 @@ sub unpack {
 			}
 			$gid=0;
 		}
+		if (defined($owninfo{$file}) && ($mode & 07000 > 0)) {
+			$modeinfo{$file} = $mode;
+		}
 		next unless -e "$workdir/$file"; # skip broken links
 		if ($> == 0) {
 			$this->do("chown", "$uid:$gid", "$workdir/$file") 
@@ -224,6 +228,7 @@ sub unpack {
 			|| die "failed changing mode of $file to $mode\: $!";
 	}
 	$this->owninfo(\%owninfo);
+	$this->modeinfo(\%modeinfo);
 
 	return 1;
 }

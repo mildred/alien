@@ -138,6 +138,12 @@ ownership/group information for files that cannot be represented on the
 filesystem. Typically that is because the owners or groups just don't exist
 yet. It will be set at unpack time.
 
+=item modeinfo
+
+If set this will be a reference to a hash, with filename as key, that
+holds mode information for setuid files that have an entry in owninfo.
+It will be set at unpack time.
+
 =back
 
 =head1 METHODS
