@@ -346,35 +346,23 @@ sub build {
 	my $buildcmd=shift || 'rpmbuild';
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 	
-	# Ask rpm how it's set up. We want to know what architecture it
-	# will output, and where it will place rpms.
-	my ($rpmarch, $rpmdir);
+	# Ask rpm how it's set up. We want to know where it will place rpms.
+	my $rpmdir;
 	foreach ($this->runpipe("rpm --showrc")) {
 		chomp;
-		if (/^build arch\s+:\s(.*)$/) {
-			$rpmarch=$1;
-		}
-		elsif (/^rpmdir\s+:\s(.*)$/) {
+		if (/^rpmdir\s+:\s(.*)$/) {
 			$rpmdir=$1;
 		}
 	}
-	if (!$rpmarch) {
-		die "rpm --showrc failed";
-	}
 
-	# Debian's "all" architecture is a special case, and the output rpm
-	# will be a noarch rpm.
-	$rpmarch='noarch' if $this->arch eq 'all';
-
-	my $rpm=$this->name."-".$this->version."-".$this->release.".$rpmarch.rpm";
+	my $rpm=$this->name."-".$this->version."-".$this->release.".".$this->arch.".rpm";
 	my $opts='';
 	if ($rpmdir) {
 		# Old versions of rpm toss it off in the middle of nowhere.
-		$rpm="$rpmdir/$rpmarch/$rpm";
+		$rpm="$rpmdir/".$this->arch."/$rpm";
 
-		# This is the old command line argument to make noarch
-		# rpms.
-		$opts="--buildarch noarch" if $rpmarch eq 'noarch';
+		# This is the old command line argument to set the arch.
+		$opts="--buildarch ".$this->arch;
 	}
 	else {
 		# Presumably we're delaing with rpm 3.0 or above, which
@@ -384,9 +372,9 @@ sub build {
 		# file end up in the directory we started in.
 		# Anyway, let's assume this is version 3 or above.
 		
-		# This is the new command line arcgument to make noarch
+		# This is the new command line arcgument to set the arch
 		# rpms. It appeared in rpm version 3.
-		$opts="--target noarch" if $rpmarch eq 'noarch';
+		$opts="--target ".$this->arch;
 	}
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
@@ -495,48 +483,67 @@ sub prerm {
 =item arch
 
 Set/get arch field. When the arch field is set, some sanitizing is done
-first to convert it to the debian format used internally.
+first to convert it to the debian format used internally. When it's
+retreived it's converted back to rpm form from the internal form.
 
 =cut
 
 sub arch {
 	my $this=shift;
-	return $this->{arch} unless @_;
-	my $arch=shift;
 
-	if ($arch eq 1) {
-		$arch='i386';
-	}
-	elsif ($arch eq 2) {
-		$arch='alpha';
-	}
-	elsif ($arch eq 3) {
-		$arch='sparc';
-	}
-	elsif ($arch eq 6) {
-		$arch='m68k';
-	}
-	elsif ($arch eq 'noarch') {
-		$arch='all';
-	}
-	elsif ($arch eq 'ppc') {
-		$arch='powerpc';
-	}
-	elsif ($arch eq 'x86_64') {
-		$arch='amd64';
-	}
+	my $arch;
+	if (@_) {
+		$arch=shift;
+
+		if ($arch eq 1) {
+			$arch='i386';
+		}
+		elsif ($arch eq 2) {
+			$arch='alpha';
+		}
+		elsif ($arch eq 3) {
+			$arch='sparc';
+		}
+		elsif ($arch eq 6) {
+			$arch='m68k';
+		}
+		elsif ($arch eq 'noarch') {
+			$arch='all';
+		}
+		elsif ($arch eq 'ppc') {
+			$arch='powerpc';
+		}
+		elsif ($arch eq 'x86_64') {
+			$arch='amd64';
+		}
 	
-	# Treat 486, 586, etc, as 386.
-	if ($arch =~ m/i\d86/i || $arch =~ m/pentium/i) {
-		$arch='i386';
-	}
+		# Treat 486, 586, etc, as 386.
+		if ($arch =~ m/i\d86/i || $arch =~ m/pentium/i) {
+			$arch='i386';
+		}
 	
-	# Treat armv4l as arm.
-	if ($arch eq 'armv4l') {
-		$arch='arm';
-	}
+		# Treat armv4l as arm.
+		if ($arch eq 'armv4l') {
+			$arch='arm';
+		}
 	
-	return $this->{arch}=$arch;
+		$this->{arch}=$arch;
+	}
+
+	$arch=$this->{arch};
+	if ($arch eq 'amd64') {
+		$arch='x86_64';
+	}
+	elsif ($arch eq 'powerpc') {
+		# XXX is this the canonical name for powerpc on rpm
+		# systems?
+		$arch='ppc';
+	}
+	elsif ($arch eq 'all') {
+		$arch='noarch';
+	}
+
+	return $arch
 }
 
 =back
