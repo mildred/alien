@@ -735,7 +735,7 @@ sub postinst {
 		my $quotedfile=$file;
 		$quotedfile=~s/'/'"'"'/g; # no single quotes in single quotes..
 		$permscript.="chown '".$owninfo->{$file}."' '$quotedfile'\n";
-		$permscript.="chmod '".$modeinfo->${file}."' '$quotedfile'\n"
+		$permscript.="chmod '".$modeinfo->{$file}."' '$quotedfile'\n"
 			if (defined $modeinfo->{$file});
 	}
 	return "$firstline\n$permscript\n$rest";
