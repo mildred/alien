@@ -1,3 +1,11 @@
+alien (8.46) unstable; urgency=low
+
+  * Unset _unpackaged_files_terminate_build when building rpms, at least SuSE
+    sets this, which breaks alien due to its placement of the spec file in the
+    build directory.
+
+ -- Joey Hess <joeyh@debian.org>  Sun,  1 Aug 2004 20:50:37 -0400
+
 alien (8.45) unstable; urgency=low
 
   * Run dh_clean with -d to avoid cleaning up any oddly named files from rpms,
