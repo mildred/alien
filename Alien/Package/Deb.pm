@@ -136,12 +136,10 @@ sub getcontrolfile {
 
 			return "(mkdir /tmp/tar_out.$$ &&".
 				" cd /tmp/tar_out.$$ &&".
-				# Have to handle old debs without a leading ./ and
-				# new ones with it.
-				" tar xf - $file ./$file &&".
+				" tar xf - ./$file &&".
 				" cat $file; cd /; rm -rf /tmp/tar_out.$$)";
 		}
-		my $getcontrol = "ar -p $file control.tar.gz | gzip -dc | ".tar_out($controlfile)." 2>/dev/null";
+		my $getcontrol = "ar -p $file control.tar.gz | gzip -dc | ".tar_out($controlfile);
 		return `$getcontrol`
 	}
 }

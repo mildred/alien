@@ -1,3 +1,10 @@
+alien (8.11) unstable; urgency=low
+
+  * Fix for extracting control files from debs on systems w/o dpkg-deb.
+    Don't try to extract "file", just "./file".
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 12 Jun 2002 13:34:09 -0400
+
 alien (8.10) unstable; urgency=low
 
   * Build alien with debhelper v4.
