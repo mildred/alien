@@ -112,7 +112,7 @@ sub GetFields { my ($self,$file)=@_;
 }
 
 # Unpack a rpm file.
-sub Unpack { my ($self,$file,$nopatch,%fields)=@_;
+sub Unpack { my ($self,$file,%fields)=@_;
 	Alien::SafeSystem("(cd ..;rpm2cpio $file) | cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time",
   	"Error unpacking $file\n");
 

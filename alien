@@ -195,7 +195,7 @@ foreach $file (@ARGV) {
 	$workdir="$fields{NAME}-$fields{VERSION}";
 	Alien::SafeMkdir($workdir);
 	chdir $workdir;
-	$src->Unpack($file,$nopatch,%fields);
+	$src->Unpack($file,%fields);
 	chdir "..";
 
 	# Conversion stage.

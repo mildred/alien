@@ -86,7 +86,7 @@ sub GetFields { my ($self,$file)=@_;
 }
 
 # Handles unpacking of tgz's.
-sub Unpack { my ($self,$nopatch,$file)=@_;
+sub Unpack { my ($self,$file)=@_;
 	Alien::SafeSystem ("(cd ..;cat $file) | tar zxpf -","Error unpacking $file\n");
 
 	# Delete this install directory that has slackware info in it.

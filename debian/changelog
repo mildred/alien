@@ -1,3 +1,9 @@
+alien (6.53) unstable; urgency=low
+
+  * Fixed the problem I thought I fixed in 6.50. Hmm. Closes: #52402
+
+ -- Joey Hess <joeyh@debian.org>  Fri, 10 Dec 1999 10:21:43 -0800
+
 alien (6.52) unstable; urgency=low
 
   * Added (very simple) build dep.

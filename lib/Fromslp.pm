@@ -103,7 +103,7 @@ sub GetFields { my ($self,$file)=@_;
 # Unpack a slp file.
 # They can be compressed in various ways, depending on what is in
 # $fields{COMPRESSTYPE}.
-sub Unpack { my ($self,$file,$nopatch,%fields)=@_;
+sub Unpack { my ($self,$file,%fields)=@_;
 	if ($fields{COMPRESSTYPE} eq 0) {
 		Alien::SafeSystem ("(cd ..;cat $file) | bzip2 -d | tar xpf -","Error unpacking $file\n");
 	}

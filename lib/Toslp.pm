@@ -70,7 +70,10 @@ sub FixFields { my ($self,%fields)=@_;
 }
 
 # Do any necessary conversions on the file tree.
-sub Convert { my ($self,$workdir,%fields)=@_;
+sub Convert { my ($self,$workdir,$nopatch,%fields)=@_;
+	if ($main::generate) {
+		print "Directory $workdir prepared.\n";
+	}
 }
 
 # Passed the available info about the package in a hash, return the name of
@@ -104,7 +107,7 @@ sub MakeFooter { my %fields=@_;
 		$fields{COMPILER},
 		$fields{VERSION},
 		$fields{NAME},
-		$fields{ARCH},
+		$fields{BINFORMAT},
 		$fields{GROUP},
 		$fields{SLPKGVERSION},
 	)); 
@@ -114,8 +117,10 @@ sub MakeFooter { my %fields=@_;
 # This consists of first generating a .tar.bz2 file, and then appending the
 # footer to it.
 sub Build { my ($self,%fields)=@_;
-	# Note the -I is for making a .bzip2 file.
-	Alien::SafeSystem("tar cIf ../".$self->GetPackageName(%fields)." .");
+	# Note that it's important I use "./*" instead of just "." or something like
+	# that, becuase it results in a tar file where all the files in it start
+	# with "./", which is consitent with how normal stampede files look.
+	Alien::SafeSystem("tar cf - ./* | bzip2 - > ../".$self->GetPackageName(%fields));
 
 	# Now append the footer to that.
 	open (OUT,">>../".$self->GetPackageName(%fields)) ||

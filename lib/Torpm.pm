@@ -19,12 +19,15 @@ sub FixFields { my ($self,%fields)=@_;
 	foreach $field ('POSTINST', 'POSTRM', 'PREINST', 'PRERM') {
 		if ($fields{$field}) {
 			$fields{$field}=
-				"rm -f /tmp/alien.$field\n".
-				qq{perl -pe '\$_=unpack("u",\$_)' << '__EOF__' > /tmp/alien.$field\n}.
+				"set -e\n".
+				"mkdir /tmp/alien.\$\$\n".
+				qq{perl -pe '\$_=unpack("u",\$_)' << '__EOF__' > /tmp/alien.\$\$/script\n}.
 				pack("u",$fields{$field}).
 				"__EOF__\n".
-				"sh /tmp/alien.$field \"\$@\"\n".
-				"rm -f /tmp/alien.$field\n";
+				"chmod 755 /tmp/alien.\$\$/script\n".
+				"/tmp/alien.\$\$/script \"\$@\"\n".
+				"rm -f /tmp/alien.\$\$/script\n".
+				"rmdir /tmp/alien.\$\$";
 		}
 	}
 
@@ -32,7 +35,7 @@ sub FixFields { my ($self,%fields)=@_;
 }
 
 # Generate the spec file.
-sub Convert { my ($self,$workdir,%fields)=@_;
+sub Convert { my ($self,$workdir,$nopatch,%fields)=@_;
 	Alien::Status("Automatic spec file generation");
 
 	# Create some more fields we will need.
@@ -47,8 +50,7 @@ sub Convert { my ($self,$workdir,%fields)=@_;
 	my $fn;
 	foreach $fn (split(/\n/,$fields{FILELIST})) {
 		if ($fn=~m:/$: eq undef) { # not a directory
-			my $efn=quotemeta($fn);
-			if (grep(m:^$efn$:,@conffiles)) { # it's a conffile
+			if (grep(m:^\Q$fn\E$:,@conffiles)) { # it's a conffile
 				$filelist.="%config $fn\n";
 			}
 			else { # normal file
@@ -82,27 +84,54 @@ sub GetPackageName { my ($self,%fields)=@_;
 			$rpmdir=$1;
 		}
 	}
-	if (!$rpmarch || !$rpmdir) {
+	if (!$rpmarch) {
 		Alien::Error("rpm --showrc failed.");
 	}
 
-	# Debian's "all" architecture is a special case, and the output rpm will
-	# be a noarch rpm.
+	# Debian's "all" architecture is a special case, and the output rpm
+	# will be a noarch rpm.
 	if ($fields{ARCH} eq 'all') { $rpmarch='noarch' }
-	return "$rpmdir/$rpmarch/$fields{NAME}-$fields{VERSION}-$fields{RELEASE}.$rpmarch.rpm";
+
+	if (! $rpmdir) {
+		# Presumably we're delaing with rpm 3.0 or above, which
+		# doesn't output rpmdir in any format I'd care to try to parse.
+		# Instead, rpm is now of a late enough version to notice the
+		# %define's in the spec file, that will make the file end up in
+		# the directory we started in.
+		return "$fields{NAME}-$fields{VERSION}-$fields{RELEASE}.$rpmarch.rpm";
+	}
+	else {
+		# Old rpm.
+		return "$rpmdir/$rpmarch/$fields{NAME}-$fields{VERSION}-$fields{RELEASE}.$rpmarch.rpm";
+	}
 }
 
 # Build a rpm file.
 sub Build { my ($self,%fields)=@_;
 		# Debian's "all" architecture is a special case where we make noarch rpms.
 		my $buildarch;
-		if ($fields{ARCH} eq 'all') { $buildarch="--buildarch noarch" }
+		if ($fields{ARCH} eq 'all') {
+			# Nasty version check in here because rpm gratuitously
+			# changed this option at version 3.0.
+			my $lc_all=$ENV{LC_ALL};
+			$ENV{LC_ALL}='C';
+			my $version=`rpm --version`;
+			$ENV{LC_ALL}=$lc_all; # important to reset it.
+			my $minor;
+			($version,$minor)=$version=~m/version (\d+).(\d+)/;
+			if ($version >= 3 || ($version eq 2 && $minor >= 92)) {
+				$buildarch="--target noarch";
+			}
+			else {
+				$buildarch="--buildarch noarch"
+			}
+		}
 		Alien::SafeSystem("rpm $buildarch -bb $ENV{RPMBUILDOPT} $fields{NAME}-$fields{VERSION}-$fields{RELEASE}.spec",
 			"Error putting together the RPM package.\n");
 }
 
 # Install the passed rpm file.
-sub Install { my ($self,$package)=shift;
+sub Install { my ($self,$package)=@_;
 	Alien::SafeSystem("rpm -ivh $ENV{RPMINSTALLOPT} $package");
 }
 

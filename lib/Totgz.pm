@@ -12,7 +12,7 @@ sub FixFields { my ($self,%fields)=@_;
 	return %fields;
 }
 
-sub Convert { my ($self,$workdir,%fields)=@_;
+sub Convert { my ($self,$workdir,$nopatch,%fields)=@_;
 	if ($main::scripts) {
 		my $install_made=undef;
 		my %scripttrans=(
@@ -38,6 +38,10 @@ sub Convert { my ($self,$workdir,%fields)=@_;
 			}
 		}
 	}
+
+	if ($main::generate) {
+		print "Directory $workdir prepared.\n";
+	}
 }
 
 # Passed the available info about the package in a hash, return the name of
@@ -52,14 +56,14 @@ sub Build { my ($self,%fields)=@_;
 }
 
 # Install the passed tgz file.
-sub Install { my ($self,$package)=shift;
+sub Install { my ($self,$package)=@_;
 	if (-x "/sbin/installpkg") {
 		Alien::SafeSystem("/sbin/installpkg $package");
 	}
 	else {
-		print STDERR "Sorry, I cannot install the generated .tgz file,\n";
-		print STDERR "\"$package\" because /sbin/installpkg is not\n";
-		print STDERR "present. You can use tar to install it yourself.\n";
+		Alien::Warning("Sorry, I cannot install the generated .tgz file,");
+		Alien::Warning("\"$package\" because /sbin/installpkg is not");
+		Alien::Warning("present. You can use tar to install it yourself.");
 		exit 1; # otherwise alien will delete the package file on us.
 	}
 }
