@@ -1,3 +1,9 @@
+alien (7.21) unstable; urgency=low
+
+  * Deal with empty /etc/mailname, Closes: #90727
+
+ -- Joey Hess <joeyh@debian.org>  Sat, 24 Mar 2001 14:19:17 -0800
+
 alien (7.20) unstable; urgency=low
 
   * Updated to use debhelper v3 when converting packages. This

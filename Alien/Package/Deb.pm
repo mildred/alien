@@ -556,7 +556,9 @@ sub email {
 	my $mailname='';
 	if (open (MAILNAME,"</etc/mailname")) {
 		$mailname=<MAILNAME>;
-		chomp $mailname;
+		if (defined $mailname) {
+			chomp $mailname;
+		}
 		close MAILNAME;
 	}
 	if (!$mailname) {
