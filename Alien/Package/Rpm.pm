@@ -219,14 +219,21 @@ sub prep {
 	my @conffiles = @{$this->conffiles};
 	my $filelist;
 	foreach my $fn (@{$this->filelist}) {
+		# Unquote any escaped characters in filenames - needed for
+		# non ascii characters. (eg. iso_8859-1 latin set)
+		if ($fn =~ /\\/) {
+			$fn=eval qq{"$fn"};
+		}
+
+		# Note all filenames are quoted in case they contain
+		# spaces.
 		if ($fn =~ m:/$:) {
-			$filelist.="%dir $fn\n";
+			$filelist.=qq{%dir "$fn"\n};
 		}
 		elsif (grep(m:^\Q$fn\E$:,@conffiles)) { # it's a conffile
-			$filelist.="%config $fn\n";
+			$filelist.=qq{%config "$fn"\n};
 		}
 		else { # normal file
-			# Quote filename in case it has spaces in it.
 			$filelist.=qq{"$fn"\n};
 		}
 	}

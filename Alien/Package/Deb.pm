@@ -77,6 +77,28 @@ sub install {
 		die "Unable to install";
 }
 
+=item getcontrolfile
+
+Helper method. Pass it the name of a control file, and it will pull it out
+of the deb and return it.
+
+=cut
+
+sub getcontrolfile {
+	my $this=shift;
+	my $controlfile=shift;
+	my $file=$this->filename;
+	
+	if ($this->have_dpkg_deb) {
+		return `dpkg-deb --info $file $controlfile 2>/dev/null`;
+	}
+	else {
+		# Have to handle old debs without a leading ./ and
+		# new ones with it.
+		return `ar p $file control.tar.gz | tar Oxzf - $controlfile ./$controlfile 2>/dev/null`
+	}
+}
+
 =item scan
 
 Implement the scan method to read a deb file.
@@ -88,16 +110,7 @@ sub scan {
 	$this->SUPER::scan(@_);
 	my $file=$this->filename;
 
-	# Extract the control file from the deb file.
-	my @control;
-	if ($this->have_dpkg_deb) {
-		@control = `dpkg-deb --info $file control`;
-	}
-	else {
-		# It can have one of two names, depending on the tar
-		# version the .deb was built from.
-		@control = `ar p $file control.tar.gz | tar Oxzf - control [./]control`;
-	}
+	my @control=$this->getcontrolfile('control');
 
 	# Parse control file and extract fields. Use a translation table
 	# to map between the debian names and the internal field names,
@@ -137,18 +150,11 @@ sub scan {
 	$this->group("unknown") if ! $this->group;
 	$this->distribution("Debian");
 	$this->origformat("deb");
-	$this->binary_info(scalar `dpkg --info $file`);
+	$this->binary_info(scalar $this->getcontrolfile('control'));
 
 	# Read in the list of conffiles, if any.
 	my @conffiles;
-	if ($this->have_dpkg_deb) {
-		@conffiles=map { chomp; $_ }
-			   `dpkg-deb --info $file conffiles 2>/dev/null`;
-	}
-	else {
-		@conffiles=map { chomp; $_ }
-			   `ar p $file control.tar.gz | tar Oxzf - conffiles 2>/dev/null`;
-	}
+	@conffiles=map { chomp; $_ } $this->getcontrolfile('conffiles');
 	$this->conffiles(\@conffiles);
 
 	# Read in the list of all files.
@@ -166,12 +172,7 @@ sub scan {
 
 	# Read in the scripts, if any.
 	foreach my $field (qw{postinst postrm preinst prerm}) {
-		if ($this->have_dpkg_deb) {
-			$this->$field(scalar `dpkg-deb --info $file $field 2>/dev/null`);
-		}
-		else {
-			$this->$field(scalar `ar p $file control.tar.gz | tar Oxzf - $field 2>/dev/null`);
-		}
+		$this->$field(scalar $this->getcontrolfile($field));
 	}
 
 	return 1;

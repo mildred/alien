@@ -41,6 +41,19 @@ Other things you'll need:
   The Stampede version is at
   	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.slp
 
+Note:
+
+  Alien is really designed to be used to convert from alien file formats to
+  the packaging format used by the distribution you run it on. Of course,
+  it can also convert from your distribution's native format to alien
+  formats, or from one alien format to another. Do be warned though, that
+  if these latter types of conversions are done, the generated packages may
+  have incorrect dependancy information. This is known to be true if you
+  convert a rpm into a deb on a Red Hat system, for example. Even with
+  alien-extra installed, dpkg will be unable to properly calculate library
+  dependancies for the deb it is creating, and you will get a package
+  without any library dependancies.
+
 Programs that use alien:
 
   I know of one program that acts as a frontend to alien - kpackviewer is a

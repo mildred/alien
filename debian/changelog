@@ -1,3 +1,13 @@
+alien (7.6) unstable; urgency=low
+
+  * Added a note about a sticky library dependancy issue that I can't fix.
+  * Applied a patch from Chris Gorman to deal with spaces in directory
+    names, spaces in conffile names (!!), and accented characters
+    everywhere in deb -> rpm conversions.
+  * Fixed numerous problems when converting from .deb w/o dpkg installed.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 20 Jul 2000 15:12:08 -0700
+
 alien (7.5) unstable; urgency=low
 
   * Fixed an uninitialized value when converting from a .src.rpm.
