@@ -1,3 +1,17 @@
+alien (8.36) unstable; urgency=low
+
+  * Patch from aj to fix permissions of setuid files that have their owners
+    created in the preinst.
+  * Alien's repository has moved from CVS to subversion.
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 15 Oct 2003 16:04:17 -0400
+
+alien (8.35) unstable; urgency=low
+
+  * Move from build-depends-indep to build-depends, to meet current policy.
+
+ -- Joey Hess <joeyh@debian.org>  Wed,  3 Sep 2003 12:14:58 -0400
+
 alien (8.34) unstable; urgency=low
 
   * Fixed changelog parsing regexp. Noticed by Gerald Turner who is sure
