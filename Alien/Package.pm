@@ -141,8 +141,8 @@ sub new {
 	my $proto = shift;
 	my $class = ref($proto) || $proto;
 	my $this=bless ({}, $class);
-	$this->$_(shift) while $_=shift; # run named parameters as methods
 	$this->init;
+	$this->$_(shift) while $_=shift; # run named parameters as methods
 	return $this;
 }
 
