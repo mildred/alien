@@ -255,7 +255,7 @@ Joey Hess, B<<joeyh@debian.org>>.
 
 =head1 COPYRIGHT
 
-Alien may be copied amd modified under the terms of the GNU General Public
+Alien may be copied and modified under the terms of the GNU General Public
 License.
 
 =cut
