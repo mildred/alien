@@ -397,14 +397,14 @@ build:
 clean:
 	dh_testdir
 	dh_testroot
-	dh_clean
+	dh_clean -d
 
 binary-indep: build
 
 binary-arch: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_clean -k -d
 	dh_installdirs
 
 	dh_installdocs

@@ -1,3 +1,10 @@
+alien (8.45) unstable; urgency=low
+
+  * Run dh_clean with -d to avoid cleaning up any oddly named files from rpms,
+    like .orig files. Closes: #261964
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 29 Jul 2004 13:14:39 -0400
+
 alien (8.44) unstable; urgency=low
 
   * Don't add line about permissions fixup code to postinst if there is not
