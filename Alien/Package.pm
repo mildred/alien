@@ -28,6 +28,15 @@ to build a package, and the package has been converted.
 
 =head1 FIELDS
 
+These fields are of course really just methods that all act similarly;
+allowing a value to be passed in to set them, or simply returning the value
+of the field if nothing is passed in. Child classes may override these
+fields to process input data, or to format output data. The general rule is
+that input data is modified to get things into a package-independant form,
+which is how the data is stored in the fields. When the value of a field is
+read, it too may be modified before it is returned, to change things into a
+form more suitable for the particular type of package.
+
 =over 4
 
 =item name
@@ -135,6 +144,16 @@ having to write your own new() method.
 =cut
 
 sub init {}
+
+=item install
+
+Simply installs the package. This has to be overridden in child classes.
+
+=cut
+
+sub install {
+	my $this=shift;
+}
 
 =item read_file
 

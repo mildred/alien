@@ -22,7 +22,7 @@ Alien::Package.
 
 =item have_dpkg_deb
 
-Set to a true value if dpkg-deb is available.
+Set to a true value if dpkg-deb is available. 
 
 =back
 
@@ -32,7 +32,8 @@ Set to a true value if dpkg-deb is available.
 
 =item init
 
-Sets have_dpkg_deb if dpkg-deb is in the path.
+Sets have_dpkg_deb if dpkg-deb is in the path. I prefer to use dpkg-deb,
+if it is available since it is a lot more future-proof.
 
 =cut
 
@@ -49,12 +50,22 @@ sub init {
 	}
 }
 
+=item install
+
+Install a deb with dpkg.
+
+=cut
+
+sub install {
+	my $this=shift;
+
+	system("dpkg --no-force-overwrite -i ".$this->filename) &&
+		die "Unable to install: $!";
+}
+
 =item read_file
 
 Implement the read_file method to read a deb file.
-
-This uses either dpkg-deb, if it is present, or ar and tar if it is not.
-Using dpkg-deb is a lot more future-proof, but the system may not have it.
 
 =cut
 
@@ -74,7 +85,11 @@ sub read_file {
 		@control = `ar p $file control.tar.gz | tar Oxzf - control [./]control`;
 	}
 
-	# Parse control file and extract fields.
+	# Parse control file and extract fields. Use a translation table
+	# to map between the debian names and the internal field names,
+	# which more closely resemble those used by rpm (for historical
+	# reasons; TODO: change to deb style names).
+	my $description='';
 	my $field;
 	my %fieldtrans=(
 		Package => 'name',
@@ -96,27 +111,17 @@ sub read_file {
 			}
 		}
 		elsif (/^ / && $field eq 'summary') {
-			# Handle xtended description.
+			# Handle extended description.
 			s/^ //g;
 			$_="" if $_ eq ".";
-			$this->description($this->description . $_. "\n");
+			$description.="$_\n";
 		}
 	}
+	$this->description($description);
 
 	$this->copyright("see /usr/share/doc/".$this->name."/copyright");
 	$this->group("unknown") if ! $this->group;
 	$this->distribution("Debian");
-	if ($this->version =~ /(.+)-(.+)/) {
-		$this->version($1);
-		$this->release($2);
-	}
-	else {
-		$this->release(1);
-	}
-	# Kill epochs.
-	if ($this->version =~ /\d+:(.*)/) {
-		$this->version($1);
-	}
 
 	# Read in the list of conffiles, if any.
 	my @conffiles;
@@ -179,7 +184,123 @@ sub unpack {
 	return 1;
 }
 
-=back
+=item package
+
+Set/get package name. 
+
+Always returns the packge name in lowercase with all invalid characters
+returned. The name is however, stored unchanged.
+
+=cut
+
+sub name {
+	my $this=shift;
+	
+	# set
+	$this->{name} = shift if @_;
+	return unless defined wantarray; # optimization
+	
+	# get
+	$_=lc($this->{name});
+	tr/_/-/;
+	s/[^a-z0-9-\.\+]//g;
+	return $_;
+}
+
+=item version
+
+Set/get package version.
+
+When the version is set, it will be stripped of any epoch. If there is a
+release, the release will be stripped away and used to set the release
+field as a side effect. Otherwise, the release will be set to 1.
+
+More sanitization of the version is done when the field is retrieved, to
+make sure it is a valid debian version field.
+
+=cut
+
+sub version {
+	my $this=shift;
+
+	# set
+	if (@_) {
+		my $version=shift;
+		if ($version =~ /(.+)-(.+)/) {
+                	$version=$1;
+	                $this->release($2);
+	        }
+	        else {
+	                $this->release(1);
+		}
+        	# Kill epochs.
+		$version=~s/^\d+://;
+		
+		$this->{version}=$version;
+        }
+	
+	# get
+	return unless defined wantarray; # optimization
+	$_=$this->{version};
+	# Make sure the version contains digets.
+	unless (/[0-9]/) {
+		# Drat. Well, add some. dpkg-deb won't work
+		# # on a version w/o numbers!
+		return $_."0";
+	}
+	return $_;
+}
+
+=item release
+
+Set/get package release.
+
+Always returns a sanitized release version. The release is however, stored
+unchanged.
+
+=cut
+
+sub release {
+	my $this=shift;
+
+	# set
+	$this->{release} = shift if @_;
+
+	# get
+	return unless defined wantarray; # optimization
+	$_=$this->{release};
+	# Make sure the release contains digets.
+	return $_."-1" unless /[0-9]/;
+	return $_;
+}
+
+=item description
+
+Set/get description
+
+Although the description is stored internally unchanged, this will always
+return a sanitized form of it that is compliant with Debian standards.
+
+=cut
+
+sub description {
+	my $this=shift;
+
+	# set
+	$this->{description} = shift if @_;
+
+	# get
+	return unless defined wantarray; # optimization
+	my $ret='';
+	foreach (split /\n/,$this->{description}) {
+		s/\t/        /g; # change tabs to spaces
+		s/\s+$//g; # remove trailing whitespace
+		$_="." if $_ eq ''; # empty lines become dots
+		$ret.=" $_\n";
+	}
+	chomp $ret;
+	return $ret;
+}
 
 =head1 AUTHOR
 
