@@ -237,6 +237,7 @@ sub unpack {
 			$this->do("chown", "$uid:$gid", "$workdir/$file") 
 				|| die "failed chowning $file to $uid\:$gid\: $!";
 		}
+		next if -l "$workdir/$file"; # skip links
 		$this->do("chmod", sprintf("%lo", $mode), "$workdir/$file") 
 			|| die "failed changing mode of $file to $mode\: $!";
 	}

@@ -1,3 +1,10 @@
+alien (8.51) unstable; urgency=low
+
+  * In rpm unpack permission fixup code, do not call chmod on symlinks,
+    as it will follow the links.
+
+ -- Joey Hess <joeyh@debian.org>  Wed,  9 Mar 2005 16:21:14 -0500
+
 alien (8.50) unstable; urgency=low
 
   * Recognise udebs and treat them like debs. Closes: #284693
