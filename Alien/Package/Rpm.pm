@@ -176,6 +176,30 @@ sub unpack {
 			or die "error moving unpacked files into the default prefix directory: $!";
 	}
 
+	if ($> == 0) {
+		# rpm files have two sets of permissions; the set in the cpio
+		# archive, and the set in the control data; which override them.
+		# The set in the control data are more correct, so let's use those.
+		open (GETPERMS, 'rpm --queryformat \'[%{FILEMODES} %{FILEUSERNAME} %{FILEGROUPNAME} %{FILENAMES}\n]\' -qp '.$this->filename.' |');
+		while (<GETPERMS>) {
+			chomp;
+			my ($mode, $owner, $group, $file) = split(/ /, $_, 4);
+			$mode = $mode & 07777; # remove filetype
+			my $uid = getpwnam($owner);
+			if (! defined $uid) {
+				print STDERR "WARNING: $file is owned by a user ($owner) not on this system; using root instead";
+				$uid=0;
+			}
+			my $gid = getgrnam($group);
+			if (! defined $gid) {
+				print STDERR "WARNING: $file is owned by a group ($group) not on this system; using group root instead";
+				$gid=0;
+			}
+			chown($uid, $gid, $file) || die "failed chowning $file to $uid\:$gid\: $!";
+			chmod($mode, $file) || die "failed changing mode of $file to $mode\: $!";
+		}
+	}
+
 	# When cpio extracts the file, any child directories that are
 	# present, but whose parent directories are not, end up mode 700.
 	# This next block corrects that to 755, which is more reasonable.

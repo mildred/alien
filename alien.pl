@@ -364,7 +364,7 @@ unless (@ARGV) {
 if (! -w '.') {
 	die("Cannot write to current directory. Try moving to /tmp and re-running alien.\n");
 }
-if ($> ne 0) {
+if ($> != 0) {
 	if ($destformats{deb} && ! $generate && ! $single) {
 		die "Must run as root to convert to deb format (or you may use fakeroot).\n";
 	}
