@@ -487,6 +487,11 @@ sub arch {
 		$arch='i386';
 	}
 	
+	# Treat armv4l as arm.
+	if ($arch eq 'armv4l') {
+		$arch='arm';
+	}
+	
 	return $this->{arch}=$arch;
 }
 

@@ -1,3 +1,9 @@
+alien (7.25) unstable; urgency=low
+
+  * Treat 'armv4l' arch rpm's as arm architecture.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 18 Jun 2001 13:40:20 -0400
+
 alien (7.24) unstable; urgency=low
 
   * Patch from Raul Miller <moth@debian.org> to make it use gzip -dc | tar
