@@ -1,3 +1,14 @@
+alien (8.01) unstable; urgency=low
+
+  * The "vmware and dpkg on drugs" release.
+  * If a preinstall script in a rpm starts like this:
+    # BEGINNING_OF_POST_DOT_SH
+    #!/bin/sh
+    Add anther hashbang at the top, so dpkg doesn't croak on it.
+    Closes: #137032
+
+ -- Joey Hess <joeyh@debian.org>  Wed,  6 Mar 2002 12:57:06 -0500
+
 alien (8.00) unstable; urgency=low
 
   * LSB package support. It can generate LSB packages (not guarenteed

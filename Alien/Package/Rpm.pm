@@ -419,7 +419,7 @@ sub _script_helper {
 	# set
 	if (@_) {
 		my $value=shift;
-		if (length $value and $value !~ m/#!\s*\//) {
+		if (length $value and $value !~ m/^#!\s*\//) {
 			$value="#!/bin/sh\n$value";
 		}
 		$this->{$script} = $value;
@@ -431,7 +431,7 @@ sub _script_helper {
 	$_=$this->{$script};
 	return '' unless defined $_;
 	return $_ if m/^\s*$/;
-	return $_ if m/#!\s*\/bin\/sh/; # looks like a shell script already
+	return $_ if m/^#!\s*\/bin\/sh/; # looks like a shell script already
 	my $f = pack("u",$_);
 	$f =~ s/%/%%/g; # Rpm expands %S, so escape such things.
 	return "#!/bin/sh\n".
