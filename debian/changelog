@@ -1,3 +1,9 @@
+alien (7.14) unstable; urgency=low
+
+  * Added rpm spec file fix.
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 10 Jan 2001 12:31:54 -0800
+
 alien (7.13) unstable; urgency=low
 
   * Patch from Pavel Roskin <proski@gnu.org> for misc specfile issues,

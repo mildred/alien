@@ -36,4 +36,5 @@ find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" | \
 	sed '/\/man\//s/$/\*/' > manifest
 
 %files -f manifest
+%defattr(-,root,root)
 %doc debian/changelog COPYING README alien.lsm
