@@ -102,6 +102,7 @@ sub install {
 	my $this=shift;
 	my $slp=shift;
 
+	system("slpi $slp") && die "Unable to install: $!";
 }
 
 =item getfooter
@@ -134,15 +135,15 @@ sub scan {
 	my $file=$this->filename;
 
 	# Decode the footer.
-	my @values=unpack(footer_packstring,$this->getfooter);
+	my @values=unpack(footer_packstring(),$this->getfooter);
 	# Populate fields.
-	foreach my $field (@{fieldlist}) {
+	foreach my $field (@{fieldlist()}) {
 		$_=shift @values;
 		$this->$field($_);
 	}
 
 	# A simple sanity check.
-	if (! defined $this->slpkgversion || $this->slpkgversion < footer_version) {
+	if (! defined $this->slpkgversion || $this->slpkgversion < footer_version()) {
 		die "unsupported stampede package version";
 	}
 
@@ -152,7 +153,7 @@ sub scan {
 	foreach (`bzip2 -d < $file | tar -tf -`) {
 		s:^\./:/:;
 		$_="/$_" unless m:^/:;
-		push @filelist, $fn;
+		push @filelist, $_;
 	}
 
 	# TODO: read in postinst script.
@@ -191,17 +192,6 @@ sub unpack {
 	return 1;
 }
 
-=item prep
-
-No prep stage is needed for slp files.
-
-=cut
-
-sub prep {
-	my $this=shift;
-	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
-}
-
 =item build
 
 Build a slp.
@@ -210,8 +200,50 @@ Build a slp.
 
 sub build {
 	my $this=shift;
+	my $slp=$this->name."-".$this->version.".slp";
+	
+	# Now generate the footer.
+	# We cannot use the actual $slp::footer_packstring, becuase it uses
+	# space terminated strings (A) instead of null terminated strings
+	# (a). That is good for decoding, but not for encoding.
+	my $fmt=footer_packstring();
+	$fmt=~tr/A/a/;
 
-	return # filename
+	my $footer=pack($fmt,
+		$this->conffiles,
+		2, # Use priority optional for alien packages.
+		0, # Always use bzip2 as the compression type.
+		$this->release,
+		254, # Don't try to guess copyright, just use unknown.
+		'', # Conflicts.
+		'', # Set up script. TODO
+		$this->description,
+		'', # Depends.
+		'', # Provides.
+		$this->author,
+		scalar localtime, # Use current date.
+		252, # Unknown compiler.
+		$this->version,
+		$this->name,
+		$this->arch,
+		252, # Unknown group.
+		footer_version(),
+	);
+
+	# Generate .tar.bz2 file.
+	# Note that it's important I use "./*" instead of just "." or
+	# something like that, becuase it results in a tar file where all
+	# the files in it start with "./", which is consitent with how
+	# normal stampede files look.
+	system("(cd ".$this->unpacked_tree."; tar cf - ./*) | bzip2 - > $slp") &&
+		die "package build failed: $!";
+
+	# Now append the footer.
+	open (OUT,">>$slp") || die "$slp: $!";
+	print OUT $footer;
+	close OUT;
+
+	return $slp;
 }
 
 =item conffiles
@@ -219,7 +251,8 @@ sub build {
 Set/get conffiles.
 
 When the conffiles are set, the format used by slp (a colon-delimited list)
-is turned into the real list that is used internally.
+is turned into the real list that is used internally. The list is changed
+back into slp's internal format when it is retreived.
 
 =cut
 
@@ -227,11 +260,11 @@ sub conffiles {
 	my $this=shift;
 
 	# set
-	$this->{conffiles}=[split /:/, shift]; if @_;
+	$this->{conffiles}=[split /:/, shift] if @_;
 
 	# get
 	return unless defined wantarray; # optimization
-	return $this->{conffiles};
+	return join(':',@{$this->{conffiles}});
 }
 
 =item copyright
@@ -248,11 +281,14 @@ sub copyright {
 	my $this=shift;
 
 	# set
-	$this->{copyright}=(${copyrighttrans}{shift} || 'unknown') if @_;
+	$this->{copyright}=(${copyrighttrans()}{shift} || 'unknown') if @_;
 	
 	# get
 	return unless defined wantarray; # optimization
-	return $this->{copyright};
+	my %transcopyright=reverse %{copyrighttrans()};
+	return $transcopyright{$this->{copyright}}
+		if (exists $transcopyright{$this->{copyright}});
+	return 254; # unknown
 }
 
 =item arch
@@ -270,14 +306,38 @@ sub arch {
 
 	# set
 	if (@_) {
-		$this->{arch}=(${archtrans}{shift};
+		$this->{arch}=${archtrans()}{shift};
 		die "unknown architecture" if ! $this->{arch};
 	}
 
 	# get
 	return unless defined wantarray; # optimization
-	return $this->{arch};
+	my %transarch=reverse %{archtrans()};
+	return $transarch{$this->{arch}}
+		if (exists $transarch{$this->{arch}});
+	die "Stampede does not support architecture ".$this->{arch}." packages";
 }
+
+=item release
+
+Set/get release version.
+
+When the release version is retreived, it is converted to an unsigned
+integer, as is required by the slp package format.
+
+=cut
+
+sub release {
+	my $this=shift;
+
+	# set
+	$this->{release}=shift;
+
+	# get
+	return unless defined wantarray; # optimization
+	return int($this->{release});
+}
+
 
 =head1 AUTHOR
 
