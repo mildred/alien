@@ -1,3 +1,10 @@
+alien (7.0) unstable; urgency=low
+
+  * This is a fully rewritten version, now belived to be stable enough for
+    a dot-0 release.
+
+ -- Joey Hess <joeyh@debian.org>  Sat, 29 Apr 2000 23:27:24 -0700
+
 alien (6.99999) unstable; urgency=low
 
   * I despise MakeMaker.
