@@ -6,7 +6,7 @@ Alien::Package::Slp - an object that represents a slp package
 
 =cut
 
-package Alien::Package::Deb;
+package Alien::Package::Slp;
 use strict;
 use Alien::Package; # perlbug
 use base qw(Alien::Package);

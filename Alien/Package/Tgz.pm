@@ -6,7 +6,7 @@ Alien::Package::Tgz - an object that represents a tgz package
 
 =cut
 
-package Alien::Package::Deb;
+package Alien::Package::Tgz;
 use strict;
 use Alien::Package; # perlbug
 use base qw(Alien::Package);
