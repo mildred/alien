@@ -28,7 +28,7 @@ extra_install:
 
 alien:
 	perl -pe ' \
-		$$_="\tmy \$$version_string=\"$(VER)\";" \
+		$$_="\tmy \$$version_string=\"$(VER)\";\n" \
 			if /VERSION_AUTOREPLACE/' alien.pl > alien
 }
 }
@@ -39,6 +39,6 @@ WriteMakefile(
 	# Pure evil. Hook into build and install targets
 	'depend'	=> {'all:' => 'extra_build',
 			    'install:' => 'extra_install',
-			    'pure_install:' => 'extra_install'
-	'clean'		=> {FILES => 'alien.lsm alien.subst'},
+			    'pure_install:' => 'extra_install'},
+	'clean'		=> {FILES => 'alien.lsm alien'},
 );

@@ -215,7 +215,7 @@ sub prep {
 	my $filelist;
 	foreach my $fn (@{$this->filelist}) {
 		if ($fn =~ m:/$:) {
-			# a directory. Skip entirely.
+			$filelist.="%dir $fn\n";
 		}
 		elsif (grep(m:^\Q$fn\E$:,@conffiles)) { # it's a conffile
 			$filelist.="%config $fn\n";

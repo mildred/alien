@@ -371,7 +371,7 @@ foreach my $file (@ARGV) {
 					$package->patchfile($patchfile)
 				}
 				else {
-					$package->patchfile($package->getpatch(patchdirs());
+					$package->patchfile($package->getpatch(patchdirs()));
 				}
 			}
 	
