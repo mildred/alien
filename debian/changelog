@@ -1,3 +1,13 @@
+alien (7.31) unstable; urgency=low
+
+  * Use --target noarch instead of --target=noarch when building rpms.
+    The latter used to work, but no longer does, due to some change in rpm or
+    popt. It also has to come after the -bb.
+  * Trap stderr of rpm and debian/rules building packages, and only display if
+    the build fails.
+
+ -- Joey Hess <joeyh@debian.org>  Fri,  4 Jan 2002 13:53:04 -0500
+
 alien (7.30) unstable; urgency=low
 
   * Thanks to the excellent work of Mark A. Hershberger <mah@everybody.org>,

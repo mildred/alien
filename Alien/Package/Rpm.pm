@@ -348,14 +348,14 @@ sub build {
 		
 		# This is the new command line arcgument to make noarch
 		# rpms. It appeared in rpm version 3.
-		$opts="--target=noarch" if $rpmarch eq 'noarch';
+		$opts="--target noarch" if $rpmarch eq 'noarch';
 	}
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
-	my $command="cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null";
-	my $log=`$command`;
+	my $command="cd $dir; rpm -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
+	my $log=`$command 2>&1`;
 	if ($?) {
-		die "Package build failed. Here's the log:\n", $log;
+		die "Package build failed. Here's the log of the command ($command):\n", $log;
 	}
 
 	return $rpm;

@@ -422,7 +422,7 @@ sub build {
 	my $this=shift;
 
 	chdir $this->unpacked_tree;
-	my $log=`debian/rules binary`;
+	my $log=`debian/rules binary 2>&1`;
 	if ($?) {
 		die "Package build failed. Here's the log:\n", $log;
 	}
