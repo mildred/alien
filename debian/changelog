@@ -1,3 +1,9 @@
+alien (7.4) unstable; urgency=low
+
+  * Corrected typo that broke Deb.pm, Closes: #64559 
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 23 May 2000 19:30:04 -0700
+
 alien (7.3) unstable; urgency=low
 
   * Changed all invocations of programs to be in posix-complient form. Ie,

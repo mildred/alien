@@ -545,7 +545,7 @@ sub email {
 	return $ENV{EMAIL} if exists $ENV{EMAIL};
 
 	my $login = getlogin || (getpwuid($<))[0] || $ENV{USER};
-	myt $mailname='';
+	my $mailname='';
 	if (open (MAILNAME,"</etc/mailname")) {
 		$mailname=<MAILNAME>;
 		chomp $mailname;
