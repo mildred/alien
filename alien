@@ -279,6 +279,12 @@ if (! %destformats) {
 }
 
 # A few sanity checks.
+if (($generate || $single) && $install) {
+	die "You can not use --generate or --single with --install.\n";
+}
+if (($generate || $single) && keys %destformats > 1) {
+	die "--generate and --single may noly be used when converting to a single format.\n";
+}
 if ($patchfile && ! -f $patchfile) {
 	die "Specified patch file, \"$patchfile\" cannot be found.\n";
 }
