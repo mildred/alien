@@ -1,3 +1,17 @@
+alien (8.00) unstable; urgency=low
+
+  * LSB package support. It can generate LSB packages (not guarenteed
+    fully conformant with the LSB), and it can take LSB packages and convert
+    them into other formats. Unlike all the other conversions, lsb packages's
+    dependancy (on lsb) and their package scripts are preserved in the
+    generated packages (when allowed by the target package format). This means
+    your distribution will need to have a package named 'lsb' for the result
+    to be installable. (Debian will have one soon..)
+  * Suggest rpm-lsb, which is the preferred rpm to build lsb packages with.
+    Use it if it's present, plain old rpm otherwise.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 11 Feb 2002 12:55:42 -0500
+
 alien (7.32) unstable; urgency=low
 
   * Support ancient (bo-era) debs with upper-case field names. Closes: #130736

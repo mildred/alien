@@ -138,7 +138,6 @@ sub scan {
 		Version => 'version',
 		Architecture => 'arch',
 		Maintainer => 'maintainer',
-		Depends => 'depends',
 		Section => 'group',
 		Description => 'summary',
 	);
@@ -300,11 +299,16 @@ sub prep {
 	print OUT "\n";
 	print OUT "Package: ".$this->name."\n";
 	print OUT "Architecture: ".$this->arch."\n";
-	print OUT "Depends: \${shlibs:Depends}\n";
+	if (defined $this->depends) {
+		print OUT "Depends: ".join(", ", "\${shlibs:Depends}", $this->depends)."\n";
+	}
+	else {
+		print OUT "Depends: \${shlibs:Depends}\n";
+	}
 	print OUT "Description: ".$this->summary."\n";
 	print OUT $this->description."\n";
 	print OUT " .\n";
-	print OUT " (Converted from a .".$this->origformat." package by alien.)\n";
+	print OUT " (Converted from a ".$this->origformat." package by alien.)\n";
 	close OUT;
 
 	# Copyright file.
@@ -381,16 +385,18 @@ EOF
 	chmod 0755,"$dir/debian/rules";
 
 	# Save any scripts.
-	foreach my $script (qw{postinst postrm preinst prerm}) {
-		my $data=$this->$script();
-		next unless defined $data;
-		next if $data =~ m/^\s*$/;
-		open (OUT,">$dir/debian/$script") ||
-			die "$dir/debian/$script: $!";
-		print OUT $data;
-		close OUT;
+	if ($this->usescripts) {
+		foreach my $script (qw{postinst postrm preinst prerm}) {
+			my $data=$this->$script();
+			next unless defined $data;
+			next if $data =~ m/^\s*$/;
+			open (OUT,">$dir/debian/$script") ||
+				die "$dir/debian/$script: $!";
+			print OUT $data;
+			close OUT;
+		}	
 	}
-
+	
 	my %dirtrans=( # Note: no trailing slahshes on these directory names!
 		# Move files to FHS-compliant locations, if possible.
 		'/usr/man'	=> '/usr/share/man',

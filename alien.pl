@@ -11,10 +11,10 @@ alien - Convert or install an alien binary package
 =head1 DESCRIPTION
 
 B<alien> is a program that converts between Redhat rpm, Debian deb,
-Stampede slp and Slackware tgz file formats. If you want to use a package
-from another linux distribution than the one you have installed on your
-system, you can use alien to convert it to your preferred package format
-and install it.
+Stampede slp, Slackware tgz, and Solaris pkg file formats. If you want to
+use a package from another linux distribution than the one you have
+installed on your system, you can use alien to convert it to your preferred
+package format and install it. It also supports LSB packages.
 
 =head1 WARNING
 
@@ -38,6 +38,22 @@ alien version.
 
 For converting to and from rpm format the Red Hat Package Manager must be
 installed.
+
+=item lsb
+
+To convert from lsb packages, the Red Hat Package Manager must be installed.
+Unlike the other package formats, alien can handle the depenendencies of
+lsb packages if the destination package format supports dependencies. Note
+that this means that the package generated from a lsb package will depend on
+a package named "lsb" -- your distribution should provide a package by that
+name, if it is lsb compliant. The scripts in the lsb package will be converted
+by default as well.
+
+To generate lsb packages, the Red Hat Package Manager must be installed,
+and alien will use by preference a program named lsb-rpm, if it exists.
+No guarantees are made that the generated lsb packages will be fully LSB
+compliant, and it's rather unlikely they will unless you build them in the
+lsbdev environment.
 
 =item deb
 
@@ -136,6 +152,8 @@ scripts might be designed to work on a system unlike your own, and could
 cause problems. It is recommended that you examine the scripts by hand
 and check to see what they do before using this option.
 
+This is enabled by default when converting from lsb packages.
+
 =item B<-k>, B<--keep-version>
 
 By default, alien adds one to the minor version number of each package it
@@ -230,6 +248,7 @@ use Alien::Package::Rpm;
 use Alien::Package::Tgz;
 use Alien::Package::Slp;
 use Alien::Package::Pkg;
+use Alien::Package::Lsb;
 
 # Returns a list of directories to search for patches.
 sub patchdirs {
@@ -257,6 +276,7 @@ Usage: alien [options] file [...]
                             directory.
   -r, --to-rpm              Generate a RedHat rpm package.
       --to-slp              Generate a Stampede slp package.
+  -l, --to-lsb              Generate a LSB package.
   -t, --to-tgz              Generate a Slackware tgz package.
      Enables the following option:
        --description=<desc> Specify package description.
@@ -279,6 +299,7 @@ my (%destformats, $generate, $install, $single, $scripts, $patchfile,
 GetOptions(
 	"to-deb|d", sub { $destformats{deb}=1 },
 	"to-rpm|r", sub { $destformats{rpm}=1 },
+	"to-lsb|l", sub { $destformats{lsb}=1 },
 	"to-tgz|t", sub { $destformats{tgz}=1 },
 	"to-slp",   sub { $destformats{slp}=1 },
 	"to-pkg|p", sub { $destformats{pkg}=1 },
@@ -336,7 +357,13 @@ foreach my $file (@ARGV) {
 
 	# Figure out what kind of file this is.
 	my $package;
-	if (Alien::Package::Rpm->checkfile($file)) {
+
+	# Check lsb before rpm, since lsb packages are really just
+	# glorified rpms.
+	if (Alien::Package::Lsb->checkfile($file)) {
+		$package=Alien::Package::Lsb->new(filename => $file);
+	}
+	elsif (Alien::Package::Rpm->checkfile($file)) {
 		$package=Alien::Package::Rpm->new(filename => $file);
 	}
 	elsif (Alien::Package::Deb->checkfile($file)) {
@@ -356,13 +383,7 @@ foreach my $file (@ARGV) {
 		die "Unknown type of package, $file.\n";
 	}
 
-	# Kill scripts from the package, unless they were enabled.
-	unless (defined $scripts) {
-		$package->postinst('');
-		$package->postrm('');
-		$package->preinst('');
-		$package->prerm('');
-	}
+	$package->usescripts($scripts) unless $package->usescripts;
 
 	# Increment release.
 	unless (defined $keepversion) {
@@ -434,5 +455,7 @@ foreach my $file (@ARGV) {
 			# Note I don't unlink it. I figure that might annoy
 			# people, since it was an input file.
 		}
+
+		$package->revert;
 	}
 }

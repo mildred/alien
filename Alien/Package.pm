@@ -61,7 +61,8 @@ The package's maintainer.
 
 =item depends
 
-The package's dependancies.
+The package's dependancies. Only dependencies that should exist on all
+target distributions can be put in here though (ie: lsb).
 
 =item group
 
@@ -119,6 +120,11 @@ The preinst script of the package.
 =item prerm
 
 The prerm script of the package.
+
+=item usescripts
+
+Only use the above scripts fields when generating the package if this is set
+to a true value.
 
 =item unpacked_tree
 
@@ -265,6 +271,15 @@ build methods might have on it.
 =cut
 
 sub cleantree {}
+
+=item revert
+
+This method should ensure that the object is in the same state it was in
+before the prep method was called.
+
+=cut
+
+sub revert {}
 
 =item build
 

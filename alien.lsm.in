@@ -2,12 +2,13 @@ Begin3
 Title:		alien
 Version:	@version@
 Entered-date:	31MAR97
-Description:	Alien converts Slackware .tgz packages, Red Hat .rpm packages 
-		and Debian .deb packages. It can convert these formats to
-		either .deb or .rpm. It works only on binary packages.
-Keywords:	dpkg rpm tgz convert
-Author:		joey@kite.ml.org
-Primary-site:	sunsite.unc.edu /pub/Linux/utils/scripts
+Description:	Alien converts Slackware .tgz packages, Red Hat .rpm packages,
+                Debian .deb packages, and Stampede .slp packages. It can 
+                convert from any of the formats to any other format. It works
+                only on binary packages. It also support LSB packages.
+Keywords:	debian dpkg deb red hat redhat rpm slackware tgz stampede slp convert package LSB
+Author:		joey@kitenet.net
+Primary-site:	sunsite.unc.edu /pub/Linux/utils/package
 		32	alien-@version@.tar.gz
 Copying-policy:	GPL
 End

@@ -181,18 +181,20 @@ sub prep {
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
 	my $install_made=0;
-	foreach my $script (keys %{scripttrans()}) {
-		my $data=$this->$script();
-		my $out=$this->unpacked_tree."/install/".${scripttrans()}{$script};
-		next if ! defined $data || $data =~ m/^\s*$/;
-		if (!$install_made) {
-			mkdir $this->unpacked_tree."/install", 0755;
-			$install_made=1;
+	if ($this->usescripts) {
+		foreach my $script (keys %{scripttrans()}) {
+			my $data=$this->$script();
+			my $out=$this->unpacked_tree."/install/".${scripttrans()}{$script};
+			next if ! defined $data || $data =~ m/^\s*$/;
+			if (!$install_made) {
+				mkdir $this->unpacked_tree."/install", 0755;
+				$install_made=1;
+			}
+			open (OUT, ">$out") || die "$out: $!";
+			print OUT $data;
+			close OUT;
+			chmod 0755, $out;
 		}
-		open (OUT, ">$out") || die "$out: $!";
-		print OUT $data;
-		close OUT;
-		chmod 0755, $out;
 	}
 }
 

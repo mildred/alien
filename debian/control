@@ -9,11 +9,11 @@ Package: alien
 Architecture: all
 Section: admin
 Depends: debhelper (>= 3), ${perl:Depends}, rpm (>= 2.4.4-2), dpkg-dev, make, cpio
-Suggests: patch, bzip2
-Description: Install Red Hat, Stampede, and Slackware Packages with dpkg.
- Alien allows you to convert Red Hat, Stampede and Slackware Packages into
- Debian packages, which can be installed with dpkg. 
+Suggests: patch, bzip2, lsb-rpm
+Description: Install LSB, Red Hat, Stampede, and Slackware Packages with dpkg.
+ Alien allows you to convert LSB, Red Hat, Stampede and Slackware Packages
+ into Debian packages, which can be installed with dpkg.
  .
- It can also convert into Slackware, Red Hat, and Stampede packages.
+ It can also generate packages of any of the other formats.
  .
  This is a tool only suitable for binary packages.

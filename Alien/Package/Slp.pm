@@ -234,7 +234,7 @@ sub build {
 		'', # Set up script. TODO
 		$this->summary,
 		$this->description,
-		'', # Depends.
+		$this->depends,
 		'', # Provides.
 		$this->maintainer,
 		scalar localtime, # Use current date.

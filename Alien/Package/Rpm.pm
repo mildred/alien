@@ -246,6 +246,7 @@ sub prep {
 	print OUT "Name: ".$this->name."\n";
 	print OUT "Version: ".$this->version."\n";
 	print OUT "Release: ".$this->release."\n";
+	print OUT "Requires: ".$this->depends."\n" if length $this->depends;
 	print OUT "Summary: ".$this->summary."\n";
 	print OUT "Copyright: ".$this->copyright."\n";
 	print OUT "Distribution: ".$this->distribution."\n";
@@ -254,30 +255,32 @@ sub prep {
 	print OUT "\%define _rpmdir ../\n"; # write rpm to current directory
 	print OUT "\%define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm\n";
 	print OUT "\n";
-	if ($this->preinst) {
-		print OUT "\%pre\n";
-		print OUT $this->preinst."\n";
-		print OUT "\n";
-	}
-	if ($this->postinst) {
-		print OUT "\%post\n";
-		print OUT $this->postinst."\n";
-		print OUT "\n";
-	}
-	if ($this->prerm) {
-		print OUT "\%preun\n";
-		print OUT $this->prerm."\n";
-		print OUT "\n";
-	}
-	if ($this->postun) {
-		print OUT "\%postun\n";
-		print OUT $this->postrm."\n";
-		print OUT "\n";
+	if ($this->usescripts) {
+		if ($this->preinst) {
+			print OUT "\%pre\n";
+			print OUT $this->preinst."\n";
+			print OUT "\n";
+		}
+		if ($this->postinst) {
+			print OUT "\%post\n";
+			print OUT $this->postinst."\n";
+			print OUT "\n";
+		}
+		if ($this->prerm) {
+			print OUT "\%preun\n";
+			print OUT $this->prerm."\n";
+			print OUT "\n";
+		}
+		if ($this->postun) {
+			print OUT "\%postun\n";
+			print OUT $this->postrm."\n";
+			print OUT "\n";
+		}
 	}
 	print OUT "\%description\n";
 	print OUT $this->description."\n";
 	print OUT "\n";
-	print OUT "(Converted from a .".$this->origformat." package by alien.)\n";
+	print OUT "(Converted from a ".$this->origformat." package by alien.)\n";
 	print OUT "\n";
 	print OUT "%files\n";
 	print OUT $filelist;
@@ -302,10 +305,14 @@ sub cleantree {
 Build a rpm. If RPMBUILDOPT is set in the environement, the options in
 it are passed to rpm on its command line.
 
+An optional parameter, if passed, can be used to specify the program to use
+to build the rpm. It defaults to rpm.
+
 =cut
 
 sub build {
 	my $this=shift;
+	my $buildcmd=shift || 'rpm';
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 	
 	# Ask rpm how it's set up. We want to know what architecture it
@@ -352,7 +359,7 @@ sub build {
 	}
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
-	my $command="cd $dir; rpm -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
+	my $command="cd $dir; $buildcmd -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
 	my $log=`$command 2>&1`;
 	if ($?) {
 		die "Package build failed. Here's the log of the command ($command):\n", $log;
