@@ -28,6 +28,10 @@ Set to a true value if dpkg-deb is available.
 After the build stage, set to a hash reference of the directories we moved
 files from and to, so these moves can be reverted in the cleantree stage.
 
+=item fixperms
+
+If this is set to true, the generated debian/rules will run dh_fixperms.
+
 =back
 
 =head1 METHODS
@@ -330,7 +334,8 @@ sub prep {
 
 	# A minimal rules file.
 	open (OUT, ">$dir/debian/rules") || die "$dir/debian/rules: $!";
-	print OUT << 'EOF';
+	my $fixpermscomment = $this->fixperms ? "" : "#";
+	print OUT << "EOF";
 #!/usr/bin/make -f
 # debian/rules for alien
 
@@ -340,8 +345,8 @@ sub prep {
 # Use v3 compatability mode, so ldconfig gets added to maint scripts.
 export DH_COMPAT=3
 
-PACKAGE=$(shell dh_listpackages)
-PKGFILES=$(shell ls -1 |grep -v debian)
+PACKAGE=\$(shell dh_listpackages)
+PKGFILES=\$(shell ls -1 |grep -v debian)
 
 build:
 	dh_testdir
@@ -360,12 +365,12 @@ binary-arch: build
 	dh_installdirs
 
 # Copy the packages's files, if any.
-ifneq "$(PKGFILES)" ""
-	cp -a $(PKGFILES) debian/$(PACKAGE)
+ifneq "\$(PKGFILES)" ""
+	cp -a \$(PKGFILES) debian/\$(PACKAGE)
 endif
 
 #
-# If you need to move files around in debian/$(PACKAGE) or do some
+# If you need to move files around in debian/\$(PACKAGE) or do some
 # binary patching, do it here
 #
 	dh_installdocs
@@ -373,8 +378,7 @@ endif
 # This has been known to break on some wacky binaries.
 #	dh_strip
 	dh_compress
-# This is too paranoid to be generally useful to alien.
-#	dh_fixperms
+$fixpermscomment	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
 	-dh_shlibdeps

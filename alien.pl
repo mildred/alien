@@ -159,6 +159,14 @@ This is enabled by default when converting from lsb packages.
 By default, alien adds one to the minor version number of each package it
 converts. If this option is given, alien will not do this.
 
+=item B<--fixperms>
+
+Sanitize all file owners and permissions when building a deb. This may be
+useful if the original package is a mess. On the other hand, it may break
+some things to mess with their permissions and owners to the degree this does,
+so it defaults to off. This can only be used when converting to debian
+packages.
+
 =item B<-h>, B<--help>
 
 Display a short usage summary.
@@ -274,6 +282,7 @@ Usage: alien [options] file [...]
        --nopatch	    Do not use patches.
        --single             Like --generate, but do not create .orig
                             directory.
+       --fixperms           Munge/fix permissions and owners.
   -r, --to-rpm              Generate a RedHat rpm package.
       --to-slp              Generate a Stampede slp package.
   -l, --to-lsb              Generate a LSB package.
@@ -294,7 +303,7 @@ EOF
 
 # Start by processing the parameters.
 my (%destformats, $generate, $install, $single, $scripts, $patchfile,
-    $nopatch, $tgzdescription, $keepversion);
+    $nopatch, $tgzdescription, $keepversion, $fixperms);
 
 GetOptions(
 	"to-deb|d", sub { $destformats{deb}=1 },
@@ -311,6 +320,7 @@ GetOptions(
 	"nopatch", \$nopatch,
 	"description=s", \$tgzdescription,
 	"keep-version|k", \$keepversion,
+	"fixperms", \$fixperms,
 	"help|h", \&usage,
 	"version|v", \&version,
 ) || usage();
@@ -422,7 +432,9 @@ foreach my $file (@ARGV) {
 					$package->patchfile($package->getpatch(patchdirs()));
 				}
 			}
-	
+
+			$package->fixperms($fixperms);
+			
 			$package->prep;
 			
 			# If generating build tree only, stop here with message.

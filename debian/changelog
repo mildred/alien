@@ -1,3 +1,9 @@
+alien (8.06) unstable; urgency=low
+
+  * Added --fixperms option. Closes: #142850 
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 21 Apr 2002 22:19:12 -0400
+
 alien (8.05) unstable; urgency=low
 
   * Support rpms with a description consisting of just blank lines.
