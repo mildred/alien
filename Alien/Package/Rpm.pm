@@ -522,6 +522,9 @@ sub arch {
 	elsif ($arch eq 'ppc') {
 		$arch='powerpc';
 	}
+	elsif ($arch eq 'x86_64') {
+		$arch='amd64';
+	}
 	
 	# Treat 486, 586, etc, as 386.
 	if ($arch =~ m/i\d86/i || $arch =~ m/pentium/i) {

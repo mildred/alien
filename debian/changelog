@@ -1,3 +1,9 @@
+alien (8.47) UNRELEASED; urgency=low
+
+  * x86_64 rpms become amd64 debs
+
+ -- Joey Hess <joeyh@debian.org>  Tue,  3 Aug 2004 20:59:06 -0400
+
 alien (8.46) unstable; urgency=low
 
   * Unset _unpackaged_files_terminate_build when building rpms, at least SuSE
