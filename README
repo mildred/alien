@@ -66,7 +66,8 @@ Programs that use alien:
   package viewer that can convert between package formats by using alien. Its
   homepage is at http://www.momentus.com.br/users/hook/kpackviewer.html
 
-  Corel also appears to have something in Corel linux that uses alien.
+  Corel also appears to have (or had) something in Corel linux that
+  uses alien.
 
 Please report any bugs in alien to the author: 
 

@@ -1,3 +1,12 @@
+alien (8.17) unstable; urgency=low
+
+  * When converting from rpm, do parent directory 755 chmods first, then
+    known permissions setting from rpm --queryformat, so that it can override
+    any directories that do indeed have a permission set.
+  * Fixed MakeFile.PL to work with perl 5.8.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 19 Aug 2002 12:49:04 -0400
+
 alien (8.16) unstable; urgency=low
 
   * Fixed rpm unpacking.
