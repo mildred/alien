@@ -332,8 +332,7 @@ sub build {
 		$opts="--target noarch" if $rpmarch eq 'noarch';
 	}
 
-	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};	
-
+	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
 	system("cd $dir; rpm $opts -bb ".$this->name."-".$this->version."-".$this->release.".spec >/dev/null") &&
 		die "package build failed";
 

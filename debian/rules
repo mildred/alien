@@ -49,12 +49,14 @@ installhook:
 	echo $(VERSION) > /home/pub/programs/alien/LATEST-VERSION-IS
 	rm /home/ftp/pub/code/alien/* || true
 	cd /home/ftp/pub/code/alien; \
-		ln -sf ../debian/alien_$(VERSION).tar.gz alien_$(VER).tar.gz; \
+		ln -sf ../debian/alien_$(VERSION).tar.gz alien_$(VERSION).tar.gz; \
 		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
-	fakeroot alien --to-slp /home/joey/debian/public/alien_*.deb
+	fakeroot alien -k --to-slp /home/joey/debian/public/alien_*.deb
 	mv alien-$(VERSION).slp /home/ftp/pub/code/alien/
-	fakeroot alien --to-rpm /home/joey/debian/public/alien_*.deb
+	fakeroot alien -k --to-rpm /home/joey/debian/public/alien_*.deb
 	mv alien-$(VERSION)*.rpm /home/ftp/pub/code/alien/
+	ln -s /home/ftp/pub/code/alien/alien-$(VERSION)*.rpm \
+		/home/ftp/pub/code/alien/alien.rpm 
 	ln -s /home/ftp/pub/code/alien/alien-$(VERSION).slp \
 		/home/ftp/pub/code/alien/alien.slp
 

@@ -97,7 +97,7 @@ sub scan {
 	# Strip out any tar extentions.
 	$basename=~s/\.(tgz|tar\.(gz|Z))$//;
 
-	if ($basename=~m/(.*)-(.*)/ ne undef) {
+	if ($basename=~m/(.*)-(.*)/) {
 		$this->name($1);
 		$this->version($2);
 	}
@@ -113,6 +113,7 @@ sub scan {
 	$this->copyright('unknown');
 	$this->release(1);
 	$this->distribution("Slackware");
+	$this->group("unknown");
 	$this->origformat('tgz');
 	$this->changelogtext('');
 	$this->binary_info(`ls -l $file`);
@@ -140,6 +141,7 @@ sub scan {
 	open (FILELIST, "tar ztf $file |") ||
 		die "getting filelist: $!";
 	while (<FILELIST>) {
+		chomp;
 		unless (m:^install/:) {
 			push @filelist, "/$_";
 		}
@@ -168,7 +170,7 @@ sub unpack {
 	system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)") &&
 		die "Unpacking of `$file' failed: $!";
 	# Delete the install directory that has slackware info in it.
-	system("cd ".$this->unpacked_tree."rm -rf ./install");
+	system("cd ".$this->unpacked_tree."; rm -rf ./install");
 
 	return 1;
 }

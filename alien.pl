@@ -205,6 +205,7 @@ License.
 =cut
 
 use strict;
+use lib '.'; # For debugging, removed by Makefile.
 use Getopt::Long;
 use Alien::Package::Deb;
 use Alien::Package::Rpm;

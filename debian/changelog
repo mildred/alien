@@ -1,3 +1,11 @@
+alien (6.99.1) unstable; urgency=low
+
+  * Major typo fix in Tgz.pm.
+  * Fixed newlines in tgz filelist.
+  * Fixed some undefined value warnings.
+
+ -- Joey Hess <joeyh@debian.org>  Sat, 22 Apr 2000 16:12:44 -0700
+
 alien (6.99) unstable; urgency=low
 
   * The great rewrite. Alien is now based on pure object oriented package
