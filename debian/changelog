@@ -10,7 +10,7 @@ alien (6.99) unstable; urgency=low
     one:
       perl -e 'use Alien::Package::Deb; use Alien::Package::Rpm; \
     	       $p=Alien::Package::Rpm->new(filename => shift); 
-	       $p->read_file; $p->unpack;
+	       $p->scan; $p->unpack;
 	       bless($p, "Alien::Package::Deb");
 	       $p->prep; $p->build;'
   * Almost every line of code has been rewritten.
@@ -19,6 +19,7 @@ alien (6.99) unstable; urgency=low
     instance, generated .deb's now have more info in their copyright file.
   * The template files were all moved inside the objects, which is actually
     cleaner and is certainly easier to deal with.
+  * Usernames are now looked up the way POSIX intended.
 
  -- Joey Hess <joeyh@debian.org>  Thu, 20 Apr 2000 18:52:41 -0700
 

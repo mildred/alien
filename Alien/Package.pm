@@ -160,7 +160,8 @@ sub init {}
 
 =item install
 
-Simply installs the package. This has to be overridden in child classes.
+Simply installs a package file. The filename is passed on standard input.
+This has to be overridden in child classes.
 
 =cut
 
@@ -168,7 +169,7 @@ sub install {
 	my $this=shift;
 }
 
-=item read_file
+=item scan
 
 This method looks at the actual package file the package represents, and
 populates all the fields it can from that package file. The filename field
@@ -179,7 +180,7 @@ something.)
 
 =cut
 
-sub read_file {
+sub scan {
 	my $this=shift;
 	my $file=$this->filename;
 
@@ -220,6 +221,18 @@ to produce a suitable build tree.
 =cut
 
 sub prep {}
+
+=item build
+
+This method takes a prepped build tree, and simply builds a package from
+it. It should put the package in the current directory, and should return
+the filename of the generated package.
+
+(This is just a stub method that all child classes should override.)
+
+=cut
+
+sub build {}
 
 =item DESTROY
 

@@ -52,24 +52,25 @@ sub init {
 
 =item install
 
-Install a deb with dpkg.
+Install a deb with dpkg. Pass in the filename of the deb to install.
 
 =cut
 
 sub install {
 	my $this=shift;
+	my $deb=shift;
 
-	system("dpkg --no-force-overwrite -i ".$this->filename) &&
+	system("dpkg --no-force-overwrite -i $deb") &&
 		die "Unable to install: $!";
 }
 
-=item read_file
+=item scan
 
-Implement the read_file method to read a deb file.
+Implement the scan method to read a deb file.
 
 =cut
 
-sub read_file {
+sub scan {
 	my $this=shift;
 	$this->SUPER::read_file(@_);
 	my $file=$this->filename;
@@ -196,7 +197,7 @@ file.
 
 sub prep {
 	my $this=shift;
-	my $dir=$this->unpacked_tree;
+	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
 	mkdir "$dir/debian", 0755 ||
 		die "mkdir $dir/debian failed: $!";
@@ -239,7 +240,7 @@ sub prep {
 	print OUT "Depends: \${shlibs:Depends}\n";
 	print OUT "Description: ".$this->summary."\n";
 	print OUT $this->description."\n";
-	print OUT ".\n"
+	print OUT ".\n";
 	print OUT " (Converted from a .".$this->origformat." package by alien.)\n";
 	close OUT;
 
@@ -320,6 +321,22 @@ EOF
 		print OUT $data;
 		close OUT;
 	}
+}
+
+=item build
+
+Build a .deb
+
+=cut
+
+sub build {
+	my $this=shift;
+
+	chdir $this->unpacked_tree;
+	system("debian/rules binary") && die "package build failed: $!";
+	chdir "..";
+
+	return $this->name."_".$this->version."-".$this->release."_".$this->arch.".deb";
 }
 
 =item package
@@ -498,9 +515,11 @@ sub username {
 	$username=~s/,.*//g;
 
 	# The ultimate fallback.
-	if (!$username) {
+	if ($username eq '') {
 		$username=$login;
 	}
+
+	return $username;
 }
 
 =head1 AUTHOR

@@ -37,8 +37,9 @@ it are passed to rpm on its command line.
 
 sub install {
 	my $this=shift;
+	my $rpm=shift;
 
-	system("rpm -ivh $ENV{RPMINSTALLOPT} ".$this->filename) &&
+	system("rpm -ivh $ENV{RPMINSTALLOPT} $rpm") &&
 		die "Unable to install: $!";
 }
 
