@@ -5,7 +5,7 @@ alien (8.15) unstable; urgency=low
     and query rpm for the real set that it overrides in the control data
     structure. Closes: #151546
 
- -- Joey Hess <joeyh@debian.org>  Mon,  8 Jul 2002 20:52:48 -0400
+ -- Joey Hess <joeyh@debian.org>  Mon,  8 Jul 2002 21:03:16 -0400
 
 alien (8.14) unstable; urgency=low
 
