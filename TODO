@@ -1,2 +1,5 @@
 * handling postinst script when converting to/from .slp packages.
-
+* solaris pkgadd package support. Useful on sparc linux
+* alien needs to handle relocatable conffiles, partially relocatable
+  packages, and packages that have maultiple parts that relocate
+  differently.
