@@ -176,63 +176,48 @@ sub unpack {
 			or die "error moving unpacked files into the default prefix directory: $!";
 	}
 
-	# When cpio extracts the file, any child directories that are
-	# present, but whose parent directories are not, end up mode 700.
-	# This next block corrects that to 755, which is more reasonable.
-	#
-	# Of course, this whole thing assumes we get the filelist in sorted
-	# order.
-	my $lastdir='';
-	my %tochmod;
-	foreach my $file (@{$this->filelist}) {
-		$file=~s/^\///;
-		if (($lastdir && $file !~ m:^\Q$lastdir\E/[^/]*$:) || !$lastdir) {
-			# We've found one of the nasty directories. Fix it
-			# up.
-			#
-			# Note that I strip the trailing filename off $file
-			# here, for two reasons. First, it makes the loop
-			# easier, we don't need to fix the perms on the
-			# last file, after all! Second, it makes the -d
-			# test below fire, which saves us from trying to
-			# fix a parent directory twice.
-			$file=$1 if $file=~m:(.*)/.*?:;
-			my $dircollect='';
-			
-			foreach my $dir (split(/\//,$file)) {
-				$dircollect.="$dir/";
-				# Use a hash to prevent duplicate chmods.
-				$tochmod{"$workdir/$dircollect"}=1;
-			}
+	# cpio does not necessarily store all parent directories in an
+	# archive, and so some directories, if it has to make them and has
+	# no permission info, may come out mode 700. Here I just chown all
+	# extracted directories to mode 755, which is more reasonable.
+	# Note that the next section overrides these default permissions,
+	# if override data exists in the rpm permissions info. And such
+	# data should always exist, so this is probably a no-op.
+	system("find $workdir -type d -perm 700 -print0 | xargs --no-run-if-empty -0 chmod 700");
+	
+	# rpm files have two sets of permissions; the set in the cpio
+	# archive, and the set in the control data; which override them.
+	# The set in the control data are more correct, so let's use those.
+	# Some permissions setting may have to be postponed until the
+	# postinst.
+	my %owninfo = ();
+	open (GETPERMS, 'rpm --queryformat \'[%{FILEMODES} %{FILEUSERNAME} %{FILEGROUPNAME} %{FILENAMES}\n]\' -qp '.$this->filename.' |');
+	while (<GETPERMS>) {
+		chomp;
+		my ($mode, $owner, $group, $file) = split(/ /, $_, 4);
+		$mode = $mode & 07777; # remove filetype
+		my $uid = getpwnam($owner);
+		if (! defined $uid || $> != 0) {
+			$owninfo{$file}=$owner;
+			$uid=0;
 		}
-		$lastdir=$file if -d "./$file";
-	}
-	chmod 0755, keys %tochmod if %tochmod;
-
-	if ($> == 0) {
-		# rpm files have two sets of permissions; the set in the cpio
-		# archive, and the set in the control data; which override them.
-		# The set in the control data are more correct, so let's use those.
-		open (GETPERMS, 'rpm --queryformat \'[%{FILEMODES} %{FILEUSERNAME} %{FILEGROUPNAME} %{FILENAMES}\n]\' -qp '.$this->filename.' |');
-		while (<GETPERMS>) {
-			chomp;
-			my ($mode, $owner, $group, $file) = split(/ /, $_, 4);
-			$mode = $mode & 07777; # remove filetype
-			my $uid = getpwnam($owner);
-			if (! defined $uid) {
-				print STDERR "WARNING: $file is owned by a user ($owner) not on this system; using root instead\n";
-				$uid=0;
+		my $gid = getgrnam($group);
+		if (! defined $gid || $> != 0) {
+			if (exists $owninfo{$file}) {
+				$owninfo{$file}.=":$group";
 			}
-			my $gid = getgrnam($group);
-			if (! defined $gid) {
-				print STDERR "WARNING: $file is owned by a group ($group) not on this system; using group root instead\n";
-				$gid=0;
+			else {
+				$owninfo{$file}=":$group";
 			}
-			next unless -e "$workdir/$file"; # skip broken links
+			$gid=0;
+		}
+		next unless -e "$workdir/$file"; # skip broken links
+		if ($> == 0) {
 			chown($uid, $gid, "$workdir/$file") || die "failed chowning $file to $uid\:$gid\: $!";
-			chmod($mode, "$workdir/$file") || die "failed changing mode of $file to $mode\: $!";
 		}
+		chmod($mode, "$workdir/$file") || die "failed changing mode of $file to $mode\: $!";
 	}
+	$this->owninfo(\%owninfo);
 
 	return 1;
 }

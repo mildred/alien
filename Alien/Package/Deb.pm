@@ -703,6 +703,40 @@ sub username {
 	return $username;
 }
 
+=item postinst
+
+Returns the postinst. This may include generated shell code to set owners
+and groups from the owninfo field.
+
+=cut
+
+sub postinst {
+	my $this=shift;
+
+	my $owninfo = $this->owninfo;
+	my $postinst = $this->{postinst};
+	return $postinst unless ref $owninfo;
+
+	# If there is no postinst, let's make one up..
+	$postinst="#!/bin/sh\n" unless defined $postinst;
+	
+	my ($firstline, $rest)=split(/\n/, $postinst, 2);
+	if ($firstline !~ m/^#!\s*\/bin\/sh/) {
+		print STDERR "warning: unable to add ownership fixup code to postinst as the postinst is not a shell script!\n";
+		return $postinst;
+	}
+
+	my $permscript="# alien added permissions fixup code\n";
+	foreach my $file (keys %$owninfo) {
+		my $quotedfile=$file;
+		$quotedfile=~s/'/'"'"'/g; # no single quotes in single quotes..
+		$permscript.="chown '$owninfo->{$file}' '$quotedfile'\n";
+	}
+	return "$firstline\n$permscript\n$rest";
+}
+
+=cut
+
 =head1 AUTHOR
 
 Joey Hess <joey@kitenet.net>

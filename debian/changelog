@@ -1,3 +1,17 @@
+alien (8.20) unstable; urgency=low
+
+  * Added support inspired by aj for converted rpm packages that create
+    users/groups in their preinst, and which alien therefore cannot ship the
+    files with proper ownerships in the .deb. In this case alien will now
+    insert appropriate chown commands into the postinst script of the
+    converted package.
+  * That only works when converting rpm to deb, not the other way around,
+    for now.
+  * Removed the cpio directory permissions fixup code, which was probably
+    broken, and is obsolete since I get directory perms from the rpm now.
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 25 Aug 2002 15:17:57 -0400
+
 alien (8.19) unstable; urgency=low
 
   * Added upsated jdk patches from Gerald Turner.

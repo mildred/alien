@@ -130,6 +130,13 @@ to a true value.
 
 Points to a directory where the package has been unpacked.
 
+=item owninfo
+
+If set this will be a reference to a hash, with filename as key, that holds
+ownership/group information for files that cannot be represented on the
+filesystem. Typically that is because the owners or groups just don't exist
+yet. It will be set at unpack time.
+
 =back
 
 =head1 METHODS
