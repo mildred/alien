@@ -1,3 +1,14 @@
+alien (7.11) unstable; urgency=low
+
+  * Use ls -1 instead of plain ls when copying files to debian/tmp in rpm
+    conversion. Since that output is grep'ed, items might have been
+    accidentually excuded before (although ls seems to output one file per
+    line when run inside makefiles, probably because it notices it is not
+    at a tty). Anyway, I had a report that there was a problem here, and
+    this should fix it.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 23 Nov 2000 13:02:52 -0800
+
 alien (7.10) unstable; urgency=low
 
   * Use dh_perl for automatic, correct perl dependancies, Closes: #77669

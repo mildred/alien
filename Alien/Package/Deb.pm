@@ -333,7 +333,7 @@ binary-arch: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-	cp -a `ls |grep -v debian` debian/tmp
+	cp -a `ls -1 |grep -v debian` debian/tmp
 #
 # If you need to move files around in debian/tmp or do some
 # binary patching ... Insert it here
