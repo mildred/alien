@@ -4,24 +4,24 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-build: link-stamp build-stamp
+build: build-stamp
 build-stamp:
 	dh_testdir
 	$(MAKE) version
 	touch build-stamp
 
-clean: link-stamp
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
 	dh_clean
 
 # Build architecture-dependent files here.
-binary-arch: link-stamp build
+binary-arch: build
 # We have nothing to do by default.
 
 # Build architecture-independent files here.
-binary-indep: link-stamp build
+binary-indep: build
 	dh_testdir
 	dh_testroot
 	dh_clean
@@ -37,11 +37,6 @@ binary-indep: link-stamp build
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
-
-# Fix links when checking out of cvs by calling this target.
-link-stamp:
-	sh -e debian/fixlinks
-	touch link-stamp
 
 VERSION=$(shell expr "`dpkg-parsechangelog 2>/dev/null |grep Version:`" : '.*Version: \(.*\)')
 
