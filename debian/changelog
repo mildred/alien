@@ -1,3 +1,10 @@
+alien (6.48) unstable; urgency=low
+
+  * Patch from Benjamin Cant <ben@aegis.hands.com> to make it work even if
+    there is no space after control file lines in a debian package.
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 23 Sep 1999 11:41:59 -0700
+
 alien (6.47) unstable; urgency=low
 
   * Now FHS compliant. But the packages it builds will probably not be..

@@ -37,14 +37,14 @@ sub GetFields { my ($self,$file)=@_;
 	while ($i<=$#control) {
 		$_ = $control[$i];
 		chomp;
-		$fields{NAME} = $1 if (/^Package: (.+)/i);
-		$fields{VERSION} = $1 if (/^Version: (.+)/i);
-		$fields{ARCH} = $1 if (/^Architecture: (.+)/i);
-		$fields{MAINTAINER} = $1 if (/^Maintainer: (.+)/i);
-		$fields{DEPENDS} = $1 if (/^Depends: (.+)/i);
-		$fields{REQUIRES} = $1 if (/^Requires: (.+)/i);
-		$fields{GROUP} = $1 if (/^Section: (.+)/i);
-		if (/^Description: (.+)/i) {
+		$fields{NAME} = $1 if (/^Package:\s*(.+)/i);
+		$fields{VERSION} = $1 if (/^Version:\s*(.+)/i);
+		$fields{ARCH} = $1 if (/^Architecture:\s*(.+)/i);
+		$fields{MAINTAINER} = $1 if (/^Maintainer:\s*(.+)/i);
+		$fields{DEPENDS} = $1 if (/^Depends:\s*(.+)/i);
+		$fields{REQUIRES} = $1 if (/^Requires:\s*(.+)/i);
+		$fields{GROUP} = $1 if (/^Section:\s*(.+)/i);
+		if (/^Description:\s*(.+)/i) {
 			$fields{SUMMARY} = "$1";
 			$i++;
 				while (($i<=$#control) && ($control[$i])) {
