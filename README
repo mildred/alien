@@ -42,6 +42,10 @@ Other things you'll need:
   The Stampede version is at
   	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.slp
 
+  Solaris users can find pkg's of much of the above software,
+  at http://mah.everybody.org/hacks/os/solaris/ , thanks to Mark
+  A. Hershberger <mah@everybody.org>.
+
 Note:
 
   Alien is really designed to be used to convert from alien file formats to

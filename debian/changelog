@@ -1,3 +1,9 @@
+alien (7.32) unstable; urgency=low
+
+  * Support ancient (bo-era) debs with upper-case field names. Closes: #130736
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 24 Jan 2002 23:38:57 -0500
+
 alien (7.31) unstable; urgency=low
 
   * Use --target noarch instead of --target=noarch when building rpms.

@@ -146,7 +146,9 @@ sub scan {
 		$_ = $control[$i];
 		chomp;
 		if (/^(\w.*?):\s+(.*)/) {
-			$field=$1;
+			# Really old debs might have oddly capitalized
+			# field names.
+			$field=ucfirst(lc($1));
 			if (exists $fieldtrans{$field}) {
 				$field=$fieldtrans{$field};
 				$this->$field($2);
