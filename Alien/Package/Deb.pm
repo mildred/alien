@@ -97,9 +97,19 @@ sub getcontrolfile {
 		return `dpkg-deb --info $file $controlfile 2>/dev/null`;
 	}
 	else {
-		# Have to handle old debs without a leading ./ and
-		# new ones with it.
-		return `ar p $file control.tar.gz | gzip -dc | tar Oxf - $controlfile ./$controlfile 2>/dev/null`
+		# Solaris tar doesn't support O
+		sub tar_out {
+			my $file = shift;
+
+			return "(mkdir /tmp/tar_out.$$ &&".
+				" cd /tmp/tar_out.$$ &&".
+				# Have to handle old debs without a leading ./ and
+				# new ones with it.
+				" tar xf - $file ./$file &&".
+				" cat $file; cd /; rm -rf /tmp/tar_out.$$)";
+		}
+		my $getcontrol = "ar -p $file control.tar.gz | gzip -dc | ".tar_out($controlfile)." 2>/dev/null";
+		return `$getcontrol`
 	}
 }
 
@@ -115,7 +125,8 @@ sub scan {
 	my $file=$this->filename;
 
 	my @control=$this->getcontrolfile('control');
-
+	die "Control file couldn't be read!"
+		if @control == 0;
 	# Parse control file and extract fields. Use a translation table
 	# to map between the debian names and the internal field names,
 	# which more closely resemble those used by rpm (for historical
@@ -170,7 +181,7 @@ sub scan {
 	}
 	else {
 		@filelist=map { chomp; s:\./::; "/$_" }
-			  `ar p $file data.tar.gz | gzip -dc | tar tf -`;
+			  `ar -p $file data.tar.gz | gzip -dc | tar tf -`;
 	}
 	$this->filelist(\@filelist);
 
@@ -198,7 +209,7 @@ sub unpack {
 			or die "Unpacking of `$file' failed: $!";
 	}
 	else {
-		system("ar p $file data.tar.gz | gzip -dc | (cd ".$this->unpacked_tree."; tar xpf -)") == 0
+		system("ar -p $file data.tar.gz | gzip -dc | (cd ".$this->unpacked_tree."; tar xpf -)") == 0
 			or die "Unpacking of `$file' failed: $!";
 	}
 

@@ -1,10 +1,12 @@
-alien (7.30pre) unstable; urgency=low
+alien (7.30) unstable; urgency=low
 
   * Thanks to the excellent work of Mark A. Hershberger <mah@everybody.org>,
     alien now supports converting to and from Solaris "pkg" packages (which
     are really SysV packages). You probably need to run it on Solaris for this
     to work, though. This brings the number of possible conversions alien can
     do up from 12 to a monstrous 20!
+  * Mark also had to patch Deb.pm a bit so the by-hand deb extraction could
+    work with solaris's ar and tar.
   * Documented the EMAIL environment variable. Closes: #116754
   * Threw out a lot of old patches, circa 1999. Probably useless today.
   * When converting to debs, move files as follows, if possible, for better 
