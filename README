@@ -1,24 +1,4 @@
-The Alien package converter:
-
-  Alien is a program that converts between redhat rpm, debian dpkg, stampede
-  slp and slackware tgz file formats. If you want to use a package from
-  another linux distribution than the one you have installed on your system,
-  you can use alien to convert it to your preferred package format and
-  install it.
-
-Warning, alien can be dangerous:
-
-  Despite the high version number, alien is still (and will probably always
-  be) rather experimental software. It's been under development for many
-  years now, but there are still many bugs and limitations.
-
-  Alien should not be used to replace important system packages, like
-  sysvinit, libc, or other things that are essential for the functioning of
-  your system. Many of these packages are set up differently by the
-  different distributions, and packages from the different distributions
-  cannot be used interchangeably. In general, if you can't remove a
-  package without breaking your system, don't try to replace it with an
-  alien version.
+Please read alien's man page for general documentation.
 
 Getting alien:
 
@@ -69,4 +49,4 @@ Programs that use alien:
 
 Please report any bugs in alien to the author: 
 
-  Joey Hess <joey@kitenet.net>
+  Joey Hess <joeyh@debian.org>
