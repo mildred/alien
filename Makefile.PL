@@ -6,6 +6,7 @@ use strict;
 sub MY::libscan {
 	$_ = $_[1];
 
+	return '' if $_ eq 'alien.pl';
 	return '' if m/\/(RCS|CVS|SCCS)\// || m/[~%]$/ || m/\.(orig|rej)$/;
 	return $_;
 }

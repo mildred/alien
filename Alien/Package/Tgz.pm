@@ -36,10 +36,6 @@ use constant scripttrans => {
 
 =back
 
-=head1 FIELDS
-
-=over 4
-
 =head1 METHODS
 
 =over 4
