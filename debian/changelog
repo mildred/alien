@@ -1,3 +1,9 @@
+alien (7.16) unstable; urgency=low
+
+  * Updated motif patches again.
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 17 Jan 2001 11:18:20 -0800
+
 alien (7.15) unstable; urgency=low
 
   * Removed dh_suidregister call -- bitten my by own program! :-)

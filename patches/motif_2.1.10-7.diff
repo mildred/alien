@@ -1,59 +1,29 @@
---- motif-2.1.10.orig/debian/changelog
-+++ motif-2.1.10/debian/changelog
-@@ -0,0 +1,20 @@
-+motif (2.1.10-5) unstable; urgency=low
-+
-+  * Made mxterm use libncurses.so.5 instead of libtermcap.so.2.
-+
-+ -- Andreas Voegele <andreas.voegele@gmx.de>  Mon,  3 Jan 2000 09:50:03 +0100
-+
-+motif (2.1.10-4) unstable; urgency=low
-+
-+  * Converted from RPM binary format to Debian.
-+  * Removed *.so symlinks.
-+  * Made mxterm use libncurses.so.4 instead of libtermcap.so.2.
-+  * Enabled dh_undocumented, dh_fixperms and dh_strip.
-+  * Added menu file and menu method.
-+  * Added maintainer scripts.
-+
-+ -- Andreas Voegele <andreas.voegele@gmx.de>  Tue, 16 Nov 1999 19:31:03 +0100
-+
-+Local variables:
-+mode: debian-changelog
-+End:
---- motif-2.1.10.orig/debian/conffiles
-+++ motif-2.1.10/debian/conffiles
-@@ -0,0 +1,3 @@
-+/etc/X11/system.fpanelrc
-+/etc/X11/mwm/system.mwmrc
-+/etc/X11/mwm/system.mwmrc-menu
 --- motif-2.1.10.orig/debian/control
 +++ motif-2.1.10/debian/control
-@@ -0,0 +1,19 @@
+@@ -0,0 +1,18 @@
 +Source: motif
 +Section: non-free/x11
 +Priority: extra
++Build-Depends: debhelper
 +Maintainer: Andreas Voegele <andreas.voegele@gmx.de>
-+Standards-Version: 2.5.1
++Standards-Version: 3.1.1
 +
 +Package: motif
 +Architecture: any
-+Depends: libc6, xlib6g, libxpm4, libncurses5
-+Conflicts: lesstif-bin, lesstif-dev, lesstif-doc, lesstif-dbg, lesstif1, lesstifg
-+Provides: x-window-manager, x-terminal-emulator
++Depends: libc6, xlibs
++Conflicts: lesstif-bin, lesstif-dev, lesstif-dbg, lesstif1, lesstifg, openmotif, openmotif-devel, suidmanager (<< 0.50)
++Provides: x-window-manager
++Suggests: menu
 +Description: Runtime libraries and executables for the Motif toolkit
 + This package contains:
 +   - The Motif shared libraries, needed to run applications which are
 +     `dynamically linked' with Motif.
 +   - The popular Motif Window Manager, `mwm'.
-+   - A collection of color pixmaps, and programs for browsing and editing them.
-+   - A number of demo programs that demonstrate the capabilities of the Motif
-+     libraries.
 --- motif-2.1.10.orig/debian/copyright
 +++ motif-2.1.10/debian/copyright
 @@ -0,0 +1,150 @@
 +This is the prepackaged version of Metro Link Motif. It was debianized
-+by the alien program by converting a binary RPM package.
++by the Alien program by converting a binary RPM package.
 +
 +Metro Link's web site can be found at http://www.metrolink.com/
 +
@@ -204,18 +174,19 @@
 +trademarks of KL Group Incorporated.
 --- motif-2.1.10.orig/debian/rules
 +++ motif-2.1.10/debian/rules
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,113 @@
 +#!/usr/bin/make -f
 +# debian/rules that uses debhelper and alien
 +# GNU copyright 1997 by Joey Hess.
 +
++SHELL = /bin/sh
++
++package := $(shell basename `pwd` | sed 's/-[0-9].*//')
 +version := $(shell basename `pwd` | tr -cd '[0-9.]')
 +major := $(word 1,$(subst ., ,$(version)))
 +minor := $(word 2,$(subst ., ,$(version)))
 +
-+bin := $(notdir $(wildcard usr/X11R6/bin/*))
-+man := $(notdir $(wildcard usr/X11R6/man/man1/*))
-+undocumented := $(filter-out $(man),$(addsuffix .1x,$(bin)))
++mwmrc := etc/X11/mwm/system.mwmrc
 +
 +# Uncomment this to turn on verbose mode.
 +#export DH_VERBOSE=1
@@ -223,15 +194,16 @@
 +# This is the debhelper compatability version to use.
 +export DH_COMPAT=1
 +
-+build:
-+	dh_testdir
-+	# Nothing to do.
++motif-version:
++	sed -e 's/#PACKAGE#/$(package)/' -e 's/#VERS#/$(version)/' debian/changelog-template >debian/changelog
 +
-+clean:
++build: motif-version
++	dh_testdir
++
++clean: motif-version
 +	dh_testdir
 +	dh_testroot
-+	dh_clean
-+	sed 's/#VERS#/$(version)/' debian/changelog-template >debian/changelog
++	dh_clean debian/conffiles debian/menu
 +
 +# Build architecture-independent files here.
 +binary-indep: build
@@ -244,43 +216,66 @@
 +	dh_testroot
 +	dh_clean -k
 +	dh_installdirs
-+	tar -cf - --exclude=debian --exclude='*.so.?' --exclude='*.so' . | \
-+		tar -xpf - -C debian/tmp
++	tar -cf - --exclude=debian --exclude='./usr/doc' --exclude='*.so.?' --exclude='*.so' . | tar -xpf - -C debian/tmp
 +#
 +# If you need to move files around in debian/tmp or do some
 +# binary patching ... Insert it here
 +#
-+	sed 's/#VERS#/$(version)/' debian/changelog-template >debian/changelog
-+	ln -fs libMrm.so.$(major).$(minor) \
-+		debian/tmp/usr/X11R6/lib/libMrm.so.$(major)
-+	ln -fs libUil.so.$(major).$(minor) \
-+		debian/tmp/usr/X11R6/lib/libUil.so.$(major)
-+	ln -fs libXm.so.$(major).$(minor) \
-+		debian/tmp/usr/X11R6/lib/libXm.so.$(major)
-+	install debian/mwm-menumethod debian/tmp/etc/menu-methods
-+	sed -e 's/^!\(include-menu-defs\)/\1/' debian/etcmwmrc \
-+		>debian/tmp/etc/X11/mwm/system.mwmrc-menu
-+	cp debian/menudefs.hook debian/tmp/etc/X11/mwm
-+	mv debian/tmp/etc/X11/system.mwmrc \
-+		debian/tmp/etc/X11/mwm/system.mwmrc.metro
-+	sed -f debian/menudefs.sed debian/etcmwmrc \
-+		>debian/tmp/etc/X11/mwm/system.mwmrc
-+	ln -fs mwm/system.mwmrc debian/tmp/etc/X11/system.mwmrc
-+	perl -pi -e 's/libtermcap\.so\.2/libncurses.so.5/' \
-+		debian/tmp/usr/X11R6/bin/mxterm
-+#	dh_installwm mwm
++	-ln -fs libMrm.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libMrm.so.$(major)
++	-ln -fs libUil.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libUil.so.$(major)
++	-ln -fs libXm.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libXm.so.$(major)
++# Move system.mwmrc to /etc/X11/mwm/system.mwmrc.
++	@mwmrc=`find debian/tmp -name system.mwmrc -type f -printf '%P\t' | cut -f1`; \
++	if [ "$$mwmrc" != $(mwmrc) ]; then \
++	  echo "Moving /$$mwmrc to $(mwmrc)"; \
++	  mv debian/tmp/$$mwmrc debian/tmp/$(mwmrc); \
++	  dh_link $(mwmrc) $$mwmrc; \
++	fi
++# Move /usr/X11R6/lib/X11/app-defaults to /etc/X11/app-defaults.
++	@if [ -d debian/tmp/usr/X11R6/lib/X11/app-defaults ]; then \
++	  echo "Moving /usr/X11R6/lib/X11/app-defaults to /etc/X11/app-defaults"; \
++	  mv debian/tmp/usr/X11R6/lib/X11/app-defaults debian/tmp/etc/X11; \
++	fi
++# Install the menu method and /etc/X11/mwm/system.mwmrc-menu.
++	@echo "Installing menu method"
++	@sed -e 's/#PACKAGE#/$(package)/' debian/menu-template >debian/menu
++	@install -m 0755 debian/mwm-menumethod debian/tmp/etc/menu-methods
++	@cp debian/etcmwmrc debian/tmp/$(mwmrc)-menu
++	@echo "include-menu-defs" >>debian/tmp/$(mwmrc)-menu
++# Find the configuration files.
++	@echo "Looking for configuration files"
++	@echo "/$(mwmrc)-menu" >debian/conffiles
++	@find debian/tmp/etc -name system.fpanelrc -type f -printf '/etc/%P\n' >>debian/conffiles
++	@if [ -d debian/tmp/etc/X11/app-defaults ]; then \
++	  find debian/tmp/etc/X11/app-defaults -type f -printf '/etc/X11/app-defaults/%P\n' >>debian/conffiles; \
++	fi
++# Fix mxterm.
++	@if [ -f debian/tmp/usr/X11R6/bin/mxterm ]; then \
++	  echo "Fixing mxterm"; \
++	  perl -pi -e 's/libtermcap\.so\.2/libncurses.so.5/' debian/tmp/usr/X11R6/bin/mxterm; \
++	fi
++# Copy documentation.
++	@if [ -d usr/doc ]; then \
++	  echo "Copying documentation"; \
++	  mkdir -p debian/tmp/usr/share/doc/$(package); \
++	  cp -a usr/doc/*/* debian/tmp/usr/share/doc/$(package); \
++	fi
++	dh_installwm --priority=40 mwm
 +	dh_installdocs
 +	dh_installexamples
 +	dh_installmenu
 +#	dh_installinit
-+	dh_installcron
++#	dh_installcron
 +#	dh_installmanpages
-+	dh_undocumented $(undocumented)
++#	dh_undocumented
 +	dh_installchangelogs
 +	dh_strip
 +	dh_compress
 +	dh_fixperms
-+#	dh_suidregister
++	@if [ -f debian/tmp/usr/X11R6/bin/mxterm ]; then \
++	  chown root:utmp debian/tmp/usr/X11R6/bin/mxterm; \
++	  chmod 2755 debian/tmp/usr/X11R6/bin/mxterm; \
++	fi
 +	dh_installdeb
 +#	-dh_shlibdeps
 +	dh_gencontrol
@@ -292,80 +287,7 @@
 +	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
 +
 +binary: binary-indep binary-arch
-+.PHONY: build clean binary-indep binary-arch binary
---- motif-2.1.10.orig/debian/postinst
-+++ motif-2.1.10/debian/postinst
-@@ -0,0 +1,33 @@
-+#!/bin/sh -e
-+
-+if [ "$1" = "configure" ]; then
-+    ldconfig
-+fi
-+
-+update-alternatives --install /usr/bin/x-window-manager \
-+    x-window-manager /usr/X11R6/bin/mwm 30 \
-+    --slave /usr/man/man1/x-window-manager.1.gz \
-+    x-window-manager.1.gz /usr/X11R6/man/man1/mwm.1x.gz
-+
-+update-alternatives --install /usr/bin/x-terminal-emulator \
-+    x-terminal-emulator /usr/X11R6/bin/mxterm 10 \
-+    --slave /usr/man/man1/x-terminal-emulator.1.gz \
-+    x-terminal-emulator.1.gz /usr/X11R6/man/man1/mxterm.1x.gz
-+
-+# if utmp group exists, use it
-+if cut -d: -f1 < /etc/group | grep -qs utmp; then
-+  XTERM_MODE=2755
-+  XTERM_GROUP=utmp
-+else
-+  XTERM_MODE=4755
-+  XTERM_GROUP=root
-+fi
-+
-+if command -v suidregister > /dev/null 2>&1; then
-+  suidregister -s motif /usr/X11R6/bin/mxterm root $XTERM_GROUP $XTERM_MODE
-+else
-+  chown root.$XTERM_GROUP /usr/X11R6/bin/mxterm
-+  chmod $XTERM_MODE /usr/X11R6/bin/mxterm
-+fi
-+
-+#DEBHELPER#
---- motif-2.1.10.orig/debian/menu
-+++ motif-2.1.10/debian/menu
-@@ -0,0 +1,34 @@
-+?package(motif):\
-+ needs="wm"\
-+ section="WindowManagers"\
-+ title="Mwm"\
-+ longtitle="Motif window manager"\
-+ command="/usr/X11R6/bin/mwm"
-+
-+?package(motif):\
-+ needs="x11"\
-+ section="XShells"\
-+ longtitle="Motif terminal emulator"\
-+ title="MXTerm"\
-+ command="/usr/X11R6/bin/mxterm"
-+
-+?package(motif):\
-+ needs="x11"\
-+ section="Apps/Tools"\
-+ longtitle="Graphical front panel tool"\
-+ title="Fpanel"\
-+ command="/usr/X11R6/bin/fpanel"
-+
-+?package(motif):\
-+ needs="x11"\
-+ section="Apps/Graphics"\
-+ longtitle="Editor for X pixmap files"\
-+ title="Pixmap"\
-+ command="/usr/X11R6/bin/pixmap"
-+
-+?package(motif):\
-+ needs="x11"\
-+ section="Apps/Viewers"\
-+ longtitle="Viewer for X bitmap and X pixmap files"\
-+ title="XbmBrowser"\
-+ command="/usr/X11R6/bin/xbmbrowser"
++.PHONY: build clean binary-indep binary-arch binary motif-version
 --- motif-2.1.10.orig/debian/mwm-menumethod
 +++ motif-2.1.10/debian/mwm-menumethod
 @@ -0,0 +1,30 @@
@@ -399,34 +321,6 @@
 +examplercfile="system.mwmrc-menu"
 +rootprefix=   "/etc/X11/mwm/"
 +userprefix=   "/.mwm/"
---- motif-2.1.10.orig/debian/postrm
-+++ motif-2.1.10/debian/postrm
-@@ -0,0 +1,7 @@
-+#!/bin/sh -e
-+
-+if command -v suidunregister > /dev/null 2>&1; then
-+  suidunregister -s motif /usr/X11R6/bin/mxterm
-+fi
-+
-+#DEBHELPER#
---- motif-2.1.10.orig/debian/prerm
-+++ motif-2.1.10/debian/prerm
-@@ -0,0 +1,8 @@
-+#!/bin/sh -e
-+
-+if [ "$1" != "upgrade" ]; then
-+    update-alternatives --remove x-window-manager /usr/X11R6/bin/mwm
-+    update-alternatives --remove x-terminal-emulator /usr/X11R6/bin/mxterm
-+fi
-+
-+#DEBHELPER#
---- motif-2.1.10.orig/debian/dirs
-+++ motif-2.1.10/debian/dirs
-@@ -0,0 +1,4 @@
-+etc/X11/mwm
-+etc/menu-methods
-+usr/X11R6/bin
-+usr/X11R6/lib
 --- motif-2.1.10.orig/debian/etcmwmrc
 +++ motif-2.1.10/debian/etcmwmrc
 @@ -0,0 +1,103 @@
@@ -438,7 +332,7 @@
 +{
 +	"Root Menu"		f.title
 +	"Debian"                f.menu "/Debian"
-+	"New Window"		f.exec "mxterm &"
++	"New Window"		f.exec "x-terminal-emulator &"
 +	"Shuffle Up"		f.circle_up
 +	"Shuffle Down"		f.circle_down
 +	"Refresh"		f.refresh
@@ -533,16 +427,40 @@
 +}
 +
 +!include-menu-defs
+--- motif-2.1.10.orig/debian/dirs
++++ motif-2.1.10/debian/dirs
+@@ -0,0 +1,4 @@
++etc/X11/mwm
++etc/menu-methods
++usr/X11R6/bin
++usr/X11R6/lib
 --- motif-2.1.10.orig/debian/changelog-template
 +++ motif-2.1.10/debian/changelog-template
-@@ -0,0 +1,20 @@
-+motif (#VERS#-5) unstable; urgency=low
+@@ -0,0 +1,37 @@
++#PACKAGE# (#VERS#-7) unstable; urgency=low
++
++  * Mwm is registered with dh_installwm.
++  * Disabled dh_undocumented.
++  * Removed dh_suidregister.
++  * The virtual package `x-terminal-emulator' is no longer provided since
++    Metro Link's latest Motif release doesn't contain mxterm anymore.
++
++ -- Andreas Voegele <andreas.voegele@gmx.de>  Tue, 16 Jan 2001 12:17:38 +0100
++
++#PACKAGE# (#VERS#-6) unstable; urgency=low
++
++  * Moved app-defaults directory to /etc/X11.
++  * Depends on xlibs.
++
++ -- Andreas Voegele <andreas.voegele@gmx.de>  Sat,  9 Dec 2000 08:45:11 +0100
++
++#PACKAGE# (#VERS#-5) unstable; urgency=low
 +
 +  * Made mxterm use libncurses.so.5 instead of libtermcap.so.2.
 +
 + -- Andreas Voegele <andreas.voegele@gmx.de>  Mon,  3 Jan 2000 09:50:03 +0100
 +
-+motif (#VERS#-4) unstable; urgency=low
++#PACKAGE# (#VERS#-4) unstable; urgency=low
 +
 +  * Converted from RPM binary format to Debian.
 +  * Removed *.so symlinks.
@@ -556,67 +474,35 @@
 +Local variables:
 +mode: debian-changelog
 +End:
---- motif-2.1.10.orig/debian/menudefs.sed
-+++ motif-2.1.10/debian/menudefs.sed
-@@ -0,0 +1,4 @@
-+/^!include-menu-defs/{
-+    r debian/menudefs.hook
-+    d
-+}
---- motif-2.1.10.orig/debian/menudefs.hook
-+++ motif-2.1.10/debian/menudefs.hook
-@@ -0,0 +1,40 @@
-+#Automatically generated file. Do not edit (see /usr/doc/menu/html/index.html)
+--- motif-2.1.10.orig/debian/postinst
++++ motif-2.1.10/debian/postinst
+@@ -0,0 +1,7 @@
++#!/bin/sh -e
 +
-+Menu "/Debian/Apps/Graphics"
-+{
-+	"Graphics"	f.title
-+	"Pixmap"	f.exec  "/usr/X11R6/bin/pixmap &"
-+}
++if [ "$1" = "configure" ]; then
++  ldconfig
++fi
 +
-+Menu "/Debian/Apps/Tools"
-+{
-+	"Tools"		f.title
-+	"Fpanel"	f.exec  "/usr/X11R6/bin/fpanel &"
-+}
-+
-+Menu "/Debian/Apps/Viewers"
-+{
-+	"Viewers"	f.title
-+	"XbmBrowser"	f.exec  "/usr/X11R6/bin/xbmbrowser &"
-+}
-+
-+Menu "/Debian/Apps"
-+{
-+	"Apps"		f.title
-+	"Graphics"	f.menu	"/Debian/Apps/Graphics"
-+	"Tools"		f.menu	"/Debian/Apps/Tools"
-+	"Viewers"	f.menu	"/Debian/Apps/Viewers"
-+}
-+
-+Menu "/Debian/XShells"
-+{
-+	"XShells"	f.title
-+	"MXTerm"	f.exec	"/usr/X11R6/bin/mxterm &"
-+}
-+
-+Menu "/Debian"
-+{
-+	"Debian"	f.title
-+	"Apps"		f.menu	"/Debian/Apps"
-+	"XShells"	f.menu	"/Debian/XShells"
-+}
++#DEBHELPER#
 --- motif-2.1.10.orig/debian/README.Debian
 +++ motif-2.1.10/debian/README.Debian
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,10 @@
 +Motif for Debian
 +----------------
 +
 +For compatibility with Lesstif the Motif window manager configuration
 +file system.mwmrc is placed in /etc/X11/mwm on Debian systems.
-+A symbolic link to this file is created in /etc/X11.
 +
 +If the `menu' package is installed, system.mwmrc is automatically
 +generated from /etc/X11/mwm/system.mwmrc-menu.
 +
 + -- Andreas Voegele <andreas.voegele@gmx.de>  Tue, 16 Nov 1999 19:31:03 +0100
+--- motif-2.1.10.orig/debian/menu-template
++++ motif-2.1.10/debian/menu-template
+@@ -0,0 +1,6 @@
++?package(#PACKAGE#):\
++ needs="wm"\
++ section="WindowManagers"\
++ title="Mwm"\
++ longtitle="Motif window manager"\
++ command="/usr/X11R6/bin/mwm"

@@ -1,13 +1,26 @@
 --- motif-devel-2.1.10.orig/debian/changelog-template
 +++ motif-devel-2.1.10/debian/changelog-template
-@@ -0,0 +1,18 @@
-+motif-devel (#VERS#-5) unstable; urgency=low
+@@ -0,0 +1,31 @@
++#PACKAGE# (#VERS#-7) unstable; urgency=low
 +
-+  * Updated the `motif' package.
++  * Disabled dh_undocumented.
++  * Removed dh_suidregister.
++
++ -- Andreas Voegele <andreas.voegele@gmx.de>  Tue, 16 Jan 2001 11:58:56 +0100
++
++#PACKAGE# (#VERS#-6) unstable; urgency=low
++
++  * Depends on xlibs-dev.
++
++ -- Andreas Voegele <andreas.voegele@gmx.de>  Sat,  9 Dec 2000 12:27:50 +0100
++
++#PACKAGE# (#VERS#-5) unstable; urgency=low
++
++  * Made mxterm use libncurses.so.5 instead of libtermcap.so.2.
 +
 + -- Andreas Voegele <andreas.voegele@gmx.de>  Mon,  3 Jan 2000 10:04:26 +0100
 +
-+motif-devel (#VERS#-4) unstable; urgency=low
++#PACKAGE# (#VERS#-4) unstable; urgency=low
 +
 +  * Converted from RPM binary format to Debian.
 +  * Added *.so symlinks.
@@ -21,22 +34,21 @@
 +End:
 --- motif-devel-2.1.10.orig/debian/control
 +++ motif-devel-2.1.10/debian/control
-@@ -0,0 +1,15 @@
+@@ -0,0 +1,14 @@
 +Source: motif-devel
 +Section: non-free/x11
 +Priority: extra
++Build-Depends: debhelper, motif
 +Maintainer: Andreas Voegele <andreas.voegele@gmx.de>
-+Standards-Version: 2.5.1
++Standards-Version: 3.1.1
 +
 +Package: motif-devel
 +Architecture: any
-+Depends: motif (= ${Source-Version}), libc6-dev, xlib6g-dev
-+Suggests: pdksh
-+Conflicts: lesstif-bin, lesstif-dev, lesstif-doc, lesstif-dbg, lesstif1, lesstifg
++Depends: motif (= ${Source-Version}), libc6-dev, xlibs-dev
++Conflicts: lesstif-bin, lesstif-dev, lesstif-dbg, lesstif1, lesstifg, openmotif, openmotif-devel
 +Description: Development files for the Motif toolkit
 + This is the Motif development environment.  It includes the static
 + libraries and header files necessary to build Motif based applications.
-+ It also includes the source code to the Motif demo programs.
 --- motif-devel-2.1.10.orig/debian/copyright
 +++ motif-devel-2.1.10/debian/copyright
 @@ -0,0 +1,150 @@
@@ -192,18 +204,17 @@
 +trademarks of KL Group Incorporated.
 --- motif-devel-2.1.10.orig/debian/rules
 +++ motif-devel-2.1.10/debian/rules
-@@ -0,0 +1,75 @@
+@@ -0,0 +1,87 @@
 +#!/usr/bin/make -f
 +# debian/rules that uses debhelper and alien
 +# GNU copyright 1997 by Joey Hess.
 +
++SHELL = /bin/sh
++
++package := $(shell basename `pwd` | sed 's/-[0-9].*//')
 +version := $(shell basename `pwd` | tr -cd '[0-9.]')
 +major := $(word 1,$(subst ., ,$(version)))
 +minor := $(word 2,$(subst ., ,$(version)))
-+
-+bin := $(notdir $(wildcard usr/X11R6/bin/*))
-+man := $(notdir $(wildcard usr/X11R6/man/man1/*))
-+undocumented := $(filter-out $(man),$(addsuffix .1x,$(bin)))
 +
 +# Uncomment this to turn on verbose mode.
 +#export DH_VERBOSE=1
@@ -211,15 +222,16 @@
 +# This is the debhelper compatability version to use.
 +export DH_COMPAT=1
 +
-+build:
-+	dh_testdir
-+	# Nothing to do.
++motif-version:
++	sed -e 's/#PACKAGE#/$(package)/' -e 's/#VERS#/$(version)/' debian/changelog-template >debian/changelog
 +
-+clean:
++build: motif-version
++	dh_testdir
++
++clean: motif-version
 +	dh_testdir
 +	dh_testroot
 +	dh_clean
-+	sed 's/#VERS#/$(version)/' debian/changelog-template >debian/changelog
 +
 +# Build architecture-independent files here.
 +binary-indep: build
@@ -232,30 +244,42 @@
 +	dh_testroot
 +	dh_clean -k
 +	dh_installdirs
-+	cp -a `ls |grep -v debian` debian/tmp
++	tar -cf - --exclude=debian --exclude='./usr/doc' . | tar -xpf - -C debian/tmp
 +#
 +# If you need to move files around in debian/tmp or do some
 +# binary patching ... Insert it here
 +#
-+	sed 's/#VERS#/$(version)/' debian/changelog-template >debian/changelog
-+	ln -fs libMrm.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libMrm.so
-+	ln -fs libUil.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libUil.so
-+	ln -fs libXm.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libXm.so
-+	ln -fs xmkmf.1x.gz debian/tmp/usr/X11R6/man/man1/mxmkmf.1x.gz
-+	install debian/mxmkmf debian/tmp/usr/X11R6/bin/mxmkmf
-+	sh debian/fixmfile
++	-ln -fs libMrm.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libMrm.so
++	-ln -fs libUil.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libUil.so
++	-ln -fs libXm.so.$(major).$(minor) debian/tmp/usr/X11R6/lib/libXm.so
++# Move /usr/X11R6/lib/X11/app-defaults to /etc/X11/app-defaults.
++	@if [ -d debian/tmp/usr/X11R6/lib/X11/app-defaults ]; then \
++	  echo "Moving /usr/X11R6/lib/X11/app-defaults to /etc/X11/app-defaults"; \
++	  [ -d debian/tmp/etc/X11 ] || mkdir -p debian/tmp/etc/X11; \
++	  mv debian/tmp/usr/X11R6/lib/X11/app-defaults debian/tmp/etc/X11; \
++	fi
++# Install mxmkmf.
++	@if [ ! -e debian/tmp/usr/X11R6/bin/mxmkmf ]; then \
++	  echo "Installing mxmkmf"; \
++	  install -m 0755 debian/mxmkmf debian/tmp/usr/X11R6/bin/mxmkmf; \
++	fi
++# Copy documentation.
++	@if [ -d usr/doc ]; then \
++	  echo "Copying documentation"; \
++	  mkdir -p debian/tmp/usr/share/doc/$(package); \
++	  cp -a usr/doc/*/* debian/tmp/usr/share/doc/$(package); \
++	fi
 +	dh_installdocs
 +	dh_installexamples
 +	dh_installmenu
 +#	dh_installinit
-+	dh_installcron
++#	dh_installcron
 +#	dh_installmanpages
-+	dh_undocumented $(undocumented)
++#	dh_undocumented
 +	dh_installchangelogs
-+#	dh_strip
++	dh_strip
 +	dh_compress
 +	dh_fixperms
-+	dh_suidregister
 +	dh_installdeb
 +	-dh_shlibdeps
 +	dh_gencontrol
@@ -267,43 +291,42 @@
 +	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
 +
 +binary: binary-indep binary-arch
-+.PHONY: build clean binary-indep binary-arch binary
---- motif-devel-2.1.10.orig/debian/fixmfile
-+++ motif-devel-2.1.10/debian/fixmfile
-@@ -0,0 +1,13 @@
-+#!/bin/sh
-+#
-+# Makes sure that the script "xmfile" is executable.
-+#
-+
-+xmfile=`find 2>/dev/null debian/tmp/usr/src -name xmfile -type f`
-+
-+if [ -f "$xmfile" ]; then
-+    perl -pi -e 's/#!\/bin\/ksh/#!\/usr\/bin\/ksh/' $xmfile
-+    chmod a+x $xmfile
-+fi
-+
-+exit 0
++.PHONY: build clean binary-indep binary-arch binary motif-version
 --- motif-devel-2.1.10.orig/debian/mxmkmf
 +++ motif-devel-2.1.10/debian/mxmkmf
-@@ -0,0 +1,55 @@
+@@ -0,0 +1,70 @@
 +#!/bin/sh
 +
-+usage="usage:  $0 [-a] [top_of_sources_pathname [current_directory]]"
++# $XFree86$
++#
++# make a Makefile from an Imakefile from inside or outside the sources
++# 
++# $XConsortium: xmkmf.cpp /main/22 1996/09/28 16:17:05 rws $
 +
-+defs="-DProjectRulesFile='<Motif.rules.metro>' -DProjectTmplFile='<Motif.tmpl.metro>'"
++usage="usage:  $0 [-a] [top_of_sources_pathname [current_directory]]"
 +
 +configdirspec="-I/usr/X11R6/lib/X11/config"
 +topdir=
 +curdir=.
 +do_all=
++imake_defines="-DProjectRulesFile=<Motif.rules.metro> -DProjectTmplFile=<Motif.tmpl.metro>"
 +
-+case "$1" in
-+-a)
-+    do_all="yes"
-+    shift
-+    ;;
-+esac
++while [ $# -gt 0 ]
++do
++    case "$1" in
++    -D*)
++       	imake_defines="$imake_defines $1"
++	shift
++	;;
++    -a)
++	do_all="yes"
++	shift
++	;;
++    *)
++    	break
++	;;
++    esac
++done
 +
 +case $# in 
 +    0) ;;
@@ -327,48 +350,26 @@
 +    args="-I$topdir/config/cf -DTOPDIR=$topdir -DCURDIR=$curdir"
 +fi
 +
-+echo imake $args
++echo imake $imake_defines $args
 +case "$do_all" in
 +yes)
-+    imake $args `eval echo $defs` && 
++    imake $imake_defines $args && 
 +    echo "make Makefiles" &&
-+    make Makefiles IMAKE_DEFINES="$defs" &&
++    make Makefiles &&
 +    echo "make includes" &&
 +    make includes &&
 +    echo "make depend" &&
 +    make depend
 +    ;;
 +*)
-+    imake $args `eval echo $defs`
++    imake $imake_defines $args
 +    ;;
 +esac
 --- motif-devel-2.1.10.orig/debian/dirs
 +++ motif-devel-2.1.10/debian/dirs
-@@ -0,0 +1,3 @@
+@@ -0,0 +1,2 @@
 +usr/X11R6/bin
 +usr/X11R6/lib
-+usr/X11R6/man/man1
---- motif-devel-2.1.10.orig/debian/changelog
-+++ motif-devel-2.1.10/debian/changelog
-@@ -0,0 +1,18 @@
-+motif-devel (2.1.10-5) unstable; urgency=low
-+
-+  * Updated the `motif' package.
-+
-+ -- Andreas Voegele <andreas.voegele@gmx.de>  Mon,  3 Jan 2000 10:04:26 +0100
-+
-+motif-devel (2.1.10-4) unstable; urgency=low
-+
-+  * Converted from RPM binary format to Debian.
-+  * Added *.so symlinks.
-+  * Added mxmkmf.
-+  * Enabled dh_undocumented and dh_fixperms.
-+
-+ -- Andreas Voegele <andreas.voegele@gmx.de>  Tue, 16 Nov 1999 19:31:18 +0100
-+
-+Local variables:
-+mode: debian-changelog
-+End:
 --- motif-devel-2.1.10.orig/debian/README.Debian
 +++ motif-devel-2.1.10/debian/README.Debian
 @@ -0,0 +1,6 @@
