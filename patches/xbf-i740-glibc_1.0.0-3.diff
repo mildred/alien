@@ -1,0 +1,636 @@
+--- xbf-i740-glibc-1.0.0.orig/usr/doc/XBF-i740-glibc-1.0.0/README.i740
++++ xbf-i740-glibc-1.0.0/usr/doc/XBF-i740-glibc-1.0.0/README.i740
+@@ -0,0 +1,313 @@
++	      XBF_i740, Version 1.0.0, 21 December 1998
++
++
++This FREE (see the license below) full featured X Server contains:
++
++ * Full support for 8, 15, 16, 24 and 32 bit per pixel depths.
++ * Hardware cursor support to reduce sprite flicker.
++ * Hardware accelerated 2D drawing engine support for 8, 15, 16 and 24
++   bit per pixel depths.
++ * Support for high resolution video modes up to 1600x1200.
++ * Support for doublescan video modes (e.g., 320x200 and 320x240).
++ * Support for gamma correction at all pixel depths.
++ * Fully programmable clock supported.
++ * Robust text mode restore for VT switching.
++
++
++Tested Video Cards
++
++ * Real3D Starfighter AGP
++ * Diamond Stealth II/G460 AGP
++
++Reported Working Video Cards:
++
++ * 3DVision-i740 AGP
++ * ABIT G740 8MB SDRAM
++ * AGP 2D/3D V. 1N, AGP-740D
++ * ARISTO i740 AGP (ART-i740-G)
++ * ASUS AGP-V2740
++ * Chaintech AGP-740D
++ * EliteGroup(ECS) 3DVision-i740 AGP
++ * EONtronics Picasso 740
++ * EONtronics Van Gogh
++ * Everex MVGA i740/AG
++ * Flagpoint Shocker i740 8MB
++ * Gainward CardExpert 740 8MB
++ * Gigabyte Predator i740 8MB AGP
++ * Hercules Terminator 128 2X/i AGP
++ * Intel Express 3D AGP
++ * Jaton Video-740 AGP 3D
++ * Joymedia Apollo 7400
++ * Leadtek Winfast S900
++ * Machspeed Raptor i740 AGP 4600
++ * Magic-Pro MP-740DVD
++ * MAXI Gamer AGP 8 MB
++ * Palit Daytona AGP740
++ * QDI Amazing I
++ * Soyo AGP (SY-740 AGP)
++ * VideoExcel AGP 740
++ * ViewTop ZeusL 8MB 
++ * Winfast S900 i740 AGP 8MB
++     
++
++CAUTION: Running this server on untested video cards poses a potential
++risk of damaging your video card and display.  You assume all risks in
++using this X server on untested video cards; however, if you
++successfully run this server on a video card not listed here, we would
++like to hear from you.  Please e-mail your video card make and model
++to us at "xbf_support@redhat.com".
++
++Red Hat and Precision Insight, Inc. disclaim all warranties with
++regard to this X server.  In no event shall Red Hat or Precision
++Insight, Inc. be liable for any damages whatsoever resulting from the
++use of this X server.
++
++This commercial quality X Server has been tested with only the Real3D
++Starfighter AGP and the Diamond Stealth II/G460 AGP card at this time.
++
++This Free server is distributed in binary form only to conform with
++the Non Disclosure Agreement required by Intel.  If and when this non
++disclosure requirement is removed by Intel, all of the source code for
++this driver will be contributed to the XFree86 project.
++
++
++Download and Installation Instructions
++
++Although you can place the downloaded .rpm file in any directory of
++your choosing, we suggest you ftp the file into the /tmp directory and
++then execute the appropriate RPM command from that directory to
++install the .rpm file.  When the RPM command runs, it will
++automatically place the component files of the X Server into the
++correct locations in your system.
++
++
++Red Hat 5.x (glibc) systems:-
++        1) get the file to your system
++           cd /tmp
++           ftp://ftp.redhat.com/pub/XBF/XBF-i740-glibc-1.0.0-1.i386.rpm
++        2) install the files using RPM
++           rpm -ivh XBF-i740-glibc-1.0.0-1.i386.rpm
++        3) after installing, run (as root):
++           ln -sf /usr/X11R6/bin/XBF_i740 /etc/X11/X
++
++Red Hat 4.x (libc5 systems):-
++        1) get the file to your system
++           cd /tmp
++           ftp://ftp.redhat.com/pub/XBF/XBF-i740-libc5-1.0.0-1.i386.rpm
++        2) install the files using RPM
++           rpm -ivh XBF-i740-libc5-1.0.0-1.i386.rpm
++        3) after installing, run (as root):
++           ln -sf /usr/X11R6/bin/XBF_i740 /etc/X11/X
++           chmod 4711 /usr/X11R6/bin/XBF_i740
++
++IMPORTANT NOTE:
++
++After installing the X server, an XF86Config file needs to be set up
++for your computer.  For Red Hat 4.x and 5.x systems, this file is in
++"/etc/X11/XF86Config".  See the manual page for XF86Config for more
++information on how to properly setup this file for your computer.  For
++a description of the supported device configuration options, see the
++README file included in this release.
++
++To ease the setting up of the XF86Config file, a new "xf86config"
++program that has support for the XBF_i740 X server can be found in the
++same directory as the X server.  To use this program:
++
++Red Hat 5.x (glibc) systems:-
++        1) get the file to your system
++           cd /tmp
++           ftp://ftp.redhat.com/pub/XBF/xf86config-glibc-1.0.0.i386.tgz
++        2) install the files (as root):
++           cd /
++           tar xvzf /tmp/xf86config-glibc-1.0.0.i386.tgz
++        3) run "xf86config" as root
++
++
++Red Hat 4.x (libc5 systems):-
++        1) get the file to your system
++           cd /tmp
++           ftp://ftp.redhat.com/pub/XBF/xf86config-libc5-1.0.0.i386.tgz
++        2) install the files (as root):
++           cd /
++           tar xvzf /tmp/xf86config-libc5-1.0.0.i386.tgz
++        3) run "xf86config" as root
++
++
++Here are some hints as to how to use xf86config:
++
++1) While running xf86config, you will need to answer several questions
++   about your mouse, monitor and video card.  This information should
++   be found in the manuals that came with your system.
++
++2) When you reach the section to choose a particular video card,
++   xf86config will ask you:
++
++   Do you want to look at the card database? 
++
++   Answer, "yes" and choose the number of the video card that most
++   closely matches your system.  The cards that have been tested or
++   have been reported to work (see above) are included in this list.
++
++3) Next, xf86config will ask you:
++
++   Which one of these screen types do you intend to run by default (1-5)?
++
++   Answer, "5" since that is the one that corresponds to the card
++   definition you just choose (from hint #2, above).
++
++4) Since you have already set the symbolic link (above), you do not
++   want xf86config to set it again, so answer "no" to this question.
++
++5) No special RAMDAC is needed with the XBF_i740 X server, so when
++   xf86config asks you to choose a RAMDAC, you can enter "q" to safely
++   quit without selecting a RAMDAC.
++
++6) No special Clockchip setting is required with the XBF_i740 X
++   server, so you can simply press Enter, when xf86config asks you
++   what Clockchip setting you want.
++
++7) It is not necessary to probe the clocks with the XBF_i740 X server,
++   so you do not need to have xf86config run 'X -probeonly'.
++
++8) For RedHat 4.x and RedHat 5.x systems, the XF86Config file should
++   be written to /etc/X11/XF86Config.  For other systems, it should be
++   written to /etc/XF86Config.
++
++
++If you have any questions or problems with this X server:
++
++PLEASE CHECK THE FAQ AT http://www.precisioninsight.com/faq.html BEFORE
++SENDING EMAIL TO THE SUPPORT EMAIL ADDRESS
++
++If the FAQ does not help you solve the problem, you may send email to
++"xbf_support@redhat.com".  Please do NOT send any email to XFree86
++regarding this X server.
++
++
++Please note that this software is released under the XBF License below.
++
++
++
++
++End User License Agreement for the XBF X server ("Software")
++
++
++
++I. PREAMBLE
++
++
++This License Agreement ("License") sets forth the terms and conditions
++under which Red Hat Software, Inc. grants you certain rights and
++licenses with respect to the Software.  Please review this agreement
++carefully before you use the Software or install it on a computer.
++
++
++This License generally allows you to copy, sublicense and distribute
++the Software, subject to the following terms and conditions.  However,
++nothing in this License grants you any right, license or interest with
++respect to the source code for the Software.
++
++
++
++II. GRANT OF RIGHTS:
++
++
++A. The rights stated in this License are non-exclusive and are granted
++to you without fee.
++
++
++B. You may install and/or use the Software on as many computers as you
++wish at any time.
++
++
++C. You may copy, sublicense and distribute the Software in its entirety
++provided that you:
++
++1. Conspicuously publish on each copy of the Software the appropriate
++copyright notice and the complete terms and conditions of this License;
++
++2. Keep intact all notices that refer to this License and to the
++absence of any warranty; and
++
++3. Give any other recipients and sublicensees of the Software a copy of
++this License along with the Software, and make it clear to any and all
++recipients and sublicensees that the terms and conditions of this
++License shall govern their use of the Software.
++
++
++D. You may, but are not required to, charge a fee to persons to whom
++you copy and redistribute the Software, and you may at your option
++offer warranty protection for a fee to any person to whom you
++distribute the Software.  Each person or entity to whom you sublicense
++the Software must receive it under no more restrictive terms and
++conditions than set forth in this License.
++
++
++
++III. YOU MAY NOT:
++
++
++A. Modify, decompile, reverse assemble or otherwise reverse engineer
++the Software, or create derivative works based on the Software, or
++authorize any third party to do any of the above; and
++
++
++B. Copy, sublicense, or distribute the Software except as expressly
++permitted in this License.  Any attempt to copy, sublicense or
++distribute the Program in a manner inconsistent with this License is
++void, and will automatically terminate your rights under this License.
++
++
++
++IV. TITLE
++
++
++The Software is protected by copyright and other laws.  Title,
++ownership rights, and intellectual property rights in the Software
++shall remain with Red Hat Software, Inc. and/or its suppliers.  You
++acknowledge these ownership and intellectual property rights, and agree
++not to take any action to jeopardize or infringe upon any of these
++rights with respect to the Software.  The rights granted to you in this
++License do not include any interest in any intellectual property rights
++in the Software.
++
++
++
++V. NO WARRANTY
++
++
++THERE IS NO WARRANTY FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY
++APPLICABLE LAW.  EXCEPT AS OTHERWISE STATED IN WRITING, THE SOFTWARE IS
++PROVIDED AND LICENSED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
++
++
++
++VI. LIMITATION OF LIABILITY
++
++
++TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT WILL RED
++HAT SOFTWARE, INC. OR ITS SUPPLIERS BE LIABLE TO YOU FOR ANY DAMAGES,
++INCLUDING LOST PROFITS, LOST SAVINGS, OR OTHER INCIDENTAL OR
++CONSEQUENTIAL DAMAGES, ARISING OUT OF THE USE OR INABILITY TO USE THE
++SOFTWARE, EVEN IF RED HAT SOFTWARE, INC. OR A DEALER AUTHORIZED BY RED
++HAT SOFTWARE, INC. HAD BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
++
++
++
++VII. GENERAL
++
++
++This License represents the complete agreement concerning the rights
++granted in this License, and may be amended only in a writing signed by
++both parties.  If any provision of this Agreement is held to be
++unenforceable, the enforceability of the remaining provisions shall in
++no way be affected or impaired.  This Agreement shall be governed by
++the laws of the United States.
++
++
++
++
++
++Copyright © 1998 Red Hat Software, Inc.  All rights reserved.
+--- xbf-i740-glibc-1.0.0.orig/debian/changelog
++++ xbf-i740-glibc-1.0.0/debian/changelog
+@@ -0,0 +1,19 @@
++xbf-i740-glibc (1.0.0-3) unstable; urgency=low
++
++  * Added README.i740 from redhat mirror to the doc directory
++  * debian/rules: Modified doc directory from XBF-i740-glibc-VERSION to xbf-i740-glibc
++  * Added [pre|post][inst|rm] shamelessly borrowed from xserver-svga
++
++ -- Agustín Martín Domingo <agmartin@aq.upm.es>  Thu, 15 Apr 1999 16:36:31 +0200
++
++xbf-i740-glibc (1.0.0-2) unstable; urgency=low
++
++  * Converted from RPM binary format to debian
++
++ -- Agustín Martín Domingo <agmartin@aq.upm.es>  Thu, 15 Apr 1999 15:47:07 +0200
++
++
++
++Local variables:
++mode: debian-changelog
++End:
+--- xbf-i740-glibc-1.0.0.orig/debian/control
++++ xbf-i740-glibc-1.0.0/debian/control
+@@ -0,0 +1,16 @@
++Source: xbf-i740-glibc
++Section: alien
++Priority: extra
++Maintainer: Agustín Martín Domingo <agmartin@aq.upm.es>
++
++Package: xbf-i740-glibc
++Architecture: i386
++Recommends: xf86config-i740g
++Provides: xserver
++Depends: ${shlibs:Depends}
++Description: Binary-only X server for i740 on glibc systems
++ X server for the Intel i740 base graphics cards.
++ .
++ Details on installing this server are available at
++ /usr/doc/xbf-i740-glibc (From ftp://ftp.redhat.com/pub/XBF/README.i740)
++
+--- xbf-i740-glibc-1.0.0.orig/debian/copyright
++++ xbf-i740-glibc-1.0.0/debian/copyright
+@@ -0,0 +1,19 @@
++This package was debianized by the alien program by converting
++a binary RPM Package on Thu, 15 Apr 1999 15:47:07 +0200.
++
++Copyright: XBF
++
++Information from the binary Package:
++Name        : XBF-i740-glibc              Distribution: (none)
++Version     : 1.0.0                             Vendor: (none)
++Release     : 1                             Build Date: Sun Dec 20 02:12:52 1998
++Install date: (not installed)               Build Host: audrey.kem.org
++Group       : X11/XFree86/Servers           Source RPM: XBF-i740-glibc-1.0.0-1.src.rpm
++Size        : 2136768
++Summary     : Binary-only X server for i740 on glibc systems
++Description :
++X server for the Intel i740 base graphics cards.
++
++Details on installing this server are available at
++ftp://ftp.redhat.com/pub/XBF/README.i740
++
+--- xbf-i740-glibc-1.0.0.orig/debian/rules
++++ xbf-i740-glibc-1.0.0/debian/rules
+@@ -0,0 +1,58 @@
++#!/usr/bin/make -f
++# debian/rules that uses debhelper and alien
++# GNU copyright 1997 by Joey Hess.
++
++# Uncomment this to turn on verbose mode.
++#export DH_VERBOSE=1
++
++build:
++	dh_testdir
++	# Nothing to do.
++
++clean:
++	dh_testdir
++	dh_testroot
++	dh_clean
++
++# Build architecture-independent files here.
++binary-indep: build
++# We have nothing to do by default.
++
++# Build architecture-dependent files here.
++binary-arch: build
++#	dh_testversion
++	dh_testdir
++	dh_testroot
++	dh_clean -k
++	dh_installdirs
++	install -d debian/tmp
++	cp -a `ls |grep -v debian` debian/tmp
++#
++# If you need to move files around in debian/tmp or do some
++# binary patching ... Insert it here
++#
++	( cd `pwd`/debian/tmp/usr/doc ; mv XBF* xbf-i740-glibc )
++	dh_installdocs
++	dh_installexamples
++	dh_installmenu
++#	dh_installinit
++	dh_installcron
++	dh_installmanpages
++#	dh_undocumented
++	dh_installchangelogs
++#	dh_strip
++	dh_compress
++	dh_fixperms
++	dh_suidregister
++	dh_installdeb
++	dh_shlibdeps
++	dh_gencontrol
++	dh_makeshlibs
++	dh_md5sums
++	dh_builddeb
++
++source diff:                                                                  
++	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
++
++binary: binary-indep binary-arch
++.PHONY: build clean binary-indep binary-arch binary
+--- xbf-i740-glibc-1.0.0.orig/debian/preinst
++++ xbf-i740-glibc-1.0.0/debian/preinst
+@@ -0,0 +1,34 @@
++#!/bin/sh
++# Debian xserver-xserver-i740 package pre-installation script
++# Modifications to the original xserver-svga preinst script
++# Copyright 1999 A. Martín.  Licensed under the GNU GPL.
++# (Very) Mostly from 
++# Debian xserver-svga package pre-installation script
++# Copyright 1998 Branden Robinson.  Licensed under the GNU GPL.
++# Acknowlegements to Stephen Early, Mark Eichin, and Manoj Srivastava.
++
++set -e
++
++trap "echo ;\
++      echo 'Received signal.  Aborting installation of xserver-xserver-i740 package.' ;\
++      echo ;\
++      exit 1" 1 2 3 15
++
++package=xbf-i740-glibc
++
++case "$1" in
++  install) touch /etc/X11/newxserver.$package ;;
++  upgrade) ;;
++  abort-upgrade) exit 0 ;;
++  *) 
++    echo "ERROR: xserver-xserver-i740 preinst called with unknown argument \"$1\"."
++    echo "Aborting installation of xserver-xserver-i740 package."
++    exit 1 ;;
++esac
++
++# clean up a mess made in 3.3.2.2-4
++if [ "$2" = "3.3.2.2-4" ]; then
++  rm -f /etc/X11/newxserver.[0-9A-Z]*
++fi
++
++exit
+--- xbf-i740-glibc-1.0.0.orig/debian/postinst
++++ xbf-i740-glibc-1.0.0/debian/postinst
+@@ -0,0 +1,119 @@
++#!/bin/sh
++# Debian xserver-xserver-i740 package post-installation script
++# Modifications to the original xserver-svga preinst script
++# Copyright 1999 A. Martín.  Licensed under the GNU GPL.
++# (Very) Mostly from 
++# Debian xserver-svga package post-installation script
++# Copyright 1998 Branden Robinson.  Licensed under the GNU GPL.
++# Acknowlegements to Stephen Early, Mark Eichin, and Manoj Srivastava.
++
++set -e
++
++package=xbf-i740-glibc
++xserver=i740
++serverbin=XBF_i740
++
++cleanup () {
++  # unroll changes in xserver-i740 preinst
++  for file in /etc/X11/newxserver.$package; do
++    if [ -e $file ]; then
++      rm $file
++    fi
++  done;
++}
++
++trap "echo ;\
++      echo 'Received signal.  Aborting configuration of xserver-i740 package.' ;\
++      echo -n 'Cleaning up...' ;\
++      cleanup ;\
++      echo 'done.' ;\
++      echo ;\
++      exit 1" 1 2 3 15
++
++case "$1" in
++  configure) ;;
++  abort-upgrade|abort-remove|abort-deconfigure)
++    cleanup
++    exit 0 ;;
++  *)
++    echo "ERROR: xserver-i740 postinst called with unknown argument \"$1\"."
++    echo "Aborting configuration of xserver-i740 package."
++    echo -n "Cleaning up..."
++    cleanup
++    echo "done."
++    exit 1 ;;
++esac
++
++# I know there is redundant logic in some of the following, I'll rewrite it
++# pretty someday
++
++# while I'm at it, switch to string variables instead of numeric ones
++
++fixname=0
++prompt=0
++oldxserverpresent=0
++oldxserver=`head -1 /etc/X11/Xserver`
++servername=`echo $oldxserver | sed 's/X11R6\/bin/bin\/X11/'`
++if [ -x $oldxserver ]; then
++    oldxserverpresent=1
++fi
++if [ $oldxserverpresent = 1 ]; then
++  # case 1: we're just upgrading the existing server
++  if [ "$oldxserver" = "/usr/bin/X11/$serverbin" ]; then
++    prompt=0
++  # case 2: we're just upgrading, but need to canonicalize the pathname
++  elif [ "$servername" = "/usr/bin/X11/$serverbin" ]; then
++    fixname=1
++  # case 3: we're installing a new X server
++  elif [ -e /etc/X11/newxserver.$package ]; then
++    rm /etc/X11/newxserver.$package
++    prompt=1
++    $condecho
++    echo "Current default X server $oldxserver found."
++    echo -n "Do you want to make $xserver the default instead? (y/n) [n] "
++    default=n
++  # case 4: we're upgrading an alternative X server already installed
++  else
++    prompt=0
++  fi
++else # old server not present
++  prompt=1
++  $condecho
++  echo -n "No default X server previously set, or previous default has been "
++  echo "removed."
++  echo -n "Do you want to make the $xserver X server the default? (y/n) [y] "
++  default=y
++fi
++
++if [ $prompt = 1 ]; then
++  condecho=echo
++  read input
++  case "$input" in
++    Y|y) input=y ;;
++    N|n) input=n ;;
++    '') input=$default ;;
++    *)
++      echo "'$input' not understood.  Using default of '$default'."
++      input=$default
++      ;;
++  esac
++fi
++
++if [ "$input" = "y" -o $fixname = 1 ]; then
++  mv /etc/X11/Xserver /etc/X11/Xserver.debian.$$
++  sed -e "1s/^.*$/\\/usr\\/bin\\/X11\\/$serverbin/" \
++   /etc/X11/Xserver.debian.$$ > /etc/X11/Xserver
++  rm /etc/X11/Xserver.debian.$$
++  if [ $fixname = 0 ]; then
++    $condecho
++    echo "The $xserver X server is now the default."
++    condecho=echo
++  fi
++fi
++
++# invoke xserver-configure
++if [ -x /usr/sbin/xserver-configure ]; then
++  . /usr/sbin/xserver-configure
++fi
++
++exit
+--- xbf-i740-glibc-1.0.0.orig/debian/postrm
++++ xbf-i740-glibc-1.0.0/debian/postrm
+@@ -0,0 +1,34 @@
++#!/bin/sh
++# Debian xserver-xserver-i740 package post-removal script
++# Modifications to the original xserver-svga postrm  script
++# Copyright 1999 A. Martín.  Licensed under the GNU GPL.
++# (Very) Mostly from 
++# Debian xserver-svga package post-removal script
++# Copyright 1998 Branden Robinson.  Licensed under the GNU GPL.
++# Acknowlegements to Stephen Early, Mark Eichin, and Manoj Srivastava.
++
++set -e
++
++package=xbf-i740-glibc
++serverbin=XBF_i740
++
++trap "echo ;\
++      echo 'Received signal.  Aborting removal of xserver-xserver-i740 package.' ;\
++      echo ;\
++      exit 1" 1 2 3 15
++
++case "$1" in
++  remove) ;;
++  purge) ;;
++  upgrade|failed-upgrade|abort-install|abort-upgrade|disappear) exit 0 ;;
++  *) 
++    echo "ERROR: xserver-xserver-i740 postrm called with unknown argument \"$1\"."
++    echo "Aborting removal of xserver-xserver-i740 package."
++    exit 1 ;;
++esac
++
++sed "1s:/usr/bin/X11/$serverbin:/usr/bin/X11/XF86_NONE:" /etc/X11/Xserver > \
++ /etc/X11/Xserver.debian.$$
++mv /etc/X11/Xserver.debian.$$ /etc/X11/Xserver
++
++exit

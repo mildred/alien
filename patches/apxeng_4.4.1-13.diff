@@ -1,0 +1,104 @@
+--- apxeng-4.4.1.orig/debian/changelog
++++ apxeng-4.4.1/debian/changelog
+@@ -0,0 +1,9 @@
++apxeng (4.4.1-14) unstable; urgency=low
++
++  * Converted from RPM binary format to debian
++
++ -- Joey Hess <joey@kitenet.net>  Wed,  7 Apr 1999 20:26:33 -0700
++
++Local variables:
++mode: debian-changelog
++End:
+--- apxeng-4.4.1.orig/debian/control
++++ apxeng-4.4.1/debian/control
+@@ -0,0 +1,9 @@
++Source: apxeng
++Section: alien
++Priority: extra
++Maintainer: Joey Hess <joey@kitenet.net>
++
++Package: apxeng
++Architecture: i386
++Description: ApplixWare Office (english)
++ This package contains the english version of ApplixWare Office.
+--- apxeng-4.4.1.orig/debian/copyright
++++ apxeng-4.4.1/debian/copyright
+@@ -0,0 +1,21 @@
++This package was debianized by the alien program by converting
++a binary RPM Package on Wed,  7 Apr 1999 20:26:33 -0700.
++
++Copyright: 1990-1998 Applix, Inc.
++
++Information from the binary Package:
++Name        : apxeng                      Distribution: SuSE Linux 6.0-BETA (i386)
++Version     : 4.4.1                             Vendor: SuSE GmbH, Nuernberg, Germany
++Release     : 13                            Build Date: Tue Dec  1 01:36:41 1998
++Install date: (not installed)               Build Host: neumann.suse.de
++Group       : unsorted                      Source RPM: axbase-4.4.1-13.src.rpm
++Size        : 17025358                         License: 1990-1998 Applix, Inc.
++Packager    : feedback@suse.de
++Summary     : ApplixWare Office (english)
++Description :
++This package contains the english version of ApplixWare Office.
++
++Authors:
++--------
++    Eric Ding <ericding@applix.com>
++
+--- apxeng-4.4.1.orig/debian/rules
++++ apxeng-4.4.1/debian/rules
+@@ -0,0 +1,53 @@
++#!/usr/bin/make -f
++# debian/rules that uses debhelper and alien
++# GNU copyright 1997 by Joey Hess.
++
++# Uncomment this to turn on verbose mode.
++#export DH_VERBOSE=1
++
++build:
++	dh_testdir
++	# Nothing to do.
++
++clean:
++	dh_testdir
++	dh_testroot
++	dh_clean
++
++# Build architecture-independent files here.
++binary-indep: build
++# We have nothing to do by default.
++
++# Build architecture-dependent files here.
++binary-arch: build
++#	dh_testversion
++	dh_testdir
++	dh_testroot
++	dh_clean -k
++	dh_installdirs
++	install -d debian/tmp/usr/X11R6/lib/X11
++	cp -a opt/* debian/tmp/usr/X11R6/lib/X11
++	dh_installdocs
++	dh_installexamples
++	dh_installmenu
++#	dh_installinit
++	dh_installcron
++#	dh_installmanpages
++#	dh_undocumented
++	dh_installchangelogs
++#	dh_strip
++	dh_compress
++	dh_fixperms
++	dh_suidregister
++	dh_installdeb
++	-dh_shlibdeps
++	dh_gencontrol
++	dh_makeshlibs
++	dh_md5sums
++	dh_builddeb
++
++source diff:                                                                  
++	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
++
++binary: binary-indep binary-arch
++.PHONY: build clean binary-indep binary-arch binary

@@ -1,0 +1,10 @@
+Source: #NAME#
+Section: #SECTION#
+Priority: extra
+Maintainer: #USERNAME# <#EMAIL#>
+
+Package: #NAME#
+Architecture: #ARCH#
+Depends: ${shlibs:Depends}
+Description: #SUMMARY#
+ #DESCRIPTION#

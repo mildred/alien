@@ -1,0 +1,9 @@
+#NAME# (#VERSION#-#RELEASE#) unstable; urgency=low
+
+  * Converted from Stampede .slp binary format to debian
+
+ -- #USERNAME# <#EMAIL#>  #DATE#
+
+Local variables:
+mode: debian-changelog
+End:

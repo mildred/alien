@@ -1,0 +1,4 @@
+use Alien;
+use Fromslp;
+
+%fields=From::slp::DecodeFooter(From::slp::GetFooter(shift));

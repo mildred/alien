@@ -1,0 +1,15 @@
+Alien can use special diff files to help make alien packages conform to
+debian policy. This is only used when you are converting to deb format. This
+documents breifly explains how to make them. It assumes you are familiar with
+working with debian source packages.
+
+* Use "alien -g file.rpm" to generate a "source" directory tree. 
+* Make whatever changes you need to make to debian/rules, add other files, 
+  whatever.
+* Use dpkg-buildpackage to generate a standard debian .diff.gz file, and
+  stick it in /var/lib/alien.
+* Test "alien file.rpm" - it should use your diff. If it works properly,
+  (it's best if lintian is happy with the resulting .deb too), send the
+  .diff.gz file to me for inclusion in alien.
+
+-- Joey Hess <joeyh@master.debian.org>
