@@ -1,7 +1,8 @@
 To try alien before installing, just run ./alien from this directory. Most
 features will work prior to installation.
 
-To install alien, become root and type "make install".
+To install alien, become root and type:
+	perl Makefile.PL; make; make install
 
 To use alien, you'll need a variety of other software. See the README for
 details.

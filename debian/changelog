@@ -24,6 +24,8 @@ alien (6.99) unstable; urgency=low
   * Alien now always cleans up after failed converts, Closes: #62331
   * Alien can now be used to just install a package with no conversion.
     Closes: #53441
+  * Use a Makefile.PL because that seems to make sense, which means lots of
+    the build system had to be changed.
 
  -- Joey Hess <joeyh@debian.org>  Thu, 20 Apr 2000 18:52:41 -0700
 

@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper. GNU copyright 1997 by Joey Hess.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -7,29 +6,33 @@
 build: build-stamp
 build-stamp:
 	dh_testdir
-	$(MAKE) version
+	perl Makefile.PL
+	$(MAKE)
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
+	-$(MAKE) realclean
 	dh_clean
 
-# Build architecture-dependent files here.
 binary-arch: build
-# We have nothing to do by default.
 
-# Build architecture-independent files here.
 binary-indep: build
 	dh_testdir
 	dh_testroot
-	dh_clean
-	$(MAKE) DESTDIR=debian/tmp install
+	dh_clean -k
+	$(MAKE) pure_install PREFIX=$(shell pwd)/debian/tmp/ INSTALLDIRS=perl \
+		INSTALLMAN1DIR=$(shell pwd)/debian/tmp/usr/share/man/man1 \
+		INSTALLMAN3DIR=$(shell pwd)/debian/tmp/usr/share/man/man3 \
+		INSTALLPRIVLIB=$(shell pwd)/debian/tmp/usr/lib/perl5 \
+		INSTALLSCRIPT=$(shell pwd)/debian/tmp/usr/bin \
+		INSTALLARCHLIB=$(shell pwd)/debian/tmp/killme
+	# Who does it make this empty directory? Sigh.
+	rm -rf debian/tmp/killme
 	dh_installdocs README gendiff.txt
 	dh_installexamples
-	dh_installmenu
-	dh_installmanpages
 	dh_installchangelogs
 	dh_compress
 	dh_fixperms
@@ -50,7 +53,8 @@ installhook:
 		ln -sf ../debian/alien_$(VERSION).tar.gz alien.tar.gz
 	fakeroot alien --to-slp /home/joey/debian/public/alien_*.deb
 	mv alien-$(VERSION).slp /home/ftp/pub/code/alien/
-	make rpm
+	fakeroot alien --to-rpm /home/joey/debian/public/alien_*.deb
+	mv alien-$(VERSION)*.rpm /home/ftp/pub/code/alien/
 	ln -s /home/ftp/pub/code/alien/alien-$(VERSION).slp \
 		/home/ftp/pub/code/alien/alien.slp
 
