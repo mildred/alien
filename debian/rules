@@ -27,14 +27,11 @@ binary-indep: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	$(MAKE) pure_install INSTALLDIRS=perl \
+	$(MAKE) pure_install INSTALLDIRS=vendor \
 		PREFIX=$(shell pwd)/debian/alien/$(shell perl -MConfig -e 'print $$Config{prefix}') \
-		INSTALLMAN1DIR=$(shell pwd)/debian/alien/usr/share/man/man1 \
-		INSTALLMAN3DIR=$(shell pwd)/debian/alien/usr/share/man/man3 \
-		INSTALLARCHLIB=$(shell pwd)/debian/alien/killme \
 		VARPREFIX=$(shell pwd)/debian/alien
-	# Who does it make this empty directory? Sigh.
-	rm -rf debian/alien/killme
+	# Why does it make this empty directory? Sigh.
+	rm -rf debian/alien/usr/lib
 	dh_installdocs README gendiff.txt
 	dh_installexamples
 	dh_installchangelogs
