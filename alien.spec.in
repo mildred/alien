@@ -31,4 +31,4 @@ find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" | \
 
 %files -f manifest
 %defattr(-,root,root)
-%doc debian/changelog COPYING README alien.lsm
+%doc debian/changelog GPL README alien.lsm

@@ -368,8 +368,8 @@ sub prep {
 	print OUT $this->binary_info."\n";
 	close OUT;
 
-	# Conffiles, if any.
-	my @conffiles=@{$this->conffiles};
+	# Conffiles, if any. Note that debhelper takes care of files in /etc.
+	my @conffiles=grep { $_ !~ /^\/etc/ } @{$this->conffiles};
 	if (@conffiles) {
 		open (OUT, ">$dir/debian/conffiles") || die "$dir/debian/conffiles: $!";
 		print OUT join("\n", @conffiles)."\n";
