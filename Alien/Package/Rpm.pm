@@ -24,10 +24,6 @@ Alien::Package.
 
 Relocatable rpm packages have a prefixes field.
 
-=item changelogtext
-
-The text of the changelog
-
 =head1 METHODS
 
 =over 4
@@ -80,7 +76,7 @@ sub read_file {
 	# Get the conffiles list.
 	$this->conffiles([map { chomp; $_ } `rpm -qcp $file`]);
 
-	$this->copyright_extra(scalar `rpm -qpi $file`);
+	$this->binary_info(scalar `rpm -qpi $file`);
 
 	# Get the filelist.
 	$this->filelist([map { chomp; $_ } `rpm -qpl $file`]);
@@ -109,6 +105,7 @@ sub read_file {
 	}
 
 	$this->distribution("Red Hat");
+	$this->origformat("rpm");
 
 	return 1;
 }

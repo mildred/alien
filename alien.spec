@@ -1,12 +1,12 @@
 Summary: Install Debian and Slackware Packages with rpm.
 Name: alien
 Packager: Joey Hess <joey@kitenet.net>
-Version: 6.48
+Version: 6.59
 Release: 1
-Source: ftp://kitenet.net/pub/code/debian/alien_6.48.tar.gz
+Source: ftp://kitenet.net/pub/code/debian/alien_6.59.tar.gz
 Copyright: GPL
 Group: Utilities/File
-Buildroot: /tmp/alien-6.48.build
+Buildroot: /tmp/alien-6.59.build
 Requires: perl
 
 %description
@@ -19,7 +19,7 @@ This is a tool only suitable for binary packages.
 
 %prep
 %setup -n alien
-rm -r /tmp/alien-6.48.build || true
+rm -r /tmp/alien-6.59.build || true
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install

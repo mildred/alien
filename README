@@ -1,43 +1,71 @@
-Alien is a program that converts rpm, dpkg, or slackware tgz packages into
-rpm or dpkg packages. If you're using Debian or Red Hat and you want to
-install a package from one of the other distributions, you can use alien to
-convert it to your preferred package format and install it.
+The Alien package converter:
 
-Despite the high version number, alien is still (and will probably always
-be) rather experimental software. It has been used and tested by Debian
-users for many months, but there are still many limitations. For one thing, 
-Alien only handles binary packages, not source packages. It also doesn't try
-to convert the scripts that should be run when the package installs.
+  Alien is a program that converts between redhat rpm, debian dpkg, stampede
+  slp and slackware tgz file formats. If you want to use a package from
+  another linux distribution than the one you have installed on your system,
+  you can use alien to convert it to your preferred package format and
+  install it.
 
-Alien should not be used to replace important system packages, like sysvinit, 
-shared libraries, or other things that are essential for the functioning of 
-your system. Many of these packages are set up differently by Debian and 
-Red Hat, and packages from the different distributions cannot be used 
-interchangably. In general, if you can't uninstall the package without 
-breaking your system, don't try to replace it with an alien version.
+Warning, alien can be dangerous:
 
-Alien has successfully been used for converting add on software, such as
-Applixware, Metro X, and many other packages.
+  Despite the high version number, alien is still (and will probably always
+  be) rather experimental software. It's been under development for many
+  years now, but there are still many bugs and limitations.
+
+  Alien should not be used to replace important system packages, like
+  sysvinit, libc, or other things that are essential for the functioning of
+  your system. Many of these packages are set up differently by the
+  different distributions, and packages from the different distributions
+  cannot be used interchangeably. In general, if you can't uninstall the
+  package without breaking your system, don't try to replace it with an
+  alien version.
 
 Getting alien:
 
-Alien will be available on Sunsite, but it hasn't moved out of Incoming yet. 
-For now, you can get it at the alien home page:
-	http://kite.ml.org/programs/alien/
+  The newest versions of alien are available at the alien home page; drop by
+  http://kitenet.net/programs/alien/
 
-You can also get rpm or deb packages of alien:
-deb: ftp://master.debian.org/debian/unstable/binary-all/admin/alien_5.0.deb
-rpm: ftp://ftp.redhat.com/pub/contrib/RPMS/alien-5.0-1.i386.rpm
+  On sunsite and its mirrors, alien is located in the
+  pub/Linux/utils/scripts/ directory.
+
+  You can also get rpm or deb packages of alien: 
+  deb: ftp://ftp.debian.org/debian/unstable/binary-all/admin/alien_*.deb
+  rpm: ftp://ftp.redhat.com/pub/contrib/noarch/alien-*.rpm
 
 Other things you'll need:
 
-To use alien, you will need several other programs. Alien is a perl program,
-and requires perl version 5 or greater. You must also have the Getopt::Long
-perl module installed on your system. I believe this is a standard part of
-perl.
+  To use alien, you will need several other programs. Alien is a perl
+  program, and requires perl version 5.004 or greater. If you use slackware,
+  make sure you get perl 5.004, the perl 5.003 in slackware does not work
+  with alien!
 
-To convert packages to or from rpms, you need the Red Hat Package Manager; 
-get it from Red Hat's ftp site.
+  To convert packages to or from rpms, you need the Red Hat Package Manager;
+  get it from Red Hat's ftp site.
 
-If you want to convert packages into debian packages, you will need the dpkg,
-dpkg-dev, and debmake packages, which are available on the Debian ftp site.
+  If you want to convert packages into debian packages, you will need the
+  dpkg, dpkg-dev, and debhelper packages, which are available on the Debian
+  ftp site.
+
+  To convert to/from stampede packages, you will need bzip2, get it at
+	http://www.muraroa.demon.co.uk/
+
+  Attention, Slackware, Red Hat, and Stampede users: Bruce S. Babcock
+  <babcock@math.psu.edu> has put together an "alien-extra"
+  package of all the extra files you need to use alien on
+  a Red Hat or Slackware system.
+  The Slackware version is at 
+  	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.tgz
+  The RedHat version is at
+  	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.rpm
+  The Stampede version is at
+  	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.slp
+
+Programs that use alien:
+
+  I know of one program that acts as a frontend to alien - kpackviewer is a
+  package viewer that can convert between package formats by using alien. It's
+  homepage is at http://www.momentus.com.br/users/hook/kpackviewer.html
+
+Please report any bugs in alien to the author: 
+
+  Joey Hess <joey@kitenet.net>

@@ -122,6 +122,8 @@ sub read_file {
 	$this->copyright("see /usr/share/doc/".$this->name."/copyright");
 	$this->group("unknown") if ! $this->group;
 	$this->distribution("Debian");
+	$this->origformat("deb");
+	$this->binary_info(scalar `dpkg --info $file`);
 
 	# Read in the list of conffiles, if any.
 	my @conffiles;
@@ -151,10 +153,10 @@ sub read_file {
 	# Read in the scripts, if any.
 	foreach my $field (qw{postinst postrm preinst prerm}) {
 		if ($this->have_dpkg_deb) {
-			$this->$field(`dpkg-deb --info $file $field 2>/dev/null`);
+			$this->$field(scalar `dpkg-deb --info $file $field 2>/dev/null`);
 		}
 		else {
-			$this->$field(`ar p $file control.tar.gz | tar Oxzf - $field 2>/dev/null`);
+			$this->$field(scalar `ar p $file control.tar.gz | tar Oxzf - $field 2>/dev/null`);
 		}
 	}
 
@@ -182,6 +184,142 @@ sub unpack {
 	}
 
 	return 1;
+}
+
+=item prep
+
+Adds a populated debian directory the unpacked package tree, making it
+ready for building. This can either be done automatically, or via a patch
+file. 
+
+=cut
+
+sub prep {
+	my $this=shift;
+	my $dir=$this->unpacked_tree;
+
+	mkdir "$dir/debian", 0755 ||
+		die "mkdir $dir/debian failed: $!";
+	
+	# Use a patch file to debianize?
+	if (defined $this->patchfile) {
+		# The -f passed to zcat makes it pass uncompressed files
+		# through without error.
+		system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") ||
+			die "patch error: $!";
+		# Look for .rej files.
+		die "patch failed with .rej files; giving up"
+			if `find $dir -name "*.rej"`;
+		system('find . -name \'*.orig\' -exec rm {} \\;');
+		chmod 0755,"$dir/debian/rules";
+		return;
+	}
+
+	# Automatic debianization.
+	# Changelog file.
+	open (OUT, ">$dir/debian/changelog") || die "$dir/debian/changelog: $!";
+	print OUT $this->name." (".$this->version."-".$this->release.") experimental; urgency=low\n";
+	print OUT "\n";
+	print OUT "  * Converted from .".$this->origformat." format to .deb\n";
+	print OUT "\n";
+	print OUT " -- ".$this->username." <".$this->email.">  ".$this->date."\n";
+	print OUT "\n";
+	print OUT $this->changelogtext."\n";
+	close OUT;
+
+	# Control file.
+	open (OUT, ">$dir/debian/control") || die "$dir/debian/control: $!";
+	print OUT "Source: ".$this->name."\n";
+	print OUT "Section: alien\n";
+	print OUT "Priority: extra\n";
+	print OUT "Maintainer: ".$this->username." <".$this->email.">\n";
+	print OUT "\n";
+	print OUT "Package: ".$this->name."\n";
+	print OUT "Architecture: ".$this->arch."\n";
+	print OUT "Depends: \${shlibs:Depends}\n";
+	print OUT "Description: ".$this->summary."\n";
+	print OUT $this->description."\n";
+	print OUT ".\n"
+	print OUT " (Converted from a .".$this->origformat." package by alien.)\n";
+	close OUT;
+
+	# Copyright file.
+	open (OUT, ">$dir/debian/copyright") || die "$dir/debian/copyright: $!";
+	print OUT "This package was debianized by the alien program by converting\n";
+	print OUT "a binary .".$this->origformat." package on ".$this->date."\n";
+	print OUT "\n";
+	print OUT "Copyright: ".$this->copyright."\n";
+	print OUT "\n";
+	print OUT "Information from the binary package:\n";
+	print OUT $this->binary_info."\n";
+	close OUT;
+
+	# Conffiles, if any.
+	my @conffiles=@{$this->conffiles};
+	if (@conffiles) {
+		open (OUT, ">$dir/debian/conffiles") || die "$dir/debian/conffiles: $!";
+		print OUT join("\n", @conffiles)."\n";
+		close OUT;
+	}
+
+	# A minimal rules file.
+	open (OUT, ">$dir/debian/rules") || die "$dir/debian/rules: $!";
+	print OUT <<EOF;
+#!/usr/bin/make -f
+# debian/rules for alien
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+build:
+	dh_testdir
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean
+
+binary-indep: build
+
+binary-arch: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	cp -a `ls |grep -v debian` debian/tmp
+#
+# If you need to move files around in debian/tmp or do some
+# binary patching ... Insert it here
+#
+	dh_installdocs
+	dh_installchangelogs
+#	dh_strip
+	dh_compress
+#	dh_fixperms
+	dh_suidregister
+	dh_installdeb
+	-dh_shlibdeps
+	dh_gencontrol
+	dh_makeshlibs
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary
+EOF
+	close OUT;
+	chmod 0755,"$dir/debian/rules";
+
+	# Save any scripts.
+	foreach my $script (qw{postinst postrm preinst prerm}) {
+		my $data=$this->$script();
+		next unless defined $data;
+		next if $data =~ m/^\s*$/;
+		open (OUT,">$dir/debian/$script") ||
+			die "$dir/debian/$script: $!";
+		print OUT $data;
+		close OUT;
+	}
 }
 
 =item package
@@ -300,6 +438,69 @@ sub description {
 	}
 	chomp $ret;
 	return $ret;
+}
+
+=item date
+
+Returns the date, in rfc822 format.
+
+=cut
+
+sub date {
+	my $this=shift;
+
+	my $date=`822-date`;
+	chomp $date;
+	if (!$date) {
+		die "822-date did not return a valid result. You probably need to install the dpkg-dev debian package";
+	}
+
+	return $date;
+}
+
+=item email
+
+Returns an email address for the current user.
+
+=cut
+
+sub email {
+	my $this=shift;
+
+	return $ENV{EMAIL} if exists $ENV{EMAIL};
+
+	my $login = getlogin || (getpwuid($<))[0] || $ENV{USER};
+	open (MAILNAME,"</etc/mailname");
+	my $mailname=<MAILNAME>;
+	chomp $mailname;
+	close MAILNAME;
+	if (!$mailname) {
+		$mailname=`hostname -f`;
+		chomp $mailname;
+	}
+	return "$login\@$mailname";
+}
+
+=item username
+
+Returns the user name of the real uid.
+
+=cut
+
+sub username {
+	my $this=shift;
+
+	my $username;
+	my $login = getlogin || (getpwuid($<))[0] || $ENV{USER};
+	(undef, undef, undef, undef, undef, undef, $username) = getpwnam($login);
+
+	# Remove GECOS fields from username.
+	$username=~s/,.*//g;
+
+	# The ultimate fallback.
+	if (!$username) {
+		$username=$login;
+	}
 }
 
 =head1 AUTHOR

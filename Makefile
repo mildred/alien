@@ -44,7 +44,7 @@ rpm: version
 	rm -f /home/joey/src/redhat/SOURCES/alien_$(VER).tar.gz
 	mv /home/joey/src/redhat/SRPMS/* /home/ftp/pub/code/SRPMS
 	mv /home/joey/src/redhat/RPMS/noarch/* /home/ftp/pub/code/RPMS/noarch
-	fakroot rm -rf /home/joey/src/redhat/SOURCES \
+	fakeroot rm -rf /home/joey/src/redhat/SOURCES \
 		/home/joey/src/redhat/BUILD \
 		/home/joey/src/redhat/SRPMS \
 		/home/joey/src/redhat/RPMS/

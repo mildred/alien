@@ -1,6 +1,6 @@
 Begin3
 Title:		alien
-Version:	6.48
+Version:	6.59
 Entered-date:	31MAR97
 Description:	Alien converts Slackware .tgz packages, Red Hat .rpm packages,
                 Debian .deb packages, and Stampede .slp packages. It can 
@@ -9,6 +9,6 @@ Description:	Alien converts Slackware .tgz packages, Red Hat .rpm packages,
 Keywords:	debian dpkg deb red hat redhat rpm slackware tgz stampede slp convert package
 Author:		joey@kitenet.net
 Primary-site:	sunsite.unc.edu /pub/Linux/utils/package
-		32	alien-6.48.tar.gz
+		32	alien-6.59.tar.gz
 Copying-policy:	GPL
 End
