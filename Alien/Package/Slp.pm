@@ -92,6 +92,19 @@ Holds the slp package format version of the slp file.
 
 =over 4
 
+=item checkfile
+
+Detect slp files by their extention.
+
+=cut
+
+sub checkfile {
+        my $this=shift;
+        my $file=shift;
+
+        return $file =~ m/.*\.slp$/;
+}
+
 =item install
 
 Install a slp. Pass in the filename of the slp to install.

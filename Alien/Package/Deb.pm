@@ -50,6 +50,19 @@ sub init {
 	}
 }
 
+=item checkfile
+
+Detect deb files by their extention.
+
+=cut
+
+sub checkfile {
+	my $this=shift;
+	my $file=shift;
+
+	return $file =~ m/.*\.deb$/;
+}
+
 =item install
 
 Install a deb with dpkg. Pass in the filename of the deb to install.

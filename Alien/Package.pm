@@ -155,6 +155,20 @@ having to write your own new() method.
 
 sub init {}
 
+=item checkfile
+
+This is a class method. Pass it a filename, and it will return true if it
+looks like the file is a package of the type handled by the class.
+
+=cut
+
+sub checkfile {
+	my $this=shift;
+	my $file=shift;
+
+	return ''; # children override this.
+}
+
 =item install
 
 Simply installs a package file. The filename is passed on standard input.

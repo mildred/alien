@@ -28,6 +28,19 @@ Relocatable rpm packages have a prefixes field.
 
 =over 4
 
+=item checkfile
+
+Detect rpm files by their extention.
+
+=cut
+
+sub checkfile {
+	my $this=shift;
+	my $file=shift;
+
+	return $file =~ m/.*\.rpm$/;
+}
+
 =item install
 
 Install a rpm. If RPMINSTALLOPT is set in the environement, the options in

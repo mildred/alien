@@ -45,6 +45,19 @@ use constant
 
 =over 4
 
+=item checkfile
+
+Detect tgz files by their extention.
+
+=cut
+
+sub checkfile {
+        my $this=shift;
+        my $file=shift;
+
+        return $file =~ m/.*\.(?:tgz|tar\.(?:gz|Z|z)|taz)$/;
+}
+
 =item install
 
 Install a tgz with installpkg. Pass in the filename of the tgz to install.
@@ -171,14 +184,14 @@ sub prep {
 
 	my $install_made=0;
 	foreach my $script (keys %{scriptrans()}) {
-		my $data=$this->$script;
+		my $data=$this->$script();
 		next if ! defined $data || $data =~ m/^\s*$/;
 		if (!$install_made) {
 			mkdir $this->unpacked_tree."/install", 0755;
 			$install_made=1;
 		}
-		open OUT (">".$this->unpacked_tree."/install/$script") ||
-			die $this->unpacked_tree."/install/$script: $!"
+		open (OUT, ">".$this->unpacked_tree."/install/$script") ||
+			die $this->unpacked_tree."/install/$script: $!";
 		print OUT $data;
 		close OUT;
 		chmod 0755, $this->unpacked_tree."/install/$script";
