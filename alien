@@ -239,7 +239,7 @@ Usage: alien [options] file [...]
   -r, --to-rpm              Generate a RedHat rpm package.
       --to-slp              Generate a Stampede slp package.
   -t, --to-tgz              Generate a Slackware tgz package.
-     Enables the following options:
+     Enables the following option:
        --description=<desc> Specify package description.
   -i, --install             Install generated package.
   -g, --generate            Unpack, but do not generate a new package.
@@ -318,12 +318,26 @@ foreach my $file (@ARGV) {
 	}
 	elsif (Alien::Package::Tgz->checkfile($file)) {
 		$package=Alien::Package::Tgz->new(filename => $file);
+		$package->description($tgzdescription) if $tgzdescription ne '';
 	}
 	elsif (Alien::Package::Slp->checkfile($file)) {
 		$package=Alien::Package::Slp->new(filename => $file);
 	}
 	else {
 		die "Unknown type of package, $file.\n";
+	}
+
+	# Kill scripts from the package, unless they were enabled.
+	unless ($scripts) {
+		$package->postinst('');
+		$package->postrm('');
+		$package->preinst('');
+		$package->prerm('');
+	}
+
+	# Increment revision.
+	unless ($keepversion) {
+		$package->revision($package->revision + 1);
 	}
 
 	foreach my $format (keys %destformats) {
@@ -334,7 +348,7 @@ foreach my $file (@ARGV) {
 			
 			# Mutate package into desired format.
 			bless($package, "Alien::Package::".ucfirst($format));
-			
+		
 			$package->prep;
 			my $newfile=$package->build;
 			if ($install) {
