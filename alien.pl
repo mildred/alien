@@ -98,7 +98,7 @@ creating a Red Hat package.
 
 =item B<-s>, B<--single>
 
-Like -g, but do not generate the packagename.orig directory. This is only
+Like B<-g>, but do not generate the packagename.orig directory. This is only
 useful when you are very low on disk space and are generating a debian
 package.
 
@@ -213,8 +213,7 @@ use Alien::Package::Slp;
 
 # Returns a list of directories to search for patches.
 sub patchdirs {
-	my $prefix="/usr"; # PREFIX_AUTOREPLACE done by Makefile, do not edit.
-	return '/var/lib/alien',"$prefix/lib/alien/patches";
+	return '/var/lib/alien',"/usr/lib/alien/patches";
 }
 
 # Display alien's version number.
@@ -372,7 +371,7 @@ foreach my $file (@ARGV) {
 					$package->patchfile($patchfile)
 				}
 				else {
-					$package->patchfile($package->getpatch);
+					$package->patchfile($package->getpatch(patchdirs());
 				}
 			}
 	

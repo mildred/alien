@@ -26,6 +26,10 @@ extra_install:
 	-rm -f $(PREFIX)/usr/share/alien/patches/*.gz
 	gzip -qf9 $(PREFIX)/usr/share/alien/patches/*
 
+alien:
+	perl -pe ' \
+		$$_="\tmy \$$version_string=\"$(VER)\";" \
+			if /VERSION_AUTOREPLACE/' alien.pl > alien
 }
 }
 
@@ -35,6 +39,6 @@ WriteMakefile(
 	# Pure evil. Hook into build and install targets
 	'depend'	=> {'all:' => 'extra_build',
 			    'install:' => 'extra_install',
-			    'pure_install:' => 'extra_install'},
-	'clean'		=> {FILES => 'alien.lsm'},
+			    'pure_install:' => 'extra_install'
+	'clean'		=> {FILES => 'alien.lsm alien.subst'},
 );

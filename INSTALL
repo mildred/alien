@@ -1,4 +1,4 @@
-To try alien before installing, just run ./alien from this directory. Most
+To try alien before installing, just run ./alien.pl from this directory. Most
 features will work prior to installation.
 
 To install alien, become root and type:
