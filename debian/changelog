@@ -1,3 +1,13 @@
+alien (6.49) unstable; urgency=low
+
+  * Removed an obsolete note from the man page.
+  * Set locale to C while using rpm to pick at the .rpm file we are going to
+    convert, Closes: #42282
+  * Moved /usr/lib/alien to /usr/share/alien
+  * Added --nopatch option, Closes: #47069
+
+ -- Joey Hess <joeyh@master.debian.org>  Thu, 18 Nov 1999 12:42:00 -0800
+
 alien (6.48) unstable; urgency=low
 
   * Patch from Benjamin Cant <ben@aegis.hands.com> to make it work even if

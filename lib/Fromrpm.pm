@@ -28,15 +28,19 @@ sub GetFields { my ($self,$file)=@_;
 	# These fields need no translation.
 	my $field;
 	foreach $field ('NAME','VERSION','RELEASE','ARCH','CHANGELOGTEXT','SUMMARY',
-	         'DESCRIPTION', 'COPYRIGHT', 'DEFAULTPREFIX') {
+	         'DESCRIPTION', 'COPYRIGHT', 'PREFIXES') {
 		$fieldtrans{$field}=$field;
 	}
 
 	# Use --queryformat to pull out all the fields we need.
 	foreach $field (keys(%fieldtrans)) {
-		$_=`rpm -qp $file --queryformat \%{$field}`;
+		$_=`LANG=C rpm -qp $file --queryformat \%{$field}`;
 		$fields{$fieldtrans{$field}}=$_ if $_ ne '(none)';
 	}
+
+	# DEFAULTPREFIX is special because it only exists in old versions of rpm.
+	$_=`rpm -qp $file --queryformat \%{PREFIXES} 2>/dev/null`;
+	$fields{PREFIXES}=$_ if $_ ne '' && $_ ne '(none)';
 
 	if ($main::scripts) {
 		# Fix up the scripts - they are always shell scripts, so make them so.
@@ -46,12 +50,13 @@ sub GetFields { my ($self,$file)=@_;
 	}
 
 	# Get the conffiles list.
-	# TOCHECK: if this is a relocatable package and DEFAULTPREFIX is set,
-	# do we need to prepend DEFAULTPREFIX to each of these filenames?
 	$fields{CONFFILES}=`rpm -qcp $file`;
 
 	# Include the output of rpm -qi in the copyright file.
 	$fields{COPYRIGHT_EXTRA}=`rpm -qpi $file`;
+
+	# Get the filelist, it's used in the parent directory check in Unpack().
+	$fields{FILELIST}=`rpm -qpl $file`;
 
 	# Sanity check fields.
 	if (!$fields{SUMMARY}) {
@@ -89,6 +94,17 @@ sub GetFields { my ($self,$file)=@_;
 		$fields{ARCH}='all';
 	}
 
+	# Treat 486, 586, etc, as 386.
+	if ($fields{ARCH}=~m/i\d86/) {
+		$fields{ARCH}='i386';
+	}
+
+	
+	# Treat ppc as powerpc.
+	if ($fields{ARCH} eq 'ppc') {
+		$fields{ARCH} = 'powerpc';
+	}
+
 	if ($fields{RELEASE} eq undef || $fields{VERSION} eq undef|| !$fields{NAME}) {
 		Alien::Error("Error querying rpm file.");
 	}
@@ -103,25 +119,62 @@ sub GetFields { my ($self,$file)=@_;
 sub Unpack { my ($self,$file,%fields)=@_;
 	Alien::SafeSystem("(cd ..;rpm2cpio $file) | cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time",
   	"Error unpacking $file\n");
-	if ($fields{DEFAULTPREFIX} ne undef) {
-		print "Moving unpacked files into $fields{DEFAULTPREFIX}\n";
 
-		# We have extracted the package, but it's in the wrong place. Move it
-		# to be under the DEFAULTPREFIX directory.
-		# First, get a list of files to move.
+
+	# If the package is relocatable. We'd like to move it to be under the
+	# PREFIXES directory. However, it's possible that that directory is in the
+	# package - it seems some rpm's are marked as relocatable and unpack already
+	# in the directory they can relocate to, while some are marked relocatable
+	# and the directory they can relocate to is removed from all filenames in the
+	# package. I suppose this is due to some change between versions of rpm, but
+	# none of this is adequatly documented, so we'll just muddle through.
+	# 
+	# Test to see if the package contains the PREFIXES directory already.
+	if ($fields{PREFIXES} ne undef && ! -e "./$fields{PREFIXES}") {
+		print "Moving unpacked files into $fields{PREFIXES}\n";
+		
+		# Get the files to move.
 		my $filelist=join ' ',glob('*');
-
+		
 		# Now, make the destination directory.
 		my $collect=undef;
-		foreach (split(m:/:,$fields{DEFAULTPREFIX})) {
+		foreach (split(m:/:,$fields{PREFIXES})) {
 			if ($_ ne undef) { # this keeps us from using anything but relative paths.
 				$collect.="$_/";
 				mkdir $collect,0755 || Alien::Error("Unable to make directory: $collect: $!");
 			}
 		}
 		# Now move all files in the package to the directory we made.
-		Alien::SafeSystem("mv $filelist ./$fields{DEFAULTPREFIX}",
+		Alien::SafeSystem("mv $filelist ./$fields{PREFIXES}",
 			"Error moving unpacked files into the default prefix directory\n");
+	}
+
+	# When cpio extracts the file, any child directories that are present, but
+	# whose parent directories are not, end up mode 700. This next block corrects
+	# that to 755, which is more reasonable.
+	#
+	# Of course, this whole thing assumes we get the filelist in sorted order.
+	my $lastdir=undef;
+	foreach $file (split(/\n/,$fields{FILELIST})) {
+		$file=~s/^\///;
+		if (($lastdir && $file=~m:^\Q$lastdir\E/[^/]*$: eq undef) || !$lastdir) {
+			# We've found one of the nasty directories. Fix it up.
+			#
+			# Note that I strip the trailing filename off $file here, for two 
+			# reasons. First, it makes the loop easier, we don't need to fix the
+			# perms on the last file, after all! Second, it makes the -d test below
+			# fire, which saves us from trying to fix a parent directory twice.
+			($file)=$file=~m:(.*)/.*?:;
+			my $dircollect=undef;
+			my $dir;
+			foreach $dir (split(/\//,$file)) {
+				$dircollect.="$dir/";
+				chmod 0755,$dircollect; # TADA!
+			}
+		}
+		if (-d "./$file") {
+			$lastdir=$file;
+		}
 	}
 }
 

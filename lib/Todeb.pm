@@ -14,6 +14,17 @@ sub FixFields { my ($self,%fields)=@_;
 	$fields{NAME} =~ tr/_/-/;
 	$fields{NAME} =~ s/[^a-z0-9-\.\+]//g;
 
+	# make sure the version contains digets.
+	if ($fields{VERSION} !~ m/[0-9]/) {
+		# drat. well, add some. dpkg-deb won't work
+		# on a version w/o numbers.
+		$fields{VERSION}.="0";
+	}
+	# same with revision.
+	if ($fields{RELEASE} !~ m/[0-9]/) {
+		$fields{RELEASE}.="-1";
+	}
+
 	# Fix up the description field to Debian standards (indented at
 	# least one space, no empty lines.)
 	my $description=undef;
@@ -36,7 +47,7 @@ sub FixFields { my ($self,%fields)=@_;
 }
 
 # Create debian/* files, either from a patch, or automatically.
-sub Convert { my ($self,$workdir,%fields)=@_;
+sub Convert { my ($self,$workdir,$nopatch,%fields)=@_;
 	if ($main::generate && !$main::single) {
 		Alien::SafeSystem("cp -fa $workdir $workdir.orig", "Error creating $workdir.orig");
 	}
@@ -46,7 +57,7 @@ sub Convert { my ($self,$workdir,%fields)=@_;
 		|| Alien::Error("Unable to make debian directory");
 	my $patchfile=$main::patchfile;
 	$patchfile=Alien::GetPatch($fields{NAME},$fields{VERSION},$fields{RELEASE}) if !$patchfile;
-	if ($patchfile) {
+	if ($patchfile && ! $nopatch) {
 		Alien::Patch($patchfile,$workdir);
 	}
 	else {
@@ -87,7 +98,7 @@ sub AutoDebianize { my ($self,$workdir,%fields)=@_;
 	foreach $script ('postinst','postrm','preinst','prerm') {
 		if ($fields{uc($script)}) {
 			open (OUT,">$workdir/debian/$script") ||
-				Alien::Error("$workdir/debian/$script: $!");;
+				Alien::Error("$workdir/debian/$script: $!");
 			print OUT $fields{uc($script)};
 			close OUT;
 		}

@@ -1,68 +1,164 @@
 .TH alien 1L "Debian Utilities" "DEBIAN" \" -*- nroff -*-
 .SH NAME
-alien \- Install / Patch an alien binary package
+alien \- Convert or install an alien binary package
 .SH SYNOPSIS
-\fBalien\fP [\fB\-n\fP] \fBalien-package-file\fP
+\fBalien\fP [\fB--to-deb\fP] [\fB--patch=file\fP] [\fBoptions\fP] \fBfile\fP [\fB...\fP]
 .br
-\fBalien\fP \fB\-ppatch\fP \fBalien-package-file\fP
+\fBalien\fP --to-rpm [\fBoptions\fP] \fBfile\fP [\fB...\fP]
 .br
-\fBalien\fP \fB\-g\fP [\fB\-ppatch\fP] \fBalien-package-file\fP
+\fBalien\fP --to-tgz [\fBoptions\fP] \fBfile\fP [\fB...\fP]
+.br
+\fBalien\fP --to-slp [\fBoptions\fP] \fBfile\fP [\fB...\fP]
 .SH DESCRIPTION
-alien allows foreign packages to be installed under the debian package
-manager.
-.br
-Commonly alien is simply called with a parameter giving the alien packagename
-to be installed. A look up will then be done in
-.B /var/lib/alien/packagename*.diff.gz .
-If such a diff exists then the alien
-package is unpacked, the patch is applied, a temporary .deb package
-generated and finally installed. If there is no such diff then alien will
-fail (unless the -n option is given).
+To build Debian packages, 
+.I alien
+is simply called with a parameter giving the 
+name of the alien package to be converted. A look up will then be done in
+.B /var/lib/alien/packagename*.diff.gz
+and then in
+.B /usr/lib/alien/patches/packagename*.diff.gz .
+If such a diff exists then the alien package is unpacked and the patch is
+applied to debianize the package. If there is no such diff then 
+.I alien 
+will attempt to automatically debianize the package. After this, alien will 
+build the debian binary package, and it will be saved to the current 
+directory.
 .PP
-With the -n option the optimistic assumption is made that the alien package
-will work without any changes under the Debian scheme of things. If things
-break then you can simply uninstall the package using the debian package
-manager.
-.PP
-With the -g option a package layout suitable for the development of patches
-is created from the alien package. A directory packagename.orig and a
-directory <packagename> is generated. Changes can be made to the packagename
-directory and all commonly used tools for sourcepackages will work on the
-packet. For example a .deb file can be generated using
-.B debian/rules binary
-and can then be installed in a regular way. Even
-.B dpkg-buildpackage
-will generate the usual files.
+To build Red Hat packages, alien must be called with the --to-rpm parameter,
+and the name of the alien package to be converted. 
+.I Alien 
+will then generate a spec file, and call rpm to build the package.
 .PP
 This tool probably needs to be run as superuser. Make sure that there is
 enough room in the current directory since
-.B alien
-will build a debian package in that location.
+.I alien
+will build the package in that location.
 .SH ALIEN PACKAGE FORMATS
-alien supports the Red Hat .rpm format, Slackware .tgz formant and the
-generic .tar.gz format. For the rpm format the Red Hat Package Manager must
-be installed (See
-.B rpm(8)
+.I Alien 
+can input and output packages in the Red Hat .rpm format, the Debian .deb 
+format, the Stampede .slp format, the Slackware .tgz format and the
+generic .tar.gz format. 
+.PP
+For converting from and to .rpm format the Red Hat Package Manager must be 
+installed (See
+.B rpm (8)
 ).
-.SH LIMITATIONS
-Installation scripts for rpm packages are not supported.
 .PP
-You must specify a full path for the -p option.
+For converting to (but not from) .deb format, the gcc, make, debmake, dpkg-dev,
+and dpkg packages must be installed. 
 .PP
-All files in /etc are assumed to be configuration files.
+Note that for the .tar.gz format, 
+.I alien 
+will simply generate a .deb or .rpm package that has the same files in it as 
+are in the tar file. This only works well if the tar file has precompiled 
+binaries in it in a standard linux directory tree. Do NOT run alien on tar 
+files with source code in them, unless you want this source code to be 
+installed in your root directory when you install the package!
 .SH OPTIONS
 .TP
-.I -n
-Assume the alien package can be installed without any patches.
+.I file [...]
+The list of files to convert.
 .TP
-.I -g
-Generate a source package suitable for patching and moving binaries around
+.I -d, --to-deb
+The output package will be a debian package. This is the default.
 .TP
-.I -ppatch
+.I -r, --to-rpm
+The output package will be a rpm package.
+.TP
+.I -t, --to-tgz
+The output will be a slackware tgz package.
+.TP
+.I --to-slp
+The output will be a stampede slp package.
+.TP
+.I -i, --install
+Automatically install the output package, and remove the package file
+after it has been installed.
+.TP
+.I -g, --generate
+Generate a temporary directory suitable for building a package from, but do
+not actually create the package. This is useful if you want to move files
+around in the package before building it. The package can be built from this
+temporary directory by running "debian/rules binary", if you were creating a
+Debian package, or by running "rpm -bb <packagename>.spec" if you were
+creating a Red Hat package.
+.TP
+.I -s, --single
+Like -g, but do not generate the packagename.orig directory. This is only
+useful when you are very low on disk space and are generating a debian
+package.
+.TP
+.I --patch=patch
 Specify the patch to be used instead of automatically looking the patch up
 in
-.B /var/lib/alien
-
-.SS AUTHOR
-Alien was written by Christoph Lameter <clameter@debian.org>
-It is now being maintained by Joey Hess <joeyh@master.debian.org>
+.B /var/lib/alien/ .
+This is only allowed with --to-deb.
+.TP
+.I --nopatch
+Do not use any patch files.
+.TP
+.I --description=desc
+Specifiy a description for the package. This can only be used when
+converting from slackware tgz packages, which lack descriptions. If it is
+not used when converting from slackware tgz packages, a generic description
+is used.
+.TP
+.I -c, --scripts
+Try to convert the scripts that are meant to be run when the
+package is installed and removed. Use this with caution, becuase these
+scripts might be designed to work on a system unlike your own, and could
+cause problems. It is reccommended that you examine the scripts by hand
+and check to see what they do before using this option.
+.TP
+.I -k, --keep-version
+By default, alien adds one to the minor version number. If this option
+is given, alien will not do this.
+.TP
+.I -h, --help
+Display a short usage summary.
+.SH EXAMPLES
+Here are some examples of the use of alien:
+.TP
+.I alien --to-deb package.rpm
+Convert the package.rpm into a package.deb
+.TP
+.I alien --to-rpm package.deb
+Convert the package.deb into a package.rpm
+.TP
+.I alien -i package.rpm
+Convert the package.rpm into a package.deb (converting to a .deb package is
+default, so you need not specify --to-deb), and install the generated
+package.
+.SH ENVIRONMENT
+Alien recognizes the following environemnt variables:
+.TP
+.I RPMBUILDOPT
+Options to pass to rpm when it is building a package.
+.TP
+.I RPMINSTALLOPT
+Options to pass to rpm when it is installing a package.
+.SH LIMITATIONS   
+When running alien on a tar file, all files in /etc in are assumed to be
+configuration files.
+.PP
+Alien does not account for differences in configuration between different
+linux distributions. So don't use it to replace something essential like
+sysvinit. You could destroy your system by doing so. In general, if you
+can't uninstall the package without breaking your system, don't try to
+replace it with an alien version.
+.PP
+If alien is not run as root, the files in the generated package will have
+incorrect owners and permissions.
+.SH AUTHOR
+Alien was written by Christoph Lameter.
+.br
+<clameter@debian.org>
+.PP
+Deb to rpm conversion code was taken from the Martian program by
+Randolph Chung.
+.br
+<rc42@cornell.edu>
+.PP
+Alien has been extensively rewritten and is now maintained by Joey Hess.
+.br
+<joeyh@master.debian.org>

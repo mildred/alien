@@ -15,12 +15,12 @@ install:
 		$$_="\tmy \$$version_string=\"$(VER)\";" if /VERSION_AUTOREPLACE/' alien \
 		> $(DESTDIR)/$(PREFIX)/bin/alien
 	chmod 755 $(DESTDIR)/$(PREFIX)/bin/alien
-	install -d $(DESTDIR)/$(PREFIX)/lib/alien/patches \
+	install -d $(DESTDIR)/$(PREFIX)/share/alien/patches \
 		$(DESTDIR)/var/lib/alien
-	cp -fr lib/* $(DESTDIR)/$(PREFIX)/lib/alien
-	cp -f patches/* $(DESTDIR)/$(PREFIX)/lib/alien/patches/
-	-rm -f $(DESTDIR)/$(PREFIX)/lib/alien/patches/*.gz
-	gzip -qf9 $(DESTDIR)/$(PREFIX)/lib/alien/patches/*
+	cp -fr lib/* $(DESTDIR)/$(PREFIX)/share/alien
+	cp -f patches/* $(DESTDIR)/$(PREFIX)/share/alien/patches/
+	-rm -f $(DESTDIR)/$(PREFIX)/share/alien/patches/*.gz
+	gzip -qf9 $(DESTDIR)/$(PREFIX)/share/alien/patches/*
 	install -d $(DESTDIR)/$(PREFIX)/share/man/man1
 	cp -f alien.1 $(DESTDIR)/$(PREFIX)/share/man/man1
 

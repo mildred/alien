@@ -1,220 +1,226 @@
-#!/bin/sh
-
-# Script to handle alien packages under Debian
+#!/usr/bin/perl
 #
-# Options:
-# -p<Patch> 	Manually specify a patch
-# -n		Install an alien package using heuristics
-# -g		Prepare directories for development
+# Script to convert dpkg, rpm, tgz packages.
+# Original author:
+#   Christoph Lameter, <clameter@debian.org> October 30, 1996
+# The deb -> rpm conversion code was written by:
+#   Randoph Chung <rc42@cornell.edu>
+# Current maintainer:
+#   Joey Hess <joeyh@master.debian.org>
 #
-# Christoph Lameter, <clameter@debian.org> October 30, 1996
+# Copyright: GPL
 
-set -e
+use strict;
 
-LIB=/usr/lib/alien
+# Globals.
+use vars qw($desttype $file $filetype $generate $install $workdir $libdir
+	$keep_version $scripts $tgzdescription $patchfile $nopatch $single
+	$prefix @patchdirs);
 
-while expr "$1" : '-.*' >/dev/null; do
-	case $1 in
-		-n)	NOPATCH=1
-			;;
-		-g)	GENERATE=1
-			;;
-		-p*)	PATCHFILE=`expr "$1" : '-p\(.*\)'`
-			if [ ! -f "$PATCHFILE" ]; then
-				echo "$PATCHFILE not found"
-				exit 1
-			fi
-			 ;;
-		*)	echo "Bad option $1"
-			exit 1
-			;;
-	esac
-	shift
-done
+BEGIN {
+	$prefix="/usr"; # PREFIX_AUTOREPLACE done by Makefile, do not edit.
 
-if [ "$NOPATCH" -a "$PATCHFILE" ]; then
-	echo "Cannot handle -n and -p options simultaneously"
-	exit 1
-fi
+	# Directory where alien templates, etc, are stored.
+	$libdir="$prefix/share/alien";
+	push @INC, $libdir;
+}
 
-FILE=$1
+# Directories where alien patches are stored.
+@patchdirs=('/var/lib/alien',"$prefix/lib/alien/patches");
 
-if [ "$FILE" = "" ]; then
-	echo "Usage: alien [-n] [-g] [-p<patchfile>] <filename>"
-	exit 1
-fi
+use Getopt::Long;
 
-if [ ! -f $FILE ]; then
-	echo "File $FILE not found"
-	exit 1
-fi
+# Load up all of alien's modules.
+use Alien;
+use Fromrpm;
+use Fromdeb;
+use Fromtgz;
+use Fromslp;
+use Torpm;
+use Todeb;
+use Totgz;
+use Toslp;
 
-DATE="`822-date`"
+# Display alien's version number.
+sub Version {
+	my $version_string='unknown'; # VERSION_AUTOREPLACE done by Makefile, do not edit.
+	print "Alien version $version_string\n";
+}
 
-# Cut off the directory name
-if echo $FILE|grep -q "/"; then
-	X=`expr $FILE : '.*/\(.*\)'`
-else
-	X="$FILE"
-fi
+# Display usage help.
+sub Usage {
+	print <<eof;
+Usage: alien [options ...] file [...]
+  file [...]                Package file or files to convert.
+  -d, --to-deb              Generate a Debian deb package. (default)
+     Enables the following options:
+       --patch=<patch>      Specify patch file to use instead of automatically
+                            looking for patch in /var/lib/alien.
+       --nopatch	    Do not use patches.
+  -r, --to-rpm              Generate a RedHat rpm package.
+  -t, --to-tgz              Generate a Slackware tgz package.
+      --to-slp              Generate a Stampede .slp package.
+  -i, --install             Install generated package.
+  -g, --generate            Unpack, but do not generate a new package.
+  -s, --single              Like --generate, but do not create .orig directory.
+  -c, --scripts             Include scripts in package.
+  -k, --keep-version        Do not change version of generated package.
+      --description=<desc>  Specify package description.
+  -h, --help                Display this help message.
+  -v, --version		    Display alien's version number.
 
-if expr $X : '.*\.rpm' >/dev/null; then
-	RPM=1
-	if [ ! -f /etc/rpmrc ]; then
-		echo "RPM Package Manager not installed"
-		exit 1
-	fi
-	X=`expr $X : '\(.*\)\.rpm'`
-else
-	case $X in
-		*.tgz)		X=`expr $X : '\(.*\).tgz'` ;;
-		*.tar.gz)	X=`expr $X : '\(.*\).tar.gz'` ;;
-		*) 		echo "Format of filename bad $FILE" ;;
-	esac
-fi
+eof
+}
 
-if [ "$NOPATCH" = "" ]; then
-	if [ "$PATCHFILE" = "" ]; then
-		PATCHFILE=/var/lib/alien/$X.diff.gz
-	fi
+# Process parameters.
+# Sets some global variables.
+sub GetParams {
+	my ($todeb, $torpm, $totgz, $toslp, $help, $version);
 
-	if [ ! -f $PATCHFILE -a "$GENERATE" = "" ]; then
-		echo "Patchfile $PATCHFILE not found."
-		exit 1
-	fi
-	if [ ! -f $PATCHFILE ]; then
-		PATCHFILE=
-	fi
-fi
+	# Get options.
+	my $ret=GetOptions(
+		"to-deb|d", \$todeb,
+		"to-rpm|r", \$torpm,
+		"to-tgz|t", \$totgz,
+		"to-slp", \$toslp,
+		"generate|g", \$generate,
+		"install|i", \$install,
+		"single|s", \$single,
+		"scripts|c", \$scripts,
+		"patch|p=s", \$patchfile,
+		"nopatch", \$nopatch,
+		"description=s", \$tgzdescription,
+		"keep-version|k", \$keep_version,
+		"help|h", \$help,
+		"version|v", \$version,
+	);
 
-if [ "$RPM" ]; then
-	# Analyze the FILE name
-	PACKAGE=`expr $X : '\(.*\)-.*-.*\..*'`
-	VERSION=`expr $X : '.*-\(.*\)-.*\..*'`
-	DELTA=`expr $X : '.*-.*-\(.*\)\..*'`
-	ARCHIT=`expr $X : '.*-.*-.*\..\(.*\)'`
+	if (!$ret) {
+		Usage();
+		exit 1;
+	}
 
-	if [ "$DELTA" = "" -o "$VERSION" = "" -o "$PACKAGE" = "" ]; then
-		echo "Filename must have the form Package-Version-Release.Architecture.rpm"
-		exit 1
-	fi
+	if ($version) {
+		Version();
+		exit 1;
+	}
 
-	if [ "$ARCHIT" = "386" ]; then
-		ARCHIT=i386
-	fi
-	CDIR=rpm
-else
-# Generic handling for slackware and tar.gz packages
-	if echo $X | grep -q "-"; then
-        	PACKAGE=`expr $X : '\(.*\)-.*'`
-	        VERSION=`expr $X : '.*-\(.*\)'`
-	else
-	        PACKAGE=$X
-	        VERSION=1
-	fi
+	if ($help) {
+		Usage();
+		exit;
+	}
 
-	if [ "$VERSION" = "" -o "$PACKAGE" = "" ]; then
-	        echo "Filename must have the form Package-Version.tgz"
-	        exit 1
-	fi
+	if ($single) {
+		$generate=1;
+	}
 
-	ARCHIT=i386
-	DELTA=1
-	CDIR=tgz
-fi
+	if ($todeb) {
+		$desttype='deb'
+	}
+	elsif ($torpm) {
+		$desttype='rpm';
+	}
+	elsif ($totgz) {
+		$desttype='tgz';
+	}
+	elsif ($toslp) {
+		$desttype='slp';
+	}
+	else {
+		$desttype='deb';
+	}
 
-mkdir $PACKAGE-$VERSION
-cd $PACKAGE-$VERSION
-mkdir debian
+	# Sanity check options.
+	if ($desttype ne 'deb' && $patchfile) {
+		Usage();
+		Alien::Error("You can not use --patch with --to-rpm or --to-tgz or --to-slp");
+	}
+	if (($generate || $single) && $install) {
+		Usage();
+		Alien::Error("You can not use --generate or --single with --install");
+	}
+	if ($patchfile && ! -f $patchfile) {
+		Alien::Error("Specified patch file, \"$patchfile\" was not be found.");
+	}
+	if ($patchfile && $nopatch) {
+		Alien::Error("The options --nopatch and --patchfile cannot be used together.");
+	}
 
-echo "-- Unpacking $FILE"
-if [ "$RPM" ]; then
-	(cd ..;rpm2cpio $FILE) | cpio --extract --make-directories --no-absolute-filenames
-# install script could be located here.
-else
-# Must be a tar file
-	tar zxpf ../$FILE
-	# Make install script to postinst
-	if [ -e install/doinst.sh ]; then
-       		mv install/doinst.sh debian/postinst
-        	if ! rmdir install; then 
-                	echo "Other files besides doinst.sh present in install directory"
-	                echo "Install script cannot be used as postinst script!"
-	                mv debian/postinst install/doinst.sh
-        	fi
-	fi
-fi
+	if (!@ARGV) {
+		Usage();
+		Alien::Error("You must specify a file to convert.");
+	}	
+}
 
-if [ "$GENERATE" ]; then
-	cd ..
-	cp -a $PACKAGE-$VERSION $PACKAGE-$VERSION.orig
-	echo "Directories $PACKAGE-$VERSION.orig + $PACKAGE-$VERSION prepared."
-	cd $PACKAGE-$VERSION
-fi
+# Check alien's working anvironment.
+sub TestEnviron() {
+	if (! -w '.') {
+		Alien::Error("Cannot write to current directory. Try changing to /tmp and re-running alien.");
+	}
+	if ($> ne 0) {
+		if ($desttype eq 'deb' && ! $generate && ! $single) {
+			Alien::Error("Must run as root to convert to .deb format (or you may use fakeroot).");
+		}
+		Alien::Warning("Warning: alien is not running as root!");
+		Alien::Warning("Ownerships of files in the generated packages will");
+		Alien::Warning("probably be messed up.");
+	}
+}
 
+# Main program:
 
-# Now lets patch it!
-if [ "$PATCHFILE" ]; then
-	echo "-- Patching in $PATCHFILE"
-	zcat $PATCHFILE | patch -p1
-	X=`find . -name "*.rej"`
-	if [ "$X" ]; then
-		echo "Patch failed: giving up"
-		exit 1
-	fi
-	rm `find . -name "*.orig"`
-else
-	echo "-- Automatic package debianization"
-	# Generate all the values we need
-	if [ "$EMAIL" = "" ]; then
-	        EMAIL="$USER@`cat /etc/mailname`"
-	fi
-	USERNAME=`awk -F: -vUSER=$USER '$1 == USER { print $5; }' /etc/passwd`
+# Initialization and data collection.
+GetParams();
+TestEnviron();
 
-	if [ "$USERNAME" = "" -a -x /usr/bin/ypmatch ]; then
-		# Give NIS a try
-		USERNAME=`ypmatch $USER passwd.byname|awk -F: '{ print $5; }'`
-	fi
+foreach $file (@ARGV) {
+	if (! -f $file) {
+		Alien::Error("File $file not found.\n");
+	}
+	$filetype=Alien::FileType($file);
+	if ($filetype eq $desttype) {
+		Alien::Error("There is no point in converting a $filetype into a $desttype.");
+	}
+	Alien::Status("Examining $file");
 
-	if echo $USERNAME | grep -q "\,"; then
-        	X=`expr index "$USERNAME" ","`
-	        X=`expr $X - 1`
-		USERNAME=`expr substr "$USERNAME" 1 $X`
-	fi
+	# These variables are set to let us refer to the proper packages
+	# to process the source and destination file types.
+	my $dest="To::$desttype";
+	my $src="From::$filetype";
 
-	cd debian
-	X=`(cd $LIB/$CDIR;ls)`
-	for i in $X; do
-		sed <$LIB/$CDIR/$i >$i -e "s/#PACKAGE#/$PACKAGE/g" \
-		-e "s/#VERSION#/$VERSION/g" \
-		-e "s/#DELTA#/$DELTA/g" \
-		-e "s/#ARCHIT#/$ARCHIT/g" \
-                -e "s/#EMAIL#/$EMAIL/g" \
-                -e "s/#USERNAME#/$USERNAME/g" \
-		-e "s/#DATE#/$DATE/g"
-	done
+	my %fields=$dest->FixFields($src->GetFields($file));
 
-	if [ "$RPM" ]; then
-		(cd ../..;rpm -qpi $FILE) >>copyright
-	fi
+	# Unpack stage.
+	Alien::Status("Unpacking $file");
+	$workdir="$fields{NAME}-$fields{VERSION}";
+	Alien::SafeMkdir($workdir);
+	chdir $workdir;
+	$src->Unpack($file,$nopatch,%fields);
+	chdir "..";
 
-	cd ..
-	# Assume all files in etc are conffiles
-	if [ -d etc ]; then
-		find etc -type f -printf "/%p\n" >debian/conffiles
-	fi
-fi
+	# Conversion stage.
+	$dest->Convert($workdir,$nopatch,%fields);
 
-chmod a+x debian/rules
+	# Build stage.
+	if (!$generate) {
+		my $packagename=$dest->GetPackageName(%fields);
+		Alien::Status("Building the package $packagename");
+		chdir $workdir;
+		$dest->Build(%fields);
+		chdir "..";
+		Alien::SafeSystem("rm -rf $workdir");
+		# The above "building $packagename..." message can get lost in the
+		# noise, so tell them again where the package ended up.
+		print "\nGeneration of $packagename complete.\n" if !$install;
+	}
 
-if [ "$GENERATE" = "" ]; then
-	echo "-- Building the package $PACKAGE-$VERSION-$DELTA.deb"
-	debian/rules binary
-	cd ..
-	rm -rf $PACKAGE-$VERSION
-	echo "-- Installing generated .deb package"
-	dpkg -i $PACKAGE*.deb
-	rm $PACKAGE\_$VERSION-$DELTA*.deb
-fi
-echo "-- Successfully finished"
-exit 0
+	# Install stage.
+	if ($install) {
+		my $packagename=$dest->GetPackageName(%fields);
+		Alien::Status("Installing generated $desttype package");
+		$dest->Install($packagename);
+		unlink $packagename;
+	}
+}
+
+Alien::Status("Successfully finished");
