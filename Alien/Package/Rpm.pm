@@ -98,7 +98,7 @@ sub scan {
 
 	# Get the filelist.
 	$this->filelist([map { chomp; $_ } `LANG=C rpm -qpl $file`]);
-	if (defined $this->filelist->[0] &&&
+	if (defined $this->filelist->[0] &&
 	    $this->filelist->[0] eq '(contains no files)') {
 		$this->filelist([]);
 	}
