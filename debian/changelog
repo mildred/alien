@@ -1,3 +1,9 @@
+alien (8.10) unstable; urgency=low
+
+  * Build alien with debhelper v4.
+
+ -- Joey Hess <joeyh@debian.org>  Sat,  1 Jun 2002 17:56:52 -0400
+
 alien (8.09) unstable; urgency=low
 
   * Deal with packages with strange characters in their filenames.

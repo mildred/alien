@@ -1,14 +1,14 @@
 Source: alien
 Section: admin
 Priority: optional
-Build-Depends-Indep: debhelper (>= 3)
+Build-Depends-Indep: debhelper (>= 4), dpkg-dev (>= 1.9.0)
 Maintainer: Joey Hess <joeyh@debian.org>
 Standards-Version: 3.5.6.1
 
 Package: alien
 Architecture: all
 Section: admin
-Depends: debhelper (>= 3), ${perl:Depends}, rpm (>= 2.4.4-2), dpkg-dev, make, cpio
+Depends: debhelper (>= 3), ${misc:Depends}, ${perl:Depends}, rpm (>= 2.4.4-2), dpkg-dev, make, cpio
 Suggests: patch, bzip2, lsb-rpm, lintian
 Description: install non-native packages with dpkg
  Alien allows you to convert LSB, Red Hat, Stampede and Slackware Packages
