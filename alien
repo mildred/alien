@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 =head1 NAME
 
@@ -46,8 +46,8 @@ dpkg-dev, and dpkg packages must be installed.
 =item tgz
 
 Note that when converting from the tgz format, B<alien> will simply generate an
-output package that has the same files in it as are in the tar file. This
-only works well if the tar file has precompiled binaries in it in a
+output package that has the same files in it as are in the tgz file. This
+only works well if the tgz file has precompiled binaries in it in a
 standard linux directory tree. Do NOT run alien on tar files with source
 code in them, unless you want this source code to be installed in your root
 directory when you install the package!
@@ -191,11 +191,11 @@ incorrect owners and permissions.
 
 Alien was written by Christoph Lameter, B<<clameter@debian.org>>.
 
-Deb to rpm conversion code was taken from the Martian program by
-Randolph Chung, B<<rc42@cornell.edu>>.
+deb to rpm conversion code was taken from the Martian program by
+Randolph Chung, B<<tausq@debian.org>>.
 
-Alien has been extensively rewritten (3 times) and is now maintained by Joey Hess
-B<<joeyh@debian.org>>.
+Alien has been extensively rewritten (3 times) and is now maintained by
+Joey Hess, B<<joeyh@debian.org>>.
 
 =head1 COPYRIGHT
 
@@ -205,216 +205,152 @@ License.
 =cut
 
 use strict;
+use Getopt::Long;
+use Alien::Package::Deb;
+use Alien::Package::Rpm;
+use Alien::Package::Tgz;
+use Alien::Package::Slp;
 
-# Globals.
-use vars qw($desttype $file $filetype $generate $install $workdir $libdir
-	$keep_version $scripts $tgzdescription $patchfile $nopatch $single
-	$prefix @patchdirs);
-
-BEGIN {
-	$prefix="/usr"; # PREFIX_AUTOREPLACE done by Makefile, do not edit.
-
-	# Directory where alien templates, etc, are stored.
-	$libdir="$prefix/share/alien";
-	push @INC, $libdir;
+# Returns a list of directories to search for patches.
+sub patchdirs {
+	my $prefix="/usr"; # PREFIX_AUTOREPLACE done by Makefile, do not edit.
+	return '/var/lib/alien',"$prefix/lib/alien/patches";
 }
 
-# Directories where alien patches are stored.
-@patchdirs=('/var/lib/alien',"$prefix/lib/alien/patches");
-
-use Getopt::Long;
-
-# Load up all of alien's modules.
-use Alien;
-use Fromrpm;
-use Fromdeb;
-use Fromtgz;
-use Fromslp;
-use Torpm;
-use Todeb;
-use Totgz;
-use Toslp;
-
 # Display alien's version number.
-sub Version {
+sub version {
 	my $version_string='unknown'; # VERSION_AUTOREPLACE done by Makefile, do not edit.
 	print "Alien version $version_string\n";
+	exit;
 }
 
 # Display usage help.
-sub Usage {
-	print <<eof;
-Usage: alien [options ...] file [...]
+sub usage {
+	print STDERR <<EOF;
+Usage: alien [options] file [...]
   file [...]                Package file or files to convert.
-  -d, --to-deb              Generate a Debian deb package. (default)
+  -d, --to-deb              Generate a Debian deb package (default).
      Enables the following options:
        --patch=<patch>      Specify patch file to use instead of automatically
                             looking for patch in /var/lib/alien.
        --nopatch	    Do not use patches.
+       --single             Like --generate, but do not create .orig
+                            directory.
   -r, --to-rpm              Generate a RedHat rpm package.
+      --to-slp              Generate a Stampede slp package.
   -t, --to-tgz              Generate a Slackware tgz package.
-      --to-slp              Generate a Stampede .slp package.
+     Enables the following options:
+       --description=<desc> Specify package description.
   -i, --install             Install generated package.
   -g, --generate            Unpack, but do not generate a new package.
-  -s, --single              Like --generate, but do not create .orig directory.
   -c, --scripts             Include scripts in package.
   -k, --keep-version        Do not change version of generated package.
-      --description=<desc>  Specify package description.
   -h, --help                Display this help message.
   -v, --version		    Display alien's version number.
 
-eof
+EOF
+	exit 1;
 }
 
-# Process parameters.
-# Sets some global variables.
-sub GetParams {
-	my ($todeb, $torpm, $totgz, $toslp, $help, $version);
+# Start by processing the parameters.
+my (%destformats, $generate, $install, $single, $scripts, $patchfile,
+    $nopatch, $tgzdescription, $keepversion);
 
-	# Get options.
-	my $ret=GetOptions(
-		"to-deb|d", \$todeb,
-		"to-rpm|r", \$torpm,
-		"to-tgz|t", \$totgz,
-		"to-slp", \$toslp,
-		"generate|g", \$generate,
-		"install|i", \$install,
-		"single|s", \$single,
-		"scripts|c", \$scripts,
-		"patch|p=s", \$patchfile,
-		"nopatch", \$nopatch,
-		"description=s", \$tgzdescription,
-		"keep-version|k", \$keep_version,
-		"help|h", \$help,
-		"version|v", \$version,
-	);
+GetOptions(
+	"to-deb|d", sub { $destformats{deb}=1 },
+	"to-rpm|r", sub { $destformats{rpm}=1 },
+	"to-tgz|t", sub { $destformats{tgz}=1 },
+	"to-slp",   sub { $destformats{slp}=1 },
+	"generate|g", \$generate,
+	"install|i", \$install,
+	"single|s", sub { $single=1; $generate =1 },
+	"scripts|c", \$scripts,
+	"patch|p=s", \$patchfile,
+	"nopatch", \$nopatch,
+	"description=s", \$tgzdescription,
+	"keep-version|k", \$keepversion,
+	"help|h", \&usage,
+	"version|v", \&version,
+) || usage();
 
-	if (!$ret) {
-		Usage();
-		exit 1;
-	}
+# Default to deb conversion.
+if (! %destformats) {
+	$destformats{deb}=1;
+}
 
-	if ($version) {
-		Version();
-		exit 1;
-	}
-
-	if ($help) {
-		Usage();
-		exit;
-	}
-
-	if ($single) {
-		$generate=1;
-	}
-
-	if ($todeb) {
-		$desttype='deb'
-	}
-	elsif ($torpm) {
-		$desttype='rpm';
-	}
-	elsif ($totgz) {
-		$desttype='tgz';
-	}
-	elsif ($toslp) {
-		$desttype='slp';
-	}
-	else {
-		$desttype='deb';
-	}
-
-	# Sanity check options.
-	if ($desttype ne 'deb' && $patchfile) {
-		Usage();
-		Alien::Error("You can not use --patch with --to-rpm or --to-tgz or --to-slp");
-	}
-	if (($generate || $single) && $install) {
-		Usage();
-		Alien::Error("You can not use --generate or --single with --install");
-	}
-	if ($patchfile && ! -f $patchfile) {
-		Alien::Error("Specified patch file, \"$patchfile\" was not be found.");
-	}
-	if ($patchfile && $nopatch) {
-		Alien::Error("The options --nopatch and --patchfile cannot be used together.");
-	}
-
-	if (!@ARGV) {
-		Usage();
-		Alien::Error("You must specify a file to convert.");
-	}	
+# A few sanity checks.
+if ($patchfile && ! -f $patchfile) {
+	die "Specified patch file, \"$patchfile\" cannot be found.\n";
+}
+if ($patchfile && $nopatch) {
+	die "The options --nopatch and --patchfile cannot be used together.\n";
+}
+unless (@ARGV) {
+	print STDERR "You must specify a file to convert.\n\n";
+	usage();
 }
 
 # Check alien's working anvironment.
-sub TestEnviron() {
-	if (! -w '.') {
-		Alien::Error("Cannot write to current directory. Try changing to /tmp and re-running alien.");
+if (! -w '.') {
+	die("Cannot write to current directory. Try changing to /tmp and re-running alien.\n");
+}
+if ($> ne 0) {
+	if ($destformats{deb} && ! $generate && ! $single) {
+		die "Must run as root to convert to .deb format (or you may use fakeroot).\n";
 	}
-	if ($> ne 0) {
-		if ($desttype eq 'deb' && ! $generate && ! $single) {
-			Alien::Error("Must run as root to convert to .deb format (or you may use fakeroot).");
-		}
-		Alien::Warning("Warning: alien is not running as root!");
-		Alien::Warning("Ownerships of files in the generated packages will");
-		Alien::Warning("probably be messed up.");
-	}
+	print STDERR "Warning: alien is not running as root!\n";
+	print STDERR "Ownerships of files in the generated packages will\n";
+	print STDERR "probably be messed up.\n";
 }
 
-# Main program:
-
-# Initialization and data collection.
-GetParams();
-TestEnviron();
-
-foreach $file (@ARGV) {
+foreach my $file (@ARGV) {
 	if (! -f $file) {
-		Alien::Error("File $file not found.\n");
-	}
-	$filetype=Alien::FileType($file);
-	if ($filetype eq $desttype) {
-		Alien::Error("There is no point in converting a $filetype into a $desttype.");
-	}
-	Alien::Status("Examining $file");
-
-	# These variables are set to let us refer to the proper packages
-	# to process the source and destination file types.
-	my $dest="To::$desttype";
-	my $src="From::$filetype";
-
-	my %fields=$dest->FixFields($src->GetFields($file));
-
-	# Unpack stage.
-	Alien::Status("Unpacking $file");
-	$workdir="$fields{NAME}-$fields{VERSION}";
-	Alien::SafeMkdir($workdir);
-	chdir $workdir;
-	$src->Unpack($file,%fields);
-	chdir "..";
-
-	# Conversion stage.
-	$dest->Convert($workdir,$nopatch,%fields);
-
-	# Build stage.
-	if (!$generate) {
-		my $packagename=$dest->GetPackageName(%fields);
-		Alien::Status("Building the package $packagename");
-		chdir $workdir;
-		$dest->Build(%fields);
-		chdir "..";
-		Alien::SafeSystem("rm -rf $workdir");
-		# The above "building $packagename..." message can get lost in the
-		# noise, so tell them again where the package ended up.
-		print "\nGeneration of $packagename complete.\n" if !$install;
+		die "File \"$file\" not found.\n";
 	}
 
-	# Install stage.
-	if ($install) {
-		my $packagename=$dest->GetPackageName(%fields);
-		Alien::Status("Installing generated $desttype package");
-		$dest->Install($packagename);
-		unlink $packagename;
+	# Figure out what kind of file this is.
+	my $package;
+	if (Alien::Package::Rpm->checkfile($file)) {
+		$package=Alien::Package::Rpm->new(filename => $file);
+	}
+	elsif (Alien::Package::Deb->checkfile($file)) {
+		$package=Alien::Package::Deb->new(filename => $file);
+	}
+	elsif (Alien::Package::Tgz->checkfile($file)) {
+		$package=Alien::Package::Tgz->new(filename => $file);
+	}
+	elsif (Alien::Package::Slp->checkfile($file)) {
+		$package=Alien::Package::Slp->new(filename => $file);
+	}
+	else {
+		die "Unknown type of package, $file.\n";
+	}
+
+	foreach my $format (keys %destformats) {
+		# Skip conversion if package is already the correct format.
+		if ($package->origformat ne $format) {
+			# Only unpack once.
+			$package->unpack unless $package->unpacked_tree;
+			
+			# Mutate package into desired format.
+			bless($package, "Alien::Package::".ucfirst($format));
+			
+			$package->prep;
+			my $newfile=$package->build;
+			if ($install) {
+				$package->install($newfile);
+				unlink $newfile;
+			}
+			else {
+				# Tell them where the package ended up.
+				print "$newfile generated\n";
+			}
+		}
+		elsif ($install) {
+			# Don't convert the package, but do install it.
+			$package->install($file);
+			# Note I don't unlink it. I figure that might annoy
+			# people, since it was an input file.
+		}
 	}
 }
-
-Alien::Status("Successfully finished");
