@@ -14,6 +14,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
+	perl Makefile.PL
 	-$(MAKE) realclean
 	dh_clean
 

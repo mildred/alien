@@ -40,6 +40,10 @@ WriteMakefile(
 	'EXE_FILES'	=> ['alien'],
 	# Pure evil. Hook into build and install targets
 	'depend'	=> {'all:' => 'extra_build',
+	# Why build on clean? Because I want to ensure the spec file
+	# gets put in the tarball, and so it has to happen in debian/rules
+	# clean
+			    'clean:' => 'extra_build',
 			    'install:' => 'extra_install',
 			    'pure_install:' => 'extra_install'},
 	'clean'		=> {FILES => 'alien'},
