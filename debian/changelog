@@ -1,10 +1,11 @@
 alien (8.34) unstable; urgency=low
 
-UNRE
   * Fixed changelog parsing regexp. Noticed by Gerald Turner who is sure
     turning up in this changelog a lot.
+  * Updated j2sdk patch fixes some ControlPanel shell script
+    incompatabilities. Closes: #200731
 
- -- Joey Hess <joeyh@debian.org>  Mon,  7 Jul 2003 19:23:33 -0400
+ -- Joey Hess <joeyh@debian.org>  Sat, 12 Jul 2003 20:35:09 +0200
 
 alien (8.33) unstable; urgency=low
 

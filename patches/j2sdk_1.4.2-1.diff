@@ -83,7 +83,7 @@
 +fi
 --- j2sdk-1.4.2.orig/debian/rules
 +++ j2sdk-1.4.2/debian/rules
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,99 @@
 +#!/usr/bin/make -f
 +# debian/rules for alien
 +
@@ -94,6 +94,9 @@
 +export DH_COMPAT=3
 +
 +PACKAGE=$(shell dh_listpackages)
++
++JAVA_HOME := debian/$(PACKAGE)/usr/lib/j2sdk-1.4.2
++MAN_DIR := debian/$(PACKAGE)/usr/share/man
 +
 +build:
 +	dh_testdir
@@ -119,30 +122,42 @@
 +# If you need to move files around in debian/$(PACKAGE) or do some
 +# binary patching, do it here
 +#
-+	mv debian/$(PACKAGE)/usr/java/j2sdk1.4.2 \
-+           debian/$(PACKAGE)/usr/lib/j2sdk-1.4.2
++
++# Move RPM contents to a proper debian/blackdown directory
++	mv debian/$(PACKAGE)/usr/java/j2sdk1.4.2 $(JAVA_HOME)
 +	rmdir debian/$(PACKAGE)/usr/java
 +
-+	mv debian/$(PACKAGE)/usr/lib/j2sdk-1.4.2/man/* \
-+           debian/$(PACKAGE)/usr/share/man
-+	rmdir debian/$(PACKAGE)/usr/lib/j2sdk-1.4.2/man
++# Move man pages to /usr/share/man
++	mv $(JAVA_HOME)/man/* $(MAN_DIR)
++	rmdir $(JAVA_HOME)/man
 +
-+	rm debian/$(PACKAGE)/usr/share/man/ja
-+	mv debian/$(PACKAGE)/usr/share/man/ja_JP.eucJP \
-+           debian/$(PACKAGE)/usr/share/man/ja
-+
-+	for i in `find debian/$(PACKAGE)/usr/share/man -type f` ;           \
-+            do mv $$i `echo $$i | sed 's/\.\([^.]*\)$$/.j2sdk-1_4_2.\1/'` ; \
++# Move Japanese man pages further
++	rm $(MAN_DIR)/ja
++	mv $(MAN_DIR)/ja_JP.eucJP $(MAN_DIR)/ja
++	for i in `find $(MAN_DIR) -type f` ;                              \
++          do mv $$i `echo $$i | sed 's/\.\([^.]*\)$$/.j2sdk-1_4_2.\1/'` ; \
 +        done
 +
-+	if [ -x debian/$(PACKAGE)/usr/lib/j2sdk-1.4.2/lib/unpack ] ; then \
-+            for i in `find debian/$(PACKAGE)/usr/lib/j2sdk-1.4.2          \
-+                         -name \*.pack` ; do                              \
-+                debian/$(PACKAGE)/usr/lib/j2sdk-1.4.2/lib/unpack          \
-+                    $$i `dirname $$i`/`basename $$i .pack`.jar ;          \
-+            done ;                                                        \
++# Unpack tripple compressed jars that showed up in 1.4.2
++	if [ -x $(JAVA_HOME)/lib/unpack ] ; then           \
++          for i in `find $(JAVA_HOME) -name \*.pack` ; do  \
++            $(JAVA_HOME)/lib/unpack                        \
++              $$i `dirname $$i`/`basename $$i .pack`.jar ; \
++          done ;                                           \
 +        fi
 +
++# Fix ControlPanel shell script incompatibilities
++	if [ -f $(JAVA_HOME)/jre/bin/ControlPanel ] ; then \
++          sed "s/\/usr\/bin\/ls/\/bin\/ls/g;               \
++	       s/expr \(.*\) : '^/expr \1 : '/;"           \
++            $(JAVA_HOME)/jre/bin/ControlPanel              \
++	    > $(JAVA_HOME)/jre/bin/ControlPanel.tmp ;      \
++          mv $(JAVA_HOME)/jre/bin/ControlPanel.tmp         \
++             $(JAVA_HOME)/jre/bin/ControlPanel ;           \
++          chmod 755 $(JAVA_HOME)/jre/bin/ControlPanel ;    \
++        fi
++
++# Include optional documentation
 +	if [ -f ../j2sdk-1_4_2-doc.zip ] ; then                          \
 +            unzip -q -d debian/$(PACKAGE)/usr/share/doc                  \
 +                  ../j2sdk-1_4_2-doc.zip ;                               \
@@ -170,7 +185,13 @@
 +.PHONY: build clean binary-indep binary-arch binary
 --- j2sdk-1.4.2.orig/debian/changelog
 +++ j2sdk-1.4.2/debian/changelog
-@@ -0,0 +1,68 @@
+@@ -0,0 +1,74 @@
++j2sdk (2:1.4.2-1) experimental; urgency=low
++
++  * Fix ControlPanel shell script incompatibilities.  Closes: #200731
++
++ -- Gerald Turner <gturner@newedgenetworks.com>  Thu, 10 Jul 2003 09:59:23 -0700
++
 +j2sdk (1:1.4.2-1) experimental; urgency=low
 +
 +  * alien echoes the wrong filename, "j2sdk_1.4.2-1_i386.deb generated",
