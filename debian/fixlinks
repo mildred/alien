@@ -1,6 +1,10 @@
 #!/bin/sh -e
 # Clean up after cvs's dreadful symlink handling, by making all the symlinks
 # this package needs.
+
+# These dirs may not exist if directory pruning is turned on.
+install -d lib/to-rpm/tgz lib/to-rpm/slp
+
 ln -sf ../rpm/rules lib/to-deb/tgz/rules
 ln -sf ../rpm/conffiles lib/to-deb/tgz/conffiles
 ln -sf ../rpm/conffiles lib/to-deb/slp/conffiles
