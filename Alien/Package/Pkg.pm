@@ -104,7 +104,7 @@ sub install {
 	my $pkg=shift;
 
 	if (-x "/usr/sbin/pkgadd") {
-		system("/usr/sbin/pkgadd", "-d .", "$pkg") == 0
+		(system("/usr/sbin/pkgadd", "-d .", "$pkg") == 0)
 			or die "Unable to install";
 	}
 	else {
@@ -124,7 +124,7 @@ sub scan {
 	my $file=$this->filename;
 	my $tdir="pkg-scan-tmp.$$";
 
-	mkdir $tdir, 0755 || die "Error making $tdir: $!\n"; 
+	mkdir($tdir, 0755) || die "Error making $tdir: $!\n"; 
 
 	my $pkgname;
 	if (-x "/usr/bin/pkginfo" && -x "/usr/bin/pkgtrans") {
@@ -137,7 +137,7 @@ sub scan {
 		close INFO;
 
 		# Extract the files
-		system("/usr/bin/pkgtrans -i $file $tdir $pkgname") == 0
+		(system("/usr/bin/pkgtrans -i $file $tdir $pkgname") == 0)
 			|| die "Error running pkgtrans: $!\n";
 
 		open(INFO, "$tdir/$pkgname/pkginfo")
@@ -230,13 +230,13 @@ sub unpack {
 
 	if (-x "/usr/bin/pkgtrans") {
 		my $workdir = $this->name."-".$this->version;;
-		mkdir $workdir, 0755 || die "unable to mkdir $workdir: $!\n";
-		system("/usr/bin/pkgtrans $file $workdir $pkgname") == 0
+		mkdir($workdir, 0755) || die "unable to mkdir $workdir: $!\n";
+		(system("/usr/bin/pkgtrans $file $workdir $pkgname") == 0)
 			|| die "unable to extract $file: $!\n";
-		rename "$workdir/$pkgname", "$ {workdir}_1"
+		rename("$workdir/$pkgname", "$ {workdir}_1")
 			|| die "unable rename $workdir/$pkgname: $!\n";
 		rmdir $workdir;
-		rename "$ {workdir}_1", $workdir
+		rename("$ {workdir}_1", $workdir)
 			|| die "unable to rename $ {workdir}_1: $!\n";
 		$this->unpacked_tree($workdir);
 	}
@@ -257,7 +257,7 @@ sub prep {
 #  	  grep {/^\./} readdir DIR;
 #  	closedir DIR;
 
-	system("cd $dir; find . -print | pkgproto > ./prototype") == 0
+	(system("cd $dir; find . -print | pkgproto > ./prototype") == 0)
 		|| die "error during pkgproto: $!\n";
 
 	open(PKGPROTO, ">>$dir/prototype")
@@ -280,7 +280,7 @@ sub prep {
 	close PKGINFO;
 	print PKGPROTO "i pkginfo=./pkginfo\n";
 
-	mkdir "$dir/install", 0755;
+	mkdir("$dir/install", 0755) || die "unable to mkdir $dir/install: $!";
 	open(COPYRIGHT, ">$dir/install/copyright")
 		|| die "error creating copyright: $!\n";
 	print COPYRIGHT $this->copyright;
@@ -311,12 +311,12 @@ sub build {
 	my $this = shift;
 	my $dir = $this->unpacked_tree;
 
-	system("cd $dir; pkgmk -r / -d .") == 0
+	(system("cd $dir; pkgmk -r / -d .") == 0)
 		|| die "Error during pkgmk: $!\n";
 
 	my $pkgname = $this->converted_name;
 	my $name = $this->name."-".$this->version.".pkg";
-	system("pkgtrans $dir $name $pkgname") == 0
+	(system("pkgtrans $dir $name $pkgname") == 0)
 		|| die "Error during pkgtrans: $!\n";
 	rename "$dir/$name", $name;
 	return $name;

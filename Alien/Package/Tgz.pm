@@ -66,7 +66,7 @@ sub install {
 	my $tgz=shift;
 
 	if (-x "/sbin/installpkg") {
-		system("/sbin/installpkg", "$tgz") == 0
+		(system("/sbin/installpkg", "$tgz") == 0)
 			or die "Unable to install";
 	}
 	else {
@@ -162,7 +162,7 @@ sub unpack {
 	$this->SUPER::unpack(@_);
 	my $file=$this->filename;
 
-	system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)") == 0
+	(system("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)") == 0)
 		or die "Unpacking of `$file' failed: $!";
 	# Delete the install directory that has slackware info in it.
 	system("cd ".$this->unpacked_tree."; rm -rf ./install");
@@ -187,7 +187,8 @@ sub prep {
 			my $out=$this->unpacked_tree."/install/".${scripttrans()}{$script};
 			next if ! defined $data || $data =~ m/^\s*$/;
 			if (!$install_made) {
-				mkdir $this->unpacked_tree."/install", 0755;
+				mkdir($this->unpacked_tree."/install", 0755) 
+					|| die "unable to mkdir ".$this->unpacked_tree."/install: $!";
 				$install_made=1;
 			}
 			open (OUT, ">$out") || die "$out: $!";
@@ -208,7 +209,7 @@ sub build {
 	my $this=shift;
 	my $tgz=$this->name."-".$this->version.".tgz";
 
-	system("cd ".$this->unpacked_tree."; tar czf ../$tgz .") == 0
+	(system("cd ".$this->unpacked_tree."; tar czf ../$tgz .") == 0)
 		or die "Package build failed";
 
 	return $tgz;

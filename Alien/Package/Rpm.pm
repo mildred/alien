@@ -51,7 +51,7 @@ sub install {
 	my $this=shift;
 	my $rpm=shift;
 
-	system("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm) == 0
+	(system("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm) == 0)
 		or die "Unable to install";
 }
 
@@ -145,7 +145,7 @@ sub unpack {
 	$this->SUPER::unpack(@_);
 	my $workdir=$this->unpacked_tree;
 	
-	system("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null") == 0
+	(system("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null") == 0)
 		or die "Unpacking of `".$this->filename."' failed";
 	
 	# If the package is relocatable. We'd like to move it to be under
@@ -168,11 +168,11 @@ sub unpack {
 		foreach (split m:/:, $this->prefixes) {
 			if ($_ ne '') { # this keeps us from using anything but relative paths.
 				$collect.="/$_";
-				mkdir $collect,0755 || die "unable to mkdir $collect: $!";
+				mkdir($collect,0755) || die "unable to mkdir $collect: $!";
 			}
 		}
 		# Now move all files in the package to the directory we made.
-		system("mv", @filelist, "$workdir/".$this->prefixes) == 0
+		(system("mv", @filelist, "$workdir/".$this->prefixes) == 0)
 			or die "error moving unpacked files into the default prefix directory: $!";
 	}
 

@@ -260,7 +260,7 @@ sub unpack {
 	my $this=shift;
 	
 	my $workdir = $this->name."-".$this->version;
-	mkdir $workdir, 0755 ||
+	mkdir($workdir, 0755) ||
 		die "unable to mkdir $workdir: $!";
 	# If the parent directory is suid/sgid, mkdir will make the root
 	# directory of the package inherit those bits. That is a bad thing,
@@ -327,7 +327,7 @@ sub DESTROY {
 	if ($this->unpacked_tree eq '/') {
 		die "alien internal error: unpacked_tree is set to `/'. Please file a bug report!";
 	}
-	system('rm', '-rf', $this->unpacked_tree) == 0
+	(system('rm', '-rf', $this->unpacked_tree) == 0)
 		or die "unable to delete temporary directory `".$this->unpacked_tree."`: $!";
 	$this->unpacked_tree('');	
 }

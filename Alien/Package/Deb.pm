@@ -87,7 +87,7 @@ sub install {
 	my $this=shift;
 	my $deb=shift;
 
-	system("dpkg", "--no-force-overwrite", "-i", $deb) == 0
+	(system("dpkg", "--no-force-overwrite", "-i", $deb) == 0)
 		or die "Unable to install";
 }
 
@@ -237,11 +237,11 @@ sub unpack {
 	my $file=$this->filename;
 
 	if ($this->have_dpkg_deb) {
-		system("dpkg-deb", "-x", $file, $this->unpacked_tree) == 0
+		(system("dpkg-deb", "-x", $file, $this->unpacked_tree) == 0)
 			or die "Unpacking of `$file' failed: $!";
 	}
 	else {
-		system("ar -p $file data.tar.gz | gzip -dc | (cd ".$this->unpacked_tree."; tar xpf -)") == 0
+		(system("ar -p $file data.tar.gz | gzip -dc | (cd ".$this->unpacked_tree."; tar xpf -)") == 0)
 			or die "Unpacking of `$file' failed: $!";
 	}
 
@@ -293,14 +293,14 @@ sub prep {
 	my $this=shift;
 	my $dir=$this->unpacked_tree || die "The package must be unpacked first!";
 
-	mkdir "$dir/debian", 0755 ||
+	mkdir("$dir/debian", 0755) ||
 		die "mkdir $dir/debian failed: $!";
 	
 	# Use a patch file to debianize?
 	if (defined $this->patchfile) {
 		# The -f passed to zcat makes it pass uncompressed files
 		# through without error.
-		system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") == 0
+		(system("zcat -f ".$this->patchfile." | (cd $dir; patch -p1)") == 0)
 			or die "patch error: $!";
 		# Look for .rej files.
 		die "patch failed with .rej files; giving up"

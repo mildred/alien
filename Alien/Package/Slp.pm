@@ -114,7 +114,7 @@ sub install {
 	my $this=shift;
 	my $slp=shift;
 
-	system("slpi", $slp) == 0
+	(system("slpi", $slp) == 0)
 		or die "Unable to install";
 }
 
@@ -250,7 +250,7 @@ sub build {
 	# something like that, becuase it results in a tar file where all
 	# the files in it start with "./", which is consitent with how
 	# normal stampede files look.
-	system("(cd ".$this->unpacked_tree."; tar cf - ./*) | bzip2 - > $slp") == 0
+	(system("(cd ".$this->unpacked_tree."; tar cf - ./*) | bzip2 - > $slp") == 0)
 		or die "package build failed: $!";
 
 	# Now append the footer.

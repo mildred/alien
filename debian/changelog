@@ -1,3 +1,18 @@
+alien (8.24) unstable; urgency=low
+
+  * Corrected precidence problem that made alien not catch mkdir of the work
+    directory failing if the directory already existed (and let it delete the
+    existing directory). Closes: #181061
+  * Fixed several other instances of the same precidence problem in the code.
+
+ -- Joey Hess <joeyh@debian.org>  Sat, 15 Feb 2003 14:18:44 -0500
+
+alien (8.23) unstable; urgency=low
+
+  * Updated j2sdk patch again.
+
+ -- Joey Hess <joeyh@debian.org>  Mon,  3 Feb 2003 22:51:11 -0500
+
 alien (8.22) unstable; urgency=low
 
   * Use rpmbuild -bb instead of rpm -bb, as it seems that rpm -bb has stopped
