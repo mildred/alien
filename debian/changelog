@@ -1,3 +1,9 @@
+alien (8.39) unstable; urgency=low
+
+  * Fix a couple more mistakes in the code added in 8.36.
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 11 Nov 2003 21:53:36 -0500
+
 alien (8.38) unstable; urgency=low
 
   * Fix a couple of typos in the code added in 8.36; it should actually work
