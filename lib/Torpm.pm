@@ -13,16 +13,19 @@ sub FixFields { my ($self,%fields)=@_;
 
 	# Fix up the scripts. Since debian/slackware scripts can be anything, even
 	# perl programs or binary files, and redhat is limited to only shell scripts,
-	# we need to encode the files and add a scrap of shell script to make it 
+	# we need to encode the files and add a scrap of shell script to make it
 	# unextract and run on the fly.
 	my $field;
 	foreach $field ('POSTINST', 'POSTRM', 'PREINST', 'PRERM') {
 		if ($fields{$field}) {
+			# Rpm expands %S, so escape such things.
+		`	my $f = pack("u",$fields{$field});
+			$f =~ s/%/%%/g;
 			$fields{$field}=
 				"set -e\n".
 				"mkdir /tmp/alien.\$\$\n".
 				qq{perl -pe '\$_=unpack("u",\$_)' << '__EOF__' > /tmp/alien.\$\$/script\n}.
-				pack("u",$fields{$field}).
+				$f.
 				"__EOF__\n".
 				"chmod 755 /tmp/alien.\$\$/script\n".
 				"/tmp/alien.\$\$/script \"\$@\"\n".
