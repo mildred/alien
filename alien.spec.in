@@ -8,6 +8,7 @@ Copyright: GPL
 Group: Utilities/File
 Buildroot: /tmp/alien-@version@.build
 Requires: perl
+BuildArchitectures: noarch
 
 %description
 Alien allows you to convert Debian, Slackware, and Stampede Packages into Red
@@ -19,7 +20,7 @@ This is a tool only suitable for binary packages.
 
 %prep
 %setup -n alien
-rm -r /tmp/alien-@version@.build || true
+rm -rf /tmp/alien-@version@.build
 
 %install
 perl Makefile.PL
@@ -31,7 +32,8 @@ make pure_install INSTALLDIRS=perl \
 	INSTALLARCHLIB=$RPM_BUILD_ROOT/killme \
 	VARPREFIX=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT/killme
-find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" > manifest
+find $RPM_BUILD_ROOT -not -type d -printf "/%%P\n" | \
+	sed '/\/man\//s/$/\*/' > manifest
 
 %files -f manifest
 %doc debian/changelog COPYING README alien.lsm

@@ -1,3 +1,11 @@
+alien (7.13) unstable; urgency=low
+
+  * Patch from Pavel Roskin <proski@gnu.org> for misc specfile issues,
+    including nastly comppressed man page munging.
+  * Updaed motif patches from Andreas Voegele <andreas.voegele@gmx.de>.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 11 Dec 2000 15:15:41 -0800
+
 alien (7.12) unstable; urgency=low
 
   * Modified Rpm.pm to not bother with the scripts stanzas if there are
