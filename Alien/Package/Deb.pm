@@ -139,7 +139,7 @@ sub getcontrolfile {
 				" tar xf - ./$file &&".
 				" cat $file; cd /; rm -rf /tmp/tar_out.$$)";
 		}
-		my $getcontrol = "ar -p $file control.tar.gz | gzip -dc | ".tar_out($controlfile);
+		my $getcontrol = "ar -p $file control.tar.gz | gzip -dc | ".tar_out($controlfile)." 2>/dev/null";
 		return `$getcontrol`
 	}
 }
