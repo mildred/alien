@@ -16,7 +16,7 @@ Warning, alien can be dangerous:
   sysvinit, libc, or other things that are essential for the functioning of
   your system. Many of these packages are set up differently by the
   different distributions, and packages from the different distributions
-  cannot be used interchangeably. In general, if you can't uninstall the
+  cannot be used interchangeably. In general, if you can't remove a
   package without breaking your system, don't try to replace it with an
   alien version.
 
@@ -25,7 +25,7 @@ Getting alien:
   The newest versions of alien are available at the alien home page; drop by
   http://kitenet.net/programs/alien/
 
-  On sunsite and its mirrors, alien is located in the
+  On metalab and its mirrors, alien is located in the
   pub/Linux/utils/scripts/ directory.
 
   You can also get rpm or deb packages of alien: 
@@ -46,13 +46,14 @@ Other things you'll need:
   dpkg, dpkg-dev, and debhelper packages, which are available on the Debian
   ftp site.
 
-  To convert to/from stampede packages, you will need bzip2, get it at
-	http://www.muraroa.demon.co.uk/
+  To convert to/from stampede packages, you will need bzip2, get it from
+	http://sourceware.cygnus.com/bzip2/index.html
 
   Attention, Slackware, Red Hat, and Stampede users: Bruce S. Babcock
   <babcock@math.psu.edu> has put together an "alien-extra"
   package of all the extra files you need to use alien on
-  a Red Hat or Slackware system.
+  a Red Hat or Slackware system. (Debian systems automatically have the
+  required files.)
   The Slackware version is at 
   	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.tgz
   The RedHat version is at
@@ -63,7 +64,7 @@ Other things you'll need:
 Programs that use alien:
 
   I know of one program that acts as a frontend to alien - kpackviewer is a
-  package viewer that can convert between package formats by using alien. It's
+  package viewer that can convert between package formats by using alien. Its
   homepage is at http://www.momentus.com.br/users/hook/kpackviewer.html
 
 Please report any bugs in alien to the author: 
