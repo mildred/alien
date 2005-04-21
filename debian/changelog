@@ -1,3 +1,14 @@
+alien (8.52) unstable; urgency=low
+
+  * Add a new parameter to runpipe to control whether it automatically
+    checks the return code of the command (and exits). Turn this on for many
+    runpipe calls that are not expected to fail in normal operation, but can
+    fail if the input file is empty, corrupt, or not readable. Previous
+    behavior for rpm files was a cascading failure that created weird
+    directories in cwd. Closes: #305592
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 21 Apr 2005 11:34:41 -0400
+
 alien (8.51) unstable; urgency=low
 
   * In rpm unpack permission fixup code, do not call chmod on symlinks,

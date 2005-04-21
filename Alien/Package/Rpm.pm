@@ -83,23 +83,23 @@ sub scan {
 
 	# Use --queryformat to pull out all the fields we need.
 	foreach my $field (keys(%fieldtrans)) {
-		$_=$this->runpipe("LANG=C rpm -qp --queryformat \%{$field} $file");
+		$_=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
 		$field=$fieldtrans{$field};
 		$_='' if $_ eq '(none)';
 		$this->$field($_);
 	}
 
 	# Get the conffiles list.
-	$this->conffiles([map { chomp; $_ } $this->runpipe("LANG=C rpm -qcp $file")]);
+	$this->conffiles([map { chomp; $_ } $this->runpipe(0, "LANG=C rpm -qcp $file")]);
 	if (defined $this->conffiles->[0] &&
 	    $this->conffiles->[0] eq '(contains no files)') {
 		$this->conffiles([]);
 	}
 
-	$this->binary_info(scalar $this->runpipe("rpm -qpi $file"));
+	$this->binary_info(scalar $this->runpipe(0, "rpm -qpi $file"));
 
 	# Get the filelist.
-	$this->filelist([map { chomp; $_ } $this->runpipe("LANG=C rpm -qpl $file")]);
+	$this->filelist([map { chomp; $_ } $this->runpipe(0, "LANG=C rpm -qpl $file")]);
 	if (defined $this->filelist->[0] &&
 	    $this->filelist->[0] eq '(contains no files)') {
 		$this->filelist([]);
@@ -362,7 +362,7 @@ sub build {
 	
 	# Ask rpm how it's set up. We want to know where it will place rpms.
 	my $rpmdir;
-	foreach ($this->runpipe("rpm --showrc")) {
+	foreach ($this->runpipe(1, "rpm --showrc")) {
 		chomp;
 		if (/^rpmdir\s+:\s(.*)$/) {
 			$rpmdir=$1;
@@ -393,7 +393,7 @@ sub build {
 
 	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
 	my $command="cd $dir; $buildcmd -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
-	my $log=$this->runpipe("$command 2>&1");
+	my $log=$this->runpipe(1, "$command 2>&1");
 	if ($?) {
 		die "Package build failed. Here's the log of the command ($command):\n", $log;
 	}

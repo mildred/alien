@@ -421,18 +421,24 @@ sub do {
 =item runpipe
 
 This is similar to backticks, but honors $Alien::Package::verbose, logging
-the command run if asked to. The output of the command returned.
+the command run if asked to. The output of the command is returned.
+
+The first parameter controls what to do on error. If it's true then any
+errors from the command will be ignored (and $? will be set). If it's
+false, errors will abort alien.
 
 =cut
 
 sub runpipe {
 	my $whatever=shift;
+	my $ignoreerror=shift;
 	my @command=@_;
 	if ($Alien::Package::verbose) {
 		print "\t@command\n";
 	}
 	if (wantarray) {
 		my @ret=`@command`;
+		die "Error executing \"@command\": $!" if ! $ignoreerror && $? ne 0;
 		if ($Alien::Package::verbose >= 2) {
 			print @ret;
 		}
@@ -440,6 +446,7 @@ sub runpipe {
 	}
 	else {
 		my $ret=`@command`;
+		die "Error executing \"@command\": $!" if ! $ignoreerror && $? ne 0;
 		if ($Alien::Package::verbose >= 2) {
 			print $ret."\n";
 		}

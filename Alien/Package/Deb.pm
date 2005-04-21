@@ -107,7 +107,7 @@ sub test {
 		return map { s/\n//; $_ }
 		       grep {
 		       		! /unknown-section alien/
-		       } $this->runpipe("lintian $deb");
+		       } $this->runpipe(1, "lintian $deb");
 	}
 	else {
 		return "lintian not available, so not testing";
@@ -127,7 +127,7 @@ sub getcontrolfile {
 	my $file=$this->filename;
 	
 	if ($this->have_dpkg_deb) {
-		return $this->runpipe("dpkg-deb --info $file $controlfile 2>/dev/null");
+		return $this->runpipe(1, "dpkg-deb --info $file $controlfile 2>/dev/null");
 	}
 	else {
 		# Solaris tar doesn't support O
@@ -140,7 +140,7 @@ sub getcontrolfile {
 				" cat $file; cd /; rm -rf /tmp/tar_out.$$)";
 		}
 		my $getcontrol = "ar -p $file control.tar.gz | gzip -dc | ".tar_out($controlfile)." 2>/dev/null";
-		return $this->runpipe($getcontrol);
+		return $this->runpipe(1, $getcontrol);
 	}
 }
 
@@ -209,11 +209,11 @@ sub scan {
 	my @filelist;
 	if ($this->have_dpkg_deb) {
 		@filelist=map { chomp; s:\./::; "/$_" }
-			  $this->runpipe("dpkg-deb --fsys-tarfile $file | tar tf -");
+			  $this->runpipe(0, "dpkg-deb --fsys-tarfile $file | tar tf -");
 	}
 	else {
 		@filelist=map { chomp; s:\./::; "/$_" }
-			  $this->runpipe("ar -p $file data.tar.gz | gzip -dc | tar tf -");
+			  $this->runpipe(0, "ar -p $file data.tar.gz | gzip -dc | tar tf -");
 	}
 	$this->filelist(\@filelist);
 
@@ -304,7 +304,7 @@ sub prep {
 			or die "patch error: $!";
 		# Look for .rej files.
 		die "patch failed with .rej files; giving up"
-			if $this->runpipe("find $dir -name \"*.rej\"");
+			if $this->runpipe(1, "find $dir -name \"*.rej\"");
 		$this->do('find', '.', '-name', '*.orig', '-exec', 'rm', '{}', ';');
 		$this->do("chmod", 755, "$dir/debian/rules");
 
@@ -483,7 +483,7 @@ sub build {
 	my $this=shift;
 
 	chdir $this->unpacked_tree;
-	my $log=$this->runpipe("debian/rules binary 2>&1");
+	my $log=$this->runpipe(1, "debian/rules binary 2>&1");
 	if ($?) {
 		die "Package build failed. Here's the log:\n", $log;
 	}
@@ -647,7 +647,7 @@ Returns the date, in rfc822 format.
 sub date {
 	my $this=shift;
 
-	my $date=$this->runpipe("822-date");
+	my $date=$this->runpipe(1, "822-date");
 	chomp $date;
 	if (!$date) {
 		die "822-date did not return a valid result. You probably need to install the dpkg-dev debian package";
@@ -677,7 +677,7 @@ sub email {
 		close MAILNAME;
 	}
 	if (!$mailname) {
-		$mailname=$this->runpipe("hostname -f");
+		$mailname=$this->runpipe(1, "hostname -f");
 		chomp $mailname;
 	}
 	return "$login\@$mailname";

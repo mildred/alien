@@ -111,7 +111,7 @@ sub scan {
 	$this->group("unknown");
 	$this->origformat('tgz');
 	$this->changelogtext('');
-	$this->binary_info($this->runpipe("ls -l $file"));
+	$this->binary_info($this->runpipe(0, "ls -l $file"));
 
 	# Now figure out the conffiles. Assume anything in etc/ is a
 	# conffile.
@@ -145,7 +145,7 @@ sub scan {
 
 	# Now get the scripts.
 	foreach my $script (keys %{scripttrans()}) {
-		$this->$script($this->runpipe("tar Oxzf $file install/${scripttrans()}{$script} 2>/dev/null"));
+		$this->$script($this->runpipe(1, "tar Oxzf $file install/${scripttrans()}{$script} 2>/dev/null"));
 	}
 
 	return 1;

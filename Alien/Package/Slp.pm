@@ -163,7 +163,7 @@ sub scan {
 	# Read in the file list.
 	my @filelist;
 	# FIXME: support gzip files too!
-	foreach ($this->runpipe("bzip2 -d < $file | tar -tf -")) {
+	foreach ($this->runpipe(0, "bzip2 -d < $file | tar -tf -")) {
 		chomp;
 		s:^\./:/:;
 		$_="/$_" unless m:^/:;
@@ -176,7 +176,7 @@ sub scan {
 	$this->distribution('Stampede');
 	$this->origformat('slp');
 	$this->changelogtext('');
-	$this->binary_info($this->runpipe("ls -l $file"));
+	$this->binary_info($this->runpipe(0, "ls -l $file"));
 	
 	return 1;
 }
