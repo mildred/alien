@@ -386,8 +386,8 @@ sub prep {
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# Use v3 compatability mode, so ldconfig gets added to maint scripts.
-export DH_COMPAT=3
+# Use v4 compatability mode, so ldconfig gets added to maint scripts.
+export DH_COMPAT=4
 
 PACKAGE=\$(shell dh_listpackages)
 

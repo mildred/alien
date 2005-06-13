@@ -1,3 +1,9 @@
+alien (8.53) unstable; urgency=low
+
+  * Build packages using debhelper v4 mode.
+
+ -- Joey Hess <joeyh@debian.org>  Mon, 13 Jun 2005 14:10:26 -0400
+
 alien (8.52) unstable; urgency=low
 
   * Add a new parameter to runpipe to control whether it automatically
