@@ -316,7 +316,7 @@ sub prep {
 			print OUT $this->prerm."\n";
 			print OUT "\n";
 		}
-		if ($this->postun) {
+		if ($this->postrm) {
 			print OUT "\%postun\n";
 			print OUT $this->postrm."\n";
 			print OUT "\n";

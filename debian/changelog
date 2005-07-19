@@ -1,3 +1,15 @@
+alien (8.55) unstable; urgency=low
+
+  * Add lgtoclnt patch from Clint. Closes: #276365
+  * Remove old openmotif patches. It's in non-free now.
+  * Update other patches to use debhelper v4.
+  * Fix deb package postinst retreival, was broken by the permissions fixup
+    code. Closes: #304828
+  * Use postrm when generating a rpm spec file with scripts enabled.
+    Before this never worked.
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 19 Jul 2005 16:03:27 -0400
+
 alien (8.54) unstable; urgency=low
 
   * Patch from Alexander Jolk adding a --bump option. Closes: #311681

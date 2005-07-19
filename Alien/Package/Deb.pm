@@ -717,6 +717,10 @@ and groups from the owninfo field, and update modes from the modeinfo field.
 sub postinst {
 	my $this=shift;
 
+	if (@_) {
+		$this->{postinst}=shift;
+	}
+	
 	my $owninfo = $this->owninfo;
 	my $modeinfo = $this->modeinfo;
 	my $postinst = $this->{postinst};
