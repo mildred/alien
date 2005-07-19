@@ -890,8 +890,8 @@ alien (6.33) unstable; urgency=low
 
 alien (6.32) unstable; urgency=low
 
-  * Dropped in diff files for the XBF-i740 xserver, thanks to Agustín
-    Martín <agmartin@aq.upm.es>
+  * Dropped in diff files for the XBF-i740 xserver, thanks to Agustin
+    Martin <agmartin@aq.upm.es>
 
  -- Joey Hess <joeyh@debian.org>  Thu, 22 Apr 1999 12:57:54 -0700
 

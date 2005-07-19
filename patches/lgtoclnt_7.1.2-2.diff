@@ -1,0 +1,145 @@
+--- lgtoclnt-7.1.2.orig/debian/copyright
++++ lgtoclnt-7.1.2/debian/copyright
+@@ -0,0 +1,20 @@
++This package was debianized by the alien program by converting
++a binary .rpm package on Wed, 13 Oct 2004 10:49:10 -0400
++
++Copyright: commercial
++
++Information from the binary package:
++Name        : lgtoclnt                     Relocations: /usr 
++Version     : 7.1.2                             Vendor: LEGATO Software, a Division of EMC
++Release     : 1                             Build Date: Fri Jun  4 06:13:15 2004
++Install date: (not installed)               Build Host: azzurro.legato.com
++Group       : Utilities                     Source RPM: lgtoclnt-7.1.2-1.src.rpm
++Size        : 34958741                         License: commercial
++Packager    : Support support@legato.com
++URL         : http://www.legato.com
++Summary     : LEGATO NetWorker Client for Linux Platforms
++Description :
++LEGATO's NetWorker client is a set of programs that manage automated
++backups to and directed retrievals from a LEGATO NetWorker server across
++the network.
++
+--- lgtoclnt-7.1.2.orig/debian/dirs
++++ lgtoclnt-7.1.2/debian/dirs
+@@ -0,0 +1 @@
++etc
+--- lgtoclnt-7.1.2.orig/debian/lgtoclnt.networker.init
++++ lgtoclnt-7.1.2/debian/lgtoclnt.networker.init
+@@ -0,0 +1,27 @@
++#!/bin/sh 
++case $1 in
++'start')
++        (echo  'starting NetWorker daemons:') > /dev/console
++        if [ -f /usr/sbin/nsrexecd ]; then
++                (/usr/sbin/nsrexecd)       > /dev/console 2>&1
++                (echo  ' nsrexecd') > /dev/console
++                (echo '') > /dev/console
++        fi
++        if [ -f /usr/sbin/nsrd ]; then
++                (/usr/sbin/nsrd) > /dev/console 2>&1
++                (echo  ' nsrd') > /dev/console
++                (echo '') > /dev/console
++        fi
++;;
++'stop')
++        (echo  'stopping NetWorker daemons:') > /dev/console
++        if [ -f /usr/sbin/nsr_shutdown ]; then
++                (/usr/sbin/nsr_shutdown -a -q&) > /dev/console 2>&1
++                (echo  ' nsr_shutdown -a -q')   > /dev/console
++                (echo '') > /dev/console
++        fi
++;;
++*)
++        echo "usage: `basename $0` {start|stop}"
++;;
++esac
+--- lgtoclnt-7.1.2.orig/debian/control
++++ lgtoclnt-7.1.2/debian/control
+@@ -0,0 +1,14 @@
++Source: lgtoclnt
++Section: non-free/admin
++Priority: extra
++Maintainer: Clint Adams <schizo@debian.org>
++
++Package: lgtoclnt
++Architecture: i386
++Depends: ${shlibs:Depends}
++Description: LEGATO NetWorker Client for Linux Platforms
++ LEGATO's NetWorker client is a set of programs that manage automated
++ backups to and directed retrievals from a LEGATO NetWorker server across
++ the network.
++ .
++ (Converted from a rpm package by alien version 8.47.)
+--- lgtoclnt-7.1.2.orig/debian/changelog
++++ lgtoclnt-7.1.2/debian/changelog
+@@ -0,0 +1,10 @@
++lgtoclnt (7.1.2-2) experimental; urgency=low
++
++  * Converted from .rpm format to .deb
++    by alien version 8.47
++  * Moved app-defaults to /etc/X11.
++  * Re-added init script.
++
++ -- Clint Adams <schizo@debian.org>  Wed, 13 Oct 2004 10:49:10 -0400
++
++Initial deployment.
+--- lgtoclnt-7.1.2.orig/debian/rules
++++ lgtoclnt-7.1.2/debian/rules
+@@ -0,0 +1,55 @@
++#!/usr/bin/make -f
++# debian/rules for alien
++
++# Uncomment this to turn on verbose mode.
++#export DH_VERBOSE=1
++
++# Use v3 compatability mode, so ldconfig gets added to maint scripts.
++export DH_COMPAT=4
++
++PACKAGE=$(shell dh_listpackages)
++
++build:
++	dh_testdir
++
++clean:
++	dh_testdir
++	dh_testroot
++	dh_clean -d
++
++binary-indep: build
++
++binary-arch: build
++	dh_testdir
++	dh_testroot
++	dh_clean -k -d
++	dh_installdirs
++
++	dh_installdocs
++	dh_installchangelogs
++
++# Copy the packages's files.
++	find . -maxdepth 1 -mindepth 1 -not -name debian -print0 | \
++		xargs -0 -r -i cp -a {} debian/$(PACKAGE)
++
++	mv debian/$(PACKAGE)/usr/lib/X11 debian/$(PACKAGE)/etc
++
++#
++# If you need to move files around in debian/$(PACKAGE) or do some
++# binary patching, do it here
++#
++
++	dh_installinit --name=networker --update-rcd-params="defaults 95 5"
++# This has been known to break on some wacky binaries.
++#	dh_strip
++	dh_compress
++#	dh_fixperms
++	dh_makeshlibs
++	dh_installdeb
++	-dh_shlibdeps
++	dh_gencontrol
++	dh_md5sums
++	dh_builddeb
++
++binary: binary-indep binary-arch
++.PHONY: build clean binary-indep binary-arch binary
