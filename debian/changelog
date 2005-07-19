@@ -1,3 +1,9 @@
+alien (8.54) unstable; urgency=low
+
+  * Patch from Alexander Jolk adding a --bump option. Closes: #311681
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 19 Jul 2005 14:20:31 -0400
+
 alien (8.53) unstable; urgency=low
 
   * Build packages using debhelper v4 mode.

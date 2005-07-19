@@ -178,6 +178,11 @@ lintian's output displayed.
 By default, B<alien> adds one to the minor version number of each package it
 converts. If this option is given, B<alien> will not do this.
 
+=item B<--bump=>I<number>
+
+Instead of incrementing the version number of the converted package by 1,
+increment it by the given number.
+
 =item B<--fixperms>
 
 Sanitize all file owners and permissions when building a deb. This may be
@@ -334,6 +339,7 @@ Usage: alien [options] file [...]
   -v, --verbose             Display each command alien runs.
       --veryverbose         Be verbose, and also display output of run commands.
   -k, --keep-version        Do not change version of generated package.
+      --bump=number         Increment package version by this number.
   -h, --help                Display this help message.
   -V, --version		    Display alien's version number.
 
@@ -343,8 +349,9 @@ EOF
 
 # Start by processing the parameters.
 my (%destformats, $generate, $install, $single, $scripts, $patchfile,
-    $nopatch, $tgzdescription, $tgzversion, $keepversion, $fixperms, $test,
-    $anypatch);
+    $nopatch, $tgzdescription, $tgzversion, $keepversion, $fixperms,
+    $test, $anypatch);
+my $versionbump=1;
 
 # Bundling is nice anyway, and it is required or Getopt::Long will confuse
 # -T and -t.
@@ -371,6 +378,7 @@ GetOptions(
 	"verbose|v"      => \$Alien::Package::verbose,
 	"veryverbose"    => sub { $Alien::Package::verbose=2 },
 	"keep-version|k" => \$keepversion,
+	"bump=s"         => \$versionbump,
 	"fixperms"       => \$fixperms,
 	"help|h"         => \&usage,
 ) || usage();
@@ -449,7 +457,7 @@ foreach my $file (@ARGV) {
 	# Increment release.
 	unless (defined $keepversion) {
 		$^W=0; # Shut of possible "is not numeric" warning.
-		$package->release($package->release + 1);
+		$package->release($package->release + $versionbump);
 		$^W=1; # Re-enable warnings.
 	}
 	
