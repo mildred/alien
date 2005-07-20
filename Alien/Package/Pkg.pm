@@ -88,6 +88,8 @@ sub checkfile {
 	my $line = <F>;
 	close F;
 
+	return unless defined $line;
+	
 	if($line =~ "# PaCkAgE DaTaStReAm") {
 		return 1;
 	}

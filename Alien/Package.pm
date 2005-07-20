@@ -206,6 +206,23 @@ sub filename {
 	return $this->{filename};
 }
 
+=item scripts
+
+Returns a list of all non-empty maintainer scripts in the package.
+
+=cut
+
+sub scripts {
+	my $this=shift;
+
+	my @ret;
+	foreach my $s (qw{postinst postrm preinst prerm}) {
+		my $val=$this->$s;
+		push(@ret, $s) if defined $val && length $val;
+	}
+	return @ret;
+}
+
 =item scan
 
 This method scans the file associated with an object, and populates as many

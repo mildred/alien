@@ -330,12 +330,11 @@ sub prep {
 	open (OUT, ">$dir/debian/changelog") || die "$dir/debian/changelog: $!";
 	print OUT $this->name." (".$this->version."-".$this->release.") experimental; urgency=low\n";
 	print OUT "\n";
-	print OUT "  * Converted from .".$this->origformat." format to .deb\n";
-	print OUT "    by alien version $Alien::Version\n";
+	print OUT "  * Converted from .".$this->origformat." format to .deb by alien version $Alien::Version\n";
 	print OUT "\n";
 	print OUT " -- ".$this->username." <".$this->email.">  ".$this->date."\n";
 	print OUT "\n";
-	print OUT $this->changelogtext."\n";
+	print OUT $this->changelogtext."\n" if defined $this->changelogtext;
 	close OUT;
 
 	# Control file.

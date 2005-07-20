@@ -321,7 +321,7 @@ Usage: alien [options] file [...]
                             looking for patch in /var/lib/alien.
        --nopatch	    Do not use patches.
        --anypatch           Use even old version os patches.
-       --single             Like --generate, but do not create .orig
+       -s, --single         Like --generate, but do not create .orig
                             directory.
        --fixperms           Munge/fix permissions and owners.
        --test               Test generated packages with lintian.
@@ -415,11 +415,11 @@ if ($> != 0) {
 		die "Must run as root to convert to deb format (or you may use fakeroot).\n";
 	}
 	print STDERR "Warning: alien is not running as root!\n";
-	print STDERR "Ownerships of files in the generated packages will probably be messed up.\n";
+	print STDERR "Warning: Ownerships of files in the generated packages will probably be wrong.\n";
 }
 
 foreach my $file (@ARGV) {
-	if (! -f $file) {
+	if (! -e $file) {
 		die "File \"$file\" not found.\n";
 	}
 
@@ -452,7 +452,13 @@ foreach my $file (@ARGV) {
 		die "Unknown type of package, $file.\n";
 	}
 
-	$package->usescripts($scripts) unless $package->usescripts;
+	if (! $package->usescripts && $package->scripts) {
+		$package->usescripts($scripts);
+		if (! $scripts) {
+			print STDERR "Warning: Skipping conversion of scripts in package ".$package->name.": ".join(" ", $package->scripts)."\n";
+			print STDERR "Warning: Use the --scripts parameter to include the scripts.\n";
+		}
+	}
 
 	# Increment release.
 	unless (defined $keepversion) {
@@ -476,14 +482,14 @@ foreach my $file (@ARGV) {
 			
 			# Mutate package into desired format.
 			bless($package, "Alien::Package::".ucfirst($format));
-		
+			
 			# Make .orig.tar.gz directory?
 			if ($format eq 'deb' && ! $single && $generate) {
 				# Make .orig.tar.gz directory.
 				Alien::Package->do("cp", "-fa", "--", $package->unpacked_tree, $package->unpacked_tree.".orig")
 					or die "cp -fa failed";
 			}
-	
+			
 			# See if a patch file should be used.
 			if ($format eq 'deb' && ! $nopatch) {
 				if (defined $patchfile) {

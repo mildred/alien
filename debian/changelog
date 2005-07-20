@@ -1,3 +1,11 @@
+alien (8.56) unstable; urgency=low
+
+  * Warn if a package contains maintainer scripts which are not converted,
+    since this can result in broken packages.
+  * Many small fixes.
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 19 Jul 2005 20:21:42 -0400
+
 alien (8.55) unstable; urgency=low
 
   * Add lgtoclnt patch from Clint. Closes: #276365
