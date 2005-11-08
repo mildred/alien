@@ -530,17 +530,18 @@ sub arch {
 		elsif ($arch eq 'x86_64') {
 			$arch='amd64';
 		}
-	
-		# Treat 486, 586, etc, as 386.
-		if ($arch =~ m/i\d86/i || $arch =~ m/pentium/i) {
+		elsif ($arch =~ m/i\d86/i || $arch =~ m/pentium/i) {
+			# Treat 486, 586, etc, as 386.
 			$arch='i386';
 		}
-	
-		# Treat armv4l as arm.
-		if ($arch eq 'armv4l') {
+		elsif ($arch eq 'armv4l') {
+			# Treat armv4l as arm.
 			$arch='arm';
 		}
-	
+		elsif ($arch eq 'parisc') {
+			$arch='hppa';
+		}
+		
 		$this->{arch}=$arch;
 	}
 
@@ -552,6 +553,9 @@ sub arch {
 		# XXX is this the canonical name for powerpc on rpm
 		# systems?
 		$arch='ppc';
+	}
+	elsif ($arch eq 'hppa') {
+		$arch='parisc';
 	}
 	elsif ($arch eq 'all') {
 		$arch='noarch';

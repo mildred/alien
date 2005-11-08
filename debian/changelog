@@ -1,3 +1,9 @@
+alien (8.57) unstable; urgency=low
+
+  * hppa <=> parisc conversion for rpm. Closes: #338187
+
+ -- Joey Hess <joeyh@debian.org>  Tue,  8 Nov 2005 13:39:06 -0500
+
 alien (8.56) unstable; urgency=low
 
   * Warn if a package contains maintainer scripts which are not converted,
