@@ -292,7 +292,6 @@ sub prep {
 	print OUT "Requires: ".$this->depends."\n"
 		if defined $this->depends && length $this->depends;
 	print OUT "Summary: ".$this->summary."\n";
-	print OUT "Copyright: ".$this->copyright."\n";
 	print OUT "Distribution: ".$this->distribution."\n";
 	print OUT "Group: Converted/".$this->group."\n";
 	print OUT "\n";

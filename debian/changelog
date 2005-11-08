@@ -1,3 +1,12 @@
+alien (8.58) unstable; urgency=low
+
+  * Remove Copyright: from generated alien spec file since for some reason
+    rpm has obsoleted and begun falling over on that line. (Inert profanity
+    here.) Closes: #337028
+  * debian/copyright verbosification patch from tbm. Closes: #337363
+
+ -- Joey Hess <joeyh@debian.org>  Tue,  8 Nov 2005 16:06:39 -0500
+
 alien (8.57) unstable; urgency=low
 
   * hppa <=> parisc conversion for rpm. Closes: #338187
