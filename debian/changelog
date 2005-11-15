@@ -1,3 +1,10 @@
+alien (8.59) unstable; urgency=low
+
+  * Hmm, seems rpm renamed Copyright to License and fails w/o the new field.
+    Fix.
+
+ -- Joey Hess <joeyh@debian.org>  Fri, 11 Nov 2005 11:26:35 -0500
+
 alien (8.58) unstable; urgency=low
 
   * Remove Copyright: from generated alien spec file since for some reason
