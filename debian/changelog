@@ -1,3 +1,10 @@
+alien (8.60) unstable; urgency=low
+
+  * Make cpio leading directory permission fixup code work with new cpio
+    default permissions too. Closes: #340588
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 27 Nov 2005 17:02:41 -0500
+
 alien (8.59) unstable; urgency=low
 
   * Hmm, seems rpm renamed Copyright to License and fails w/o the new field.

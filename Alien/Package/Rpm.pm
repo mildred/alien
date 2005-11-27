@@ -147,11 +147,29 @@ sub unpack {
 	$this->SUPER::unpack(@_);
 	my $workdir=$this->unpacked_tree;
 	
-	
-	
 	$this->do("rpm2cpio ".$this->filename." | (cd $workdir; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>&1")
 		or die "Unpacking of '".$this->filename."' failed";
 	
+	# cpio does not necessarily store all parent directories in an
+	# archive, and so some directories, if it has to make them and has
+	# no permission info, will come out with some random permissions.
+	# Find those directories and make them mode 755, which is more
+	# reasonable.
+	my %seenfiles;
+	open (RPMLIST, "rpm2cpio ".$this->filename." | cpio -it --quiet |")
+		or die "File list of '".$this->filename."' failed";
+	while (<RPMLIST>) {
+		chomp;
+		$seenfiles{$_}=1;
+	}
+	close RPMLIST;
+	foreach my $file (`cd $workdir; find ./`) {
+		chomp $file;
+		if (! $seenfiles{$file} && -d $file && ! -l $file) {
+			$this->do("chmod 755 $file");
+		}
+	}
+
 	# If the package is relocatable. We'd like to move it to be under
 	# the $this->prefixes directory. However, it's possible that that
 	# directory is in the package - it seems some rpm's are marked as
@@ -189,18 +207,6 @@ sub unpack {
 		}
 		$this->conffiles([@cf]);
 	}
-
-	# cpio does not necessarily store all parent directories in an
-	# archive, and so some directories, if it has to make them and has
-	# no permission info, will come out with whatever the default mode
-	# is for the current umask. Here I just chown all such directories
-	# to mode 755, which is more reasonable. Note that the next section
-	# overrides these default permissions, if override data exists in
-	# the rpm permissions info, but it won't always exist for parent
-	# directories.
-	$this->do("find $workdir -type d -perm ".
-		(sprintf "%lo", 0777 &~ umask).
-		" -print0 | xargs --no-run-if-empty -0 chmod 755");
 	
 	# rpm files have two sets of permissions; the set in the cpio
 	# archive, and the set in the control data; which override them.
