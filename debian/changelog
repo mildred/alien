@@ -1,3 +1,10 @@
+alien (8.61) unstable; urgency=low
+
+  * Add em64t as another alias for amd64.
+  * Makefile.PL fix for new make line wrapping.
+
+ -- Joey Hess <joeyh@debian.org>  Sat,  7 Jan 2006 13:37:07 -0500
+
 alien (8.60) unstable; urgency=low
 
   * Make cpio leading directory permission fixup code work with new cpio

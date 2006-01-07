@@ -11,7 +11,7 @@ sub MY::libscan {
 	return $_;
 }
 
-# Add a more targets.
+# Add a few more targets.
 sub MY::postamble {
 	return q{
 
@@ -34,10 +34,7 @@ extra_install:
 	gzip -qf9 $(PREFIX)/share/alien/patches/*
 
 alien:
-	perl -pe ' \
-		$$_="" if /use lib/; \
-		$$_="our \$$Version=\"$(VER)\";\n" \
-			if /VERSION_AUTOREPLACE/' alien.pl > alien
+	perl -pe '$$_="" if /use lib/; $$_="our \$$Version=\"$(VER)\";\n" if /VERSION_AUTOREPLACE/' alien.pl > alien
 }
 }
 

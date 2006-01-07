@@ -536,6 +536,9 @@ sub arch {
 		elsif ($arch eq 'x86_64') {
 			$arch='amd64';
 		}
+		elsif ($arch eq 'em64t') {
+			$arch='amd64';
+		}
 		elsif ($arch =~ m/i\d86/i || $arch =~ m/pentium/i) {
 			# Treat 486, 586, etc, as 386.
 			$arch='i386';
