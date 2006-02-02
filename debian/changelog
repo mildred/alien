@@ -1,3 +1,10 @@
+alien (8.62) unstable; urgency=low
+
+  * Fix a bug in conffile script extraction from tgz files (caused by return
+    from runpipe not defaulting to a scalar).
+
+ -- Joey Hess <joeyh@debian.org>  Thu,  2 Feb 2006 15:12:51 -0500
+
 alien (8.61) unstable; urgency=low
 
   * Add em64t as another alias for amd64.

@@ -145,7 +145,7 @@ sub scan {
 
 	# Now get the scripts.
 	foreach my $script (keys %{scripttrans()}) {
-		$this->$script($this->runpipe(1, "tar Oxzf $file install/${scripttrans()}{$script} 2>/dev/null"));
+		$this->$script(scalar $this->runpipe(1, "tar Oxzf $file install/${scripttrans()}{$script} 2>/dev/null"));
 	}
 
 	return 1;
