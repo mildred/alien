@@ -165,8 +165,8 @@ sub unpack {
 	close RPMLIST;
 	foreach my $file (`cd $workdir; find ./`) {
 		chomp $file;
-		if (! $seenfiles{$file} && -d $file && ! -l $file) {
-			$this->do("chmod 755 $file");
+		if (! $seenfiles{$file} && -d "$workdir/$file" && ! -l "$workdir/$file") {
+			$this->do("chmod 755 $workdir/$file");
 		}
 	}
 
@@ -397,7 +397,7 @@ sub build {
 		$opts="--target ".$this->arch;
 	}
 
-	$opts.=" $ENV{RPMBUILDOPTS}" if exists $ENV{RPMBUILDOPTS};
+	$opts.=" $ENV{RPMBUILDOPT}" if exists $ENV{RPMBUILDOPT};
 	my $command="cd $dir; $buildcmd -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
 	my $log=$this->runpipe(1, "$command 2>&1");
 	if ($?) {

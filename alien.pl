@@ -244,7 +244,7 @@ B<alien> recognizes the following environemnt variables:
 
 =over 4
 
-=item RPMBUILDOPT
+=item RPMBUILDOPTS
 
 Options to pass to rpm when it is building a package.
 

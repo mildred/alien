@@ -1,3 +1,11 @@
+alien (8.63) unstable; urgency=low
+
+  * Correct code to properly use RPMBUILDOPT (not RPMBUILDOPTS). Closes: #352816
+  * Corrected fix for bug #352810 to look at and chmod the right directories.
+    Closes: #352810
+
+ -- Joey Hess <joeyh@debian.org>  Tue, 14 Feb 2006 13:28:22 -0500
+
 alien (8.62) unstable; urgency=low
 
   * Fix a bug in conffile script extraction from tgz files (caused by return
