@@ -39,15 +39,9 @@ binary-indep: build
 	dh_md5sums
 	dh_builddeb
 
-VERSION=$(shell expr "`dpkg-parsechangelog 2>/dev/null |grep Version:`" : '.*Version: \(.*\)')
-
-# Update the web page. Not intended for use by anyone except the author.
-DIR=/home/web/kitenet.net/programs/alien
-installhook:
-	cp debian/changelog $(DIR)/CHANGES
-	echo -n $(VERSION) > $(DIR)/LATEST-VERSION-IS
-	rm -f $(DIR)/*.tar.gz
-	ln -sf /home/joey/lib/debian/unstable/alien_$(VERSION).tar.gz $(DIR)
+# Not intended for use by anyone except the author.
+announcedir:
+	@echo ${HOME}/src/joeywiki/code/alien/news
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
