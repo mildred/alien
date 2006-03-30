@@ -1,9 +1,9 @@
-alien (8.64) UNRELEASED; urgency=low
+alien (8.64) unstable; urgency=low
 
   * Minor improvement to usage message as reported in [some random blog
     somewhere that I happened to read by accident].
 
- -- Joey Hess <joeyh@debian.org>  Thu, 30 Mar 2006 12:50:55 -0500
+ -- Joey Hess <joeyh@debian.org>  Thu, 30 Mar 2006 12:51:45 -0500
 
 alien (8.63) unstable; urgency=low
 
