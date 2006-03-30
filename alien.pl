@@ -334,7 +334,7 @@ Usage: alien [options] file [...]
        --version=<version>  Specify package version.
   -p, --to-pkg              Generate a Solaris pkg package.
   -i, --install             Install generated package.
-  -g, --generate            Unpack, but do not generate a new package.
+  -g, --generate            Generate build tree, but do not build package.
   -c, --scripts             Include scripts in package.
   -v, --verbose             Display each command alien runs.
       --veryverbose         Be verbose, and also display output of run commands.
