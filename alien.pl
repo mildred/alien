@@ -18,10 +18,6 @@ package format and install it. It also supports LSB packages.
 
 =head1 WARNING
 
-Despite the high version number, B<alien> is still (and will probably always
-be) rather experimental software. It's been under development for many
-years now, but there are still many bugs and limitations.
-
 B<alien> should not be used to replace important system packages, like
 init, libc, or other things that are essential for the functioning of
 your system. Many of these packages are set up differently by the
