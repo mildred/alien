@@ -227,7 +227,7 @@ sub scan {
 
 =item unpack
 
-Implment the unpack method to unpack a deb file.
+Implement the unpack method to unpack a deb file.
 
 =cut
 
@@ -522,7 +522,7 @@ sub cleantree {
 Set/get package name. 
 
 Always returns the packge name in lowercase with all invalid characters
-returned. The name is however, stored unchanged.
+rmoved. The name is however, stored unchanged.
 
 =cut
 
@@ -578,7 +578,7 @@ sub version {
 	# Make sure the version contains digets.
 	unless (/[0-9]/) {
 		# Drat. Well, add some. dpkg-deb won't work
-		# # on a version w/o numbers!
+		# on a version w/o numbers!
 		return $_."0";
 	}
 	return $_;

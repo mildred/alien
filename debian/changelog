@@ -1,3 +1,9 @@
+alien (8.65) UNRELEASED; urgency=low
+
+  * Fix alien's own spec file, s/Copyright/License/.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 14 Dec 2006 17:35:11 -0500
+
 alien (8.64) unstable; urgency=low
 
   * Minor improvement to usage message as reported in [some random blog

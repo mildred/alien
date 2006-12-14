@@ -4,7 +4,7 @@ Packager: Joey Hess <joey@kitenet.net>
 Version: @version@
 Release: 1
 Source: ftp://kitenet.net/pub/code/debian/alien_@version@.tar.gz
-Copyright: GPL
+License: GPL
 Group: Utilities/File
 Buildroot: /tmp/alien-@version@.build
 Requires: perl
