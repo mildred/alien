@@ -448,6 +448,10 @@ are typically shell scripts, but often lack the leading #!/bin/sh
 This can confuse dpkg, so add the #!/bin/sh if it looks like there
 is no shebang magic already in place.
 
+Also, if the rpm is relocatable, the script could refer to
+RPM_INSTALL_PREFIX, which is set by rpm at run time. Deal with this by
+adding code to the script to set RPM_INSTALL_PREFIX.
+
 =cut
 
 # This helper function deals with all the scripts.
@@ -457,9 +461,18 @@ sub _script_helper {
 
 	# set
 	if (@_) {
+		my $prefixcode="";
+		if (defined $this->prefixes) {
+			$prefixcode="RPM_INSTALL_PREFIX=".$this->prefixes."\n";
+			$prefixcode.="export RPM_INSTALL_PREFIX\n";
+		}
+
 		my $value=shift;
 		if (length $value and $value !~ m/^#!\s*\//) {
-			$value="#!/bin/sh\n$value";
+			$value="#!/bin/sh\n$prefixcode$value";
+		}
+		else {
+			$value=~s/\n/\n$prefixcode/s;
 		}
 		$this->{$script} = $value;
 	}
