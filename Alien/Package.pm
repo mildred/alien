@@ -306,6 +306,21 @@ the filename of the generated package.
 
 sub build {}
 
+=item incrementrelease
+
+This method should increment the release field of the package by
+the specified number.
+
+=cut
+
+sub incrementrelease {
+	my $this=shift;
+	my $number=shift;
+	$^W=0; # Shut of possible "is not numeric" warning.
+	$this->release($this->release + $number);
+	$^W=1; # Re-enable warnings.
+}
+
 =item DESTROY
 
 When an object is destroyed, it cleans some stuff up. In particular, if the

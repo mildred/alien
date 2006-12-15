@@ -3,8 +3,10 @@ alien (8.65) UNRELEASED; urgency=low
   * Fix alien's own spec file, s/Copyright/License/.
   * Add support for rpm scripts that use RPM_INSTALL_PREFIX, by setting
     RPM_INSTALL_PREFIX as part of the converted script. Closes: #400863
+  * When converting LSB packages, do not increment the release number.
+  * Use rpmbuild to build lsb packages, not rpm.
 
- -- Joey Hess <joeyh@debian.org>  Fri, 15 Dec 2006 13:31:54 -0500
+ -- Joey Hess <joeyh@debian.org>  Fri, 15 Dec 2006 13:44:22 -0500
 
 alien (8.64) unstable; urgency=low
 

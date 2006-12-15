@@ -50,6 +50,9 @@ No guarantees are made that the generated lsb packages will be fully LSB
 compliant, and it's rather unlikely they will unless you build them in the
 lsbdev environment.
 
+Note that unlike other package formats, converting an LSB package to
+another format will not cause its minor version number to be changed.
+
 =item deb
 
 For converting to (but not from) deb format, the gcc, make, debhelper,
@@ -458,9 +461,7 @@ foreach my $file (@ARGV) {
 
 	# Increment release.
 	unless (defined $keepversion) {
-		$^W=0; # Shut of possible "is not numeric" warning.
-		$package->release($package->release + $versionbump);
-		$^W=1; # Re-enable warnings.
+		$package->incrementrelease($versionbump);
 	}
 	
 	foreach my $format (keys %destformats) {

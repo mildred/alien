@@ -103,7 +103,7 @@ the package.
 
 sub build {
 	my $this=shift;
-	my $buildcmd=shift || 'rpm';
+	my $buildcmd=shift || 'rpmbuild';
 	foreach (split(/:/,$ENV{PATH})) {
 		if (-x "$_/lsb-rpm") {
 			$buildcmd='lsb-rpm';
@@ -112,6 +112,14 @@ sub build {
 	}
 	$this->SUPER::build($buildcmd);
 }
+
+=item incrementrelease
+
+LSB package versions are not changed.
+
+=cut
+
+sub incrementrelease {}
 
 =back
 
