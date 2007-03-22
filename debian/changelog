@@ -1,3 +1,9 @@
+alien (8.66) unstable; urgency=low
+
+  * Use date -R as 822-date will soon be deprecated.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 22 Mar 2007 17:45:24 -0400
+
 alien (8.65) unstable; urgency=low
 
   * Fix alien's own spec file, s/Copyright/License/.

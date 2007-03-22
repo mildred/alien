@@ -646,10 +646,10 @@ Returns the date, in rfc822 format.
 sub date {
 	my $this=shift;
 
-	my $date=$this->runpipe(1, "822-date");
+	my $date=$this->runpipe(1, "date -R");
 	chomp $date;
 	if (!$date) {
-		die "822-date did not return a valid result. You probably need to install the dpkg-dev debian package";
+		die "date -R did not return a valid result.";
 	}
 
 	return $date;
