@@ -446,7 +446,8 @@ sub do {
 	}
 	else {
 		# parent
-		return (waitpid($pid, 0) > 0);
+		my $ret=(waitpid($pid, 0) > 0);
+		return ! $ret || ! $?;
 	}
 }
 
