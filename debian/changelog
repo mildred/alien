@@ -4,7 +4,7 @@ alien (8.67) unstable; urgency=low
     the README.
   * Correct a bug that caused alien to ignore failing commands. Closes: #424858
 
- -- Joey Hess <joeyh@debian.org>  Thu, 17 May 2007 13:31:56 -0400
+ -- Joey Hess <joeyh@debian.org>  Thu, 17 May 2007 13:34:36 -0400
 
 alien (8.66) unstable; urgency=low
 
