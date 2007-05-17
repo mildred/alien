@@ -1,3 +1,10 @@
+alien (8.67) UNRELEASED; urgency=low
+
+  * Update the url to the web page, and remove several other broken urls from
+    the README.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 17 May 2007 00:10:53 -0400
+
 alien (8.66) unstable; urgency=low
 
   * Use date -R as 822-date will soon be deprecated.

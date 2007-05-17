@@ -3,14 +3,7 @@ Please read alien's man page for general documentation.
 Getting alien:
 
   The newest versions of alien are available at the alien home page; drop by
-  http://kitenet.net/programs/alien/
-
-  On metalab and its mirrors, alien is located in the
-  pub/Linux/utils/scripts/ directory.
-
-  You can also get rpm or deb packages of alien: 
-  deb: ftp://ftp.debian.org/debian/unstable/binary-all/admin/alien_*.deb
-  rpm: ftp://ftp.redhat.com/pub/contrib/noarch/alien-*.rpm
+  http://kitenet.net/~joey/code/alien/
 
 Other things you'll need:
 
@@ -27,8 +20,7 @@ Other things you'll need:
   dpkg, dpkg-dev, and debhelper (version 3 or above) packages, which are
   available on http://packages.debian.org
 
-  To convert to/from stampede packages, you will need bzip2, get it from
-	http://sourceware.cygnus.com/bzip2/index.html
+  To convert to/from stampede packages, you will need bzip2.
 
   Attention, Slackware, Red Hat, and Stampede users: Bruce S. Babcock
   <babcock@math.psu.edu> has put together an "alien-extra"
@@ -42,10 +34,6 @@ Other things you'll need:
   	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.rpm
   The Stampede version is at
   	ftp://ykbsb2.yk.psu.edu/pub/alien/alien-extra.slp
-
-  Solaris users can find pkg's of much of the above software,
-  at http://mah.everybody.org/hacks/os/solaris/ , thanks to Mark
-  A. Hershberger <mah@everybody.org>.
 
 Note:
 
