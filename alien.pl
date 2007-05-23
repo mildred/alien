@@ -159,7 +159,7 @@ Note that without an argument, this displays the version of B<alien> instead.
 =item B<-c>, B<--scripts>
 
 Try to convert the scripts that are meant to be run when the
-package is installed and removed. Use this with caution, becuase these
+package is installed and removed. Use this with caution, because these
 scripts might be designed to work on a system unlike your own, and could
 cause problems. It is recommended that you examine the scripts by hand
 and check to see what they do before using this option.
