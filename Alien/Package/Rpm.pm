@@ -53,8 +53,11 @@ sub install {
 	my $this=shift;
 	my $rpm=shift;
 
+	my $v=$Alien::Package::verbose;
+	$Alien::Package::verbose=2;
 	$this->do("rpm -ivh ".(exists $ENV{RPMINSTALLOPT} ? $ENV{RPMINSTALLOPT} : '').$rpm)
 		or die "Unable to install";
+	$Alien::Package::verbose=$v;
 }
 
 =item scan

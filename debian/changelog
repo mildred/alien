@@ -1,3 +1,11 @@
+alien (8.68) UNRELEASED; urgency=low
+
+  * Show output of installation of package with -i, since some packages
+    install scripts may have important output or even be interactive.
+    Closes; #425732
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 23 May 2007 13:44:42 -0400
+
 alien (8.67) unstable; urgency=low
 
   * Update the url to the web page, and remove several other broken urls from

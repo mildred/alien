@@ -114,8 +114,11 @@ sub install {
 	my $this=shift;
 	my $slp=shift;
 
+	my $v=$Alien::Package::verbose;
+	$Alien::Package::verbose=2;
 	$this->do("slpi", $slp)
 		or die "Unable to install";
+	$Alien::Package::verbose=$v;
 }
 
 =item getfooter

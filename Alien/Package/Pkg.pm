@@ -106,8 +106,11 @@ sub install {
 	my $pkg=shift;
 
 	if (-x "/usr/sbin/pkgadd") {
+		my $v=$Alien::Package::verbose;
+		$Alien::Package::verbose=2;
 		$this->do("/usr/sbin/pkgadd", "-d .", "$pkg")
 			or die "Unable to install";
+		$Alien::Package::verbose=$v;
 	}
 	else {
 		die "Sorry, I cannot install the generated .pkg file because /usr/sbin/pkgadd is not present.\n";

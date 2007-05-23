@@ -66,8 +66,11 @@ sub install {
 	my $tgz=shift;
 
 	if (-x "/sbin/installpkg") {
+		my $v=$Alien::Package::verbose;
+		$Alien::Package::verbose=2;
 		$this->do("/sbin/installpkg", "$tgz")
 			or die "Unable to install";
+		$Alien::Package::verbose=$v;
 	}
 	else {
 		die "Sorry, I cannot install the generated .tgz file because /sbin/installpkg is not present. You can use tar to install it yourself.\n"

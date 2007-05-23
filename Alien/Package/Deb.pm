@@ -87,8 +87,11 @@ sub install {
 	my $this=shift;
 	my $deb=shift;
 
+	my $v=$Alien::Package::verbose;
+	$Alien::Package::verbose=2;
 	$this->do("dpkg", "--no-force-overwrite", "-i", $deb)
 		or die "Unable to install";
+	$Alien::Package::verbose=$v;
 }
 
 =item test
