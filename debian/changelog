@@ -1,8 +1,9 @@
-alien (8.69) UNRELEASED; urgency=low
+alien (8.69) unstable; urgency=low
 
   * Alien's repository has moved from subversion to git.
+  * Minor improvement to debian/rules clean.
 
- -- Joey Hess <joeyh@debian.org>  Mon, 15 Oct 2007 23:24:01 -0400
+ -- Joey Hess <joeyh@debian.org>  Fri, 19 Oct 2007 20:27:53 -0400
 
 alien (8.68) unstable; urgency=low
 

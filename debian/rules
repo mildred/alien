@@ -14,7 +14,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp
 	perl Makefile.PL
-	-$(MAKE) realclean
+	if [ -e Makefile ]; then $(MAKE) realclean; fi
 	dh_clean
 
 binary-arch: build
