@@ -137,7 +137,7 @@ built.
 
 Be less strict about which patch file is used, perhaps attempting to use a patch
 file for an older verson of the package. This is not guaranteed to always work;
-older patches may necessarily not work with newer packages.
+older patches may not necessarily work with newer packages.
 
 =item B<--nopatch>
 
