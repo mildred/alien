@@ -78,18 +78,19 @@ sub scan {
 		POSTUN => 'postrm',
 	);
 
-	# These fields need no translation except case.
-	foreach (qw{name version release arch changelogtext summary
-		    description copyright prefixes}) {
-		$fieldtrans{uc $_}=$_;
-	}
-
 	# Use --queryformat to pull out all the fields we need.
-	foreach my $field (keys(%fieldtrans)) {
-		$_=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
-		$field=$fieldtrans{$field};
-		$_='' if $_ eq '(none)';
-		$this->$field($_);
+	foreach my $field (qw{NAME VERSION RELEASE ARCH CHANGELOGTEXT
+		              SUMMARY DESCRIPTION COPYRIGHT PREFIXES},
+	                   keys(%fieldtrans)) {
+		my $value=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
+		if (exists $fieldtrans{$field}) {
+			$field=$fieldtrans{$field};
+		}
+		else {
+			$field=lc($field);
+		}
+		$value='' if $value eq '(none)';
+		$this->$field($value);
 	}
 
 	# Get the conffiles list.
