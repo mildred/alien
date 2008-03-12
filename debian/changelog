@@ -1,9 +1,9 @@
-alien (8.70) UNRELEASED; urgency=low
+alien (8.70) unstable; urgency=low
 
   * Extract prefixes field before extracting scripts so that
     RPM_INSTALL_PREFIX gets set.
 
- -- Joey Hess <joeyh@debian.org>  Wed, 12 Mar 2008 11:04:06 -0400
+ -- Joey Hess <joeyh@debian.org>  Wed, 12 Mar 2008 11:05:40 -0400
 
 alien (8.69) unstable; urgency=low
 

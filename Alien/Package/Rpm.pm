@@ -83,14 +83,15 @@ sub scan {
 		              SUMMARY DESCRIPTION COPYRIGHT PREFIXES},
 	                   keys(%fieldtrans)) {
 		my $value=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
+		my $key;
 		if (exists $fieldtrans{$field}) {
-			$field=$fieldtrans{$field};
+			$key=$fieldtrans{$field};
 		}
 		else {
-			$field=lc($field);
+			$key=lc($field);
 		}
 		$value='' if $value eq '(none)';
-		$this->$field($value);
+		$this->$key($value);
 	}
 
 	# Get the conffiles list.
