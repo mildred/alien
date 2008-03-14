@@ -187,30 +187,45 @@ sub unpack {
 	#
 	# Test to see if the package contains the prefix directory already.
 	if (defined $this->prefixes && ! -e "$workdir/".$this->prefixes) {
+		my $relocate=1;
+
 		# Get the files to move.
 		my @filelist=glob("$workdir/*");
-
+		
 		# Now, make the destination directory.
 		my $collect=$workdir;
 		foreach (split m:/:, $this->prefixes) {
 			if ($_ ne '') { # this keeps us from using anything but relative paths.
 				$collect.="/$_";
+				if (-d $collect) {
+					# The package contains a parent
+					# directory of the relocation
+					# directory. Since it's impossible
+					# to move a parent directory into
+					# its child, bail out and do
+					# nothing.
+					$relocate=0;
+					last;
+				}
 				$this->do("mkdir", $collect) || die "unable to mkdir $collect: $!";
 			}
 		}
-		# Now move all files in the package to the directory we made.
-		if (@filelist) {
-			$this->do("mv", @filelist, "$workdir/".$this->prefixes)
-				or die "error moving unpacked files into the default prefix directory: $!";
-		}
 
-		# Deal with relocating conffiles.
-		my @cf;
-		foreach my $cf (@{$this->conffiles}) {
-			$cf=$this->prefixes.$cf;
-			push @cf, $cf;
+		if ($relocate) {
+			# Now move all files in the package to the directory we made.
+			if (@filelist) {
+				$this->do("mv", @filelist, "$workdir/".$this->prefixes)
+					or die "error moving unpacked files into the default prefix directory: $!";
+			}
+	
+			# Deal with relocating conffiles.
+			my @cf;
+			foreach my $cf (@{$this->conffiles}) {
+				$cf=$this->prefixes.$cf;
+				push @cf, $cf;
+			}
+			$this->conffiles([@cf]);
 		}
-		$this->conffiles([@cf]);
 	}
 	
 	# rpm files have two sets of permissions; the set in the cpio

@@ -1,3 +1,10 @@
+alien (8.71) unstable; urgency=low
+
+  * Deal with rpms that relocate ie, /usr into /usr/local, and don't
+    try to move /usr into /usr/local in this case. Closes: #470905
+
+ -- Joey Hess <joeyh@debian.org>  Fri, 14 Mar 2008 13:35:33 -0400
+
 alien (8.70) unstable; urgency=low
 
   * Extract prefixes field before extracting scripts so that
