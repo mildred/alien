@@ -1,7 +1,7 @@
 Source: alien
 Section: admin
 Priority: optional
-Build-Depends: debhelper (>= 4)
+Build-Depends: debhelper (>= 7)
 Maintainer: Joey Hess <joeyh@debian.org>
 Standards-Version: 3.7.3
 Vcs-Git: git://git.kitenet.net/alien

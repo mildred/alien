@@ -1,47 +1,21 @@
 #!/usr/bin/make -f
+%:
+	dh $@
 
-build: build-stamp
-build-stamp:
-	dh_testdir
-	perl Makefile.PL
-	$(MAKE)
+build:
+	dh build
 	# simple smoke test
 	./alien.pl -V
-	touch build-stamp
-
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp
-	perl Makefile.PL
-	if [ -e Makefile ]; then $(MAKE) realclean; fi
-	dh_clean
-
-binary-arch: build
 
 binary-indep: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k
+	dh install --before dh_auto_install
 	$(MAKE) pure_install INSTALLDIRS=vendor \
 		PREFIX=$(shell pwd)/debian/alien/$(shell perl -MConfig -e 'print $$Config{prefix}') \
 		VARPREFIX=$(shell pwd)/debian/alien
-	# Why does it make this empty directory? Sigh.
-	rm -rf debian/alien/usr/lib
-	dh_installdocs README gendiff.txt
-	dh_installexamples
-	dh_installchangelogs
-	dh_compress
-	dh_fixperms
-	dh_perl
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+	dh install --after dh_auto_install
 
 # Not intended for use by anyone except the author.
 announcedir:
 	@echo ${HOME}/src/joeywiki/code/alien/news
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary
