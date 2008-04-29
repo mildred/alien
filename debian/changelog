@@ -1,6 +1,8 @@
 alien (8.72) UNRELEASED; urgency=low
 
   * Use debhelper 7, rules file minimisation.
+  * Improve parsing of tgz filenames, to avoid confusion when the filename
+    includes the package type (ie, "noarch"). Patch from Andrej Ricnik-Bay.
 
  -- Joey Hess <joeyh@debian.org>  Thu, 24 Apr 2008 02:00:59 -0400
 

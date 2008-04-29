@@ -95,7 +95,7 @@ sub scan {
 	# Strip out any tar extentions.
 	$basename=~s/\.(tgz|tar\.(gz|Z))$//;
 
-	if ($basename=~m/(.*)-(.*?[0-9]+.*)/) {
+	if ($basename=~m/([\w-]+)-([0-9\.?]+).*/) {
 		$this->name($1);
 		$this->version($2);
 	}
