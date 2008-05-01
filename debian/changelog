@@ -1,10 +1,12 @@
-alien (8.72) UNRELEASED; urgency=low
+alien (8.72) unstable; urgency=low
 
   * Use debhelper 7, rules file minimisation.
   * Improve parsing of tgz filenames, to avoid confusion when the filename
     includes the package type (ie, "noarch"). Patch from Andrej Ricnik-Bay.
+  * When generating a debian changelog file, work around bug #478925 by
+    including the alien changelog text inside the debian changelog entry.
 
- -- Joey Hess <joeyh@debian.org>  Thu, 24 Apr 2008 02:00:59 -0400
+ -- Joey Hess <joeyh@debian.org>  Thu, 01 May 2008 15:40:34 -0400
 
 alien (8.71) unstable; urgency=low
 
