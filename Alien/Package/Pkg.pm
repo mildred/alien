@@ -262,7 +262,7 @@ sub prep {
 #  	  grep {/^\./} readdir DIR;
 #  	closedir DIR;
 
-	$this->do("cd $dir; find . -print | pkgproto > ./prototype")
+	$this->do("cd $dir; find . -print | sed -e '/.\\/prototype\$/d' | pkgproto > ./prototype")
 		|| die "error during pkgproto: $!\n";
 
 	open(PKGPROTO, ">>$dir/prototype")

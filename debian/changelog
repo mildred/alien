@@ -1,3 +1,10 @@
+alien (8.73) UNRELEASED; urgency=low
+
+  * Fix pkg generation to not include /prototype in all packages.
+    (Kim Bisgaard)
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 11 Sep 2008 16:22:28 -0400
+
 alien (8.72) unstable; urgency=low
 
   * Use debhelper 7, rules file minimisation.
