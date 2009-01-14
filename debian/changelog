@@ -1,3 +1,10 @@
+alien (8.74) UNRELEASED; urgency=low
+
+  * Support bzipped and uncompressed tar files, using tar's auto-compression
+    detection. (Requires gnu tar 1.14.91)
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 14 Jan 2009 13:27:12 -0500
+
 alien (8.73) unstable; urgency=low
 
   * Fix pkg generation to not include /prototype in all packages.

@@ -9,10 +9,14 @@ Alien::Package::Tgz - an object that represents a tgz package
 package Alien::Package::Tgz;
 use strict;
 use base qw(Alien::Package);
+use Cwd qw(abs_path);
+
+my $tarext=qr/\.(?:tgz|tar(?:\.(?:gz|Z|z|bz|bz2))?|taz)$/;
 
 =head1 DESCRIPTION
 
 This is an object class that represents a tgz package, as used in Slackware. 
+It also allows conversion of raw tar files.
 It is derived from Alien::Package.
 
 =head1 CLASS DATA
@@ -49,7 +53,7 @@ sub checkfile {
         my $this=shift;
         my $file=shift;
 
-        return $file =~ m/.*\.(?:tgz|tar\.(?:gz|Z|z)|taz)$/;
+        return $file =~ m/$tarext$/;
 }
 
 =item install
@@ -93,7 +97,7 @@ sub scan {
 	my ($basename)=('/'.$file)=~m#^/?.*/(.*?)$#;
 
 	# Strip out any tar extentions.
-	$basename=~s/\.(tgz|tar\.(gz|Z))$//;
+	$basename=~s/$tarext//;
 
 	if ($basename=~m/([\w-]+)-([0-9\.?]+).*/) {
 		$this->name($1);
@@ -119,7 +123,7 @@ sub scan {
 	# Now figure out the conffiles. Assume anything in etc/ is a
 	# conffile.
 	my @conffiles;
-	open (FILELIST,"tar zvtf $file | grep etc/ |") ||
+	open (FILELIST,"tar vtf $file | grep etc/ |") ||
 		die "getting filelist: $!";
 	while (<FILELIST>) {
 		# Make sure it's a normal file. This is looking at the
@@ -136,7 +140,7 @@ sub scan {
 	# Now get the whole filelist. We have to add leading /'s to the
 	# filenames. We have to ignore all files under /install/
 	my @filelist;
-	open (FILELIST, "tar ztf $file |") ||
+	open (FILELIST, "tar tf $file |") ||
 		die "getting filelist: $!";
 	while (<FILELIST>) {
 		chomp;
@@ -148,7 +152,7 @@ sub scan {
 
 	# Now get the scripts.
 	foreach my $script (keys %{scripttrans()}) {
-		$this->$script(scalar $this->runpipe(1, "tar Oxzf $file install/${scripttrans()}{$script} 2>/dev/null"));
+		$this->$script(scalar $this->runpipe(1, "tar Oxf $file install/${scripttrans()}{$script} 2>/dev/null"));
 	}
 
 	return 1;
@@ -163,9 +167,9 @@ Unpack tgz.
 sub unpack {
 	my $this=shift;
 	$this->SUPER::unpack(@_);
-	my $file=$this->filename;
+	my $file=abs_path($this->filename);
 
-	$this->do("cat $file | (cd ".$this->unpacked_tree."; tar zxpf -)")
+	$this->do("cd ".$this->unpacked_tree."; tar xpf $file")
 		or die "Unpacking of '$file' failed: $!";
 	# Delete the install directory that has slackware info in it.
 	$this->do("cd ".$this->unpacked_tree."; rm -rf ./install");
