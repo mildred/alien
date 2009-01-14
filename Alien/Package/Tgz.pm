@@ -110,11 +110,11 @@ sub scan {
 
 	$this->arch('all');
 
-	$this->summary("Converted Slackware tgz package");
+	$this->summary("Converted tgz package");
 	$this->description($this->summary);
 	$this->copyright('unknown');
 	$this->release(1);
-	$this->distribution("Slackware");
+	$this->distribution("Slackware/tarball");
 	$this->group("unknown");
 	$this->origformat('tgz');
 	$this->changelogtext('');
