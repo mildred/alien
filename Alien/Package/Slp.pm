@@ -358,6 +358,8 @@ sub release {
 }
 
 
+=back
+
 =head1 AUTHOR
 
 Joey Hess <joey@kitenet.net>

@@ -222,6 +222,8 @@ sub build {
 	return $tgz;
 }
 
+=back
+
 =head1 AUTHOR
 
 Joey Hess <joey@kitenet.net>

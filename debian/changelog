@@ -1,9 +1,10 @@
-alien (8.74) UNRELEASED; urgency=low
+alien (8.74) unstable; urgency=low
 
   * Support bzipped and uncompressed tar files, using tar's auto-compression
     detection. (Requires gnu tar 1.14.91)
+  * pod fixes
 
- -- Joey Hess <joeyh@debian.org>  Wed, 14 Jan 2009 13:27:12 -0500
+ -- Joey Hess <joeyh@debian.org>  Sun, 15 Feb 2009 19:51:54 -0500
 
 alien (8.73) unstable; urgency=low
 

@@ -754,7 +754,7 @@ sub postinst {
 	return "$firstline\n$permscript\n$rest";
 }
 
-=cut
+=back
 
 =head1 AUTHOR
 

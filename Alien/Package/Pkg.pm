@@ -327,6 +327,8 @@ sub build {
 	return $name;
 }
 
+=back
+
 =head1 AUTHOR
 
 Mark Hershberger <mah@everybody.org>
