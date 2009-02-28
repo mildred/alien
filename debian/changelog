@@ -1,3 +1,9 @@
+alien (8.75) UNRELEASED; urgency=low
+
+  * Simplified rules file.
+
+ -- Joey Hess <joeyh@debian.org>  Fri, 27 Feb 2009 20:18:52 -0500
+
 alien (8.74) unstable; urgency=low
 
   * Support bzipped and uncompressed tar files, using tar's auto-compression

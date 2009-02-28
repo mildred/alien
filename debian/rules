@@ -2,20 +2,19 @@
 %:
 	dh $@
 
-build:
-	dh build
+override_dh_auto_test:
 	# simple smoke test
 	./alien.pl -V
 
-binary-indep: build
-	dh install --before dh_auto_install
+override_dh_auto_install:
 	$(MAKE) pure_install INSTALLDIRS=vendor \
 		PREFIX=$(shell pwd)/debian/alien/$(shell perl -MConfig -e 'print $$Config{prefix}') \
 		VARPREFIX=$(shell pwd)/debian/alien
-	dh install --after dh_auto_install
+
+override_dh_auto_clean:
+	# distclean moans about MANIFEST, this is quieter
+	if [ -e Makefile ]; then $(MAKE) realclean; fi
 
 # Not intended for use by anyone except the author.
 announcedir:
 	@echo ${HOME}/src/joeywiki/code/alien/news
-
-binary: binary-indep binary-arch
