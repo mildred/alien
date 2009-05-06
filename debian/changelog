@@ -1,6 +1,11 @@
 alien (8.75) UNRELEASED; urgency=low
 
   * Simplified rules file.
+  * Modify maintainer scripts from rpm files to use /bin/bash rather
+    than /bin/sh. Many such scripts are only tested on systems where /bin/sh
+    is bash, and contain bashisms, which can cause trouble when converting
+    the rpm to be used on eg, the Debian family of distributions, where
+    /bin/sh can legitimatly be dash. Closes: #495971
 
  -- Joey Hess <joeyh@debian.org>  Fri, 27 Feb 2009 20:18:52 -0500
 
