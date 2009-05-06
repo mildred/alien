@@ -1,4 +1,4 @@
-alien (8.75) UNRELEASED; urgency=low
+alien (8.75) unstable; urgency=low
 
   * Simplified rules file.
   * Modify maintainer scripts from rpm files to use /bin/bash rather
@@ -7,7 +7,7 @@ alien (8.75) UNRELEASED; urgency=low
     the rpm to be used on eg, the Debian family of distributions, where
     /bin/sh can legitimatly be dash. Closes: #495971
 
- -- Joey Hess <joeyh@debian.org>  Fri, 27 Feb 2009 20:18:52 -0500
+ -- Joey Hess <joeyh@debian.org>  Wed, 06 May 2009 17:22:02 -0400
 
 alien (8.74) unstable; urgency=low
 
