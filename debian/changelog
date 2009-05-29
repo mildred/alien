@@ -1,3 +1,10 @@
+alien (8.76) UNRELEASED; urgency=low
+
+  * Avoid using hostname -f for portability to unix systems,
+    such as Solaris, where any options _set_ the hostname.
+
+ -- Joey Hess <joeyh@debian.org>  Fri, 29 May 2009 13:02:54 -0400
+
 alien (8.75) unstable; urgency=low
 
   * Simplified rules file.

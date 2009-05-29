@@ -683,7 +683,7 @@ sub email {
 		close MAILNAME;
 	}
 	if (!$mailname) {
-		$mailname=$this->runpipe(1, "hostname -f");
+		$mailname=$this->runpipe(1, "hostname");
 		chomp $mailname;
 	}
 	return "$login\@$mailname";
