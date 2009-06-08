@@ -497,7 +497,7 @@ sub _script_helper {
 			$value="#!/bin/bash\n$prefixcode$value";
 		}
 		else {
-			$value=~s@^#!\s*/bin/sh(\s)@#/bin/bash$1@;
+			$value=~s@^#!\s*/bin/sh(\s)@#!/bin/bash$1@;
 			$value=~s/\n/\n$prefixcode/s;
 		}
 		$this->{$script} = $value;

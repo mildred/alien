@@ -738,7 +738,7 @@ sub postinst {
 	return $postinst unless %$owninfo;
 	
 	my ($firstline, $rest)=split(/\n/, $postinst, 2);
-	if ($firstline !~ m/^#!\s*\/bin\/sh/) {
+	if ($firstline !~ m/^#!\s*\/bin\/(ba)?sh/) {
 		print STDERR "warning: unable to add ownership fixup code to postinst as the postinst is not a shell script!\n";
 		return $postinst;
 	}
