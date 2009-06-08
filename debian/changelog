@@ -1,4 +1,4 @@
-alien (8.76) UNRELEASED; urgency=low
+alien (8.76) unstable; urgency=low
 
   * Avoid using hostname -f for portability to unix systems,
     such as Solaris, where any options _set_ the hostname.
@@ -6,7 +6,7 @@ alien (8.76) UNRELEASED; urgency=low
     shell scripts when converting to deb. Closes: #532330
     (Thanks, Bruce Stephens)
 
- -- Joey Hess <joeyh@debian.org>  Fri, 29 May 2009 13:02:54 -0400
+ -- Joey Hess <joeyh@debian.org>  Mon, 08 Jun 2009 13:22:35 -0400
 
 alien (8.75) unstable; urgency=low
 
