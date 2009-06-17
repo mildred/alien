@@ -317,6 +317,7 @@ sub prep {
 		my $line=<$changelog>;
 		if ($line=~/^[^ ]+\s+\(([^)]+)\)\s/) {
 			my $version=$1;
+			$version=~s/\s+//; # ensure no whitespace
 			if ($version=~/(.*)-(.*)/) {
 				$version=$1;
 				$this->release($2);
