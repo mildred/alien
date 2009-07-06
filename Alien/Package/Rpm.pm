@@ -239,6 +239,9 @@ sub unpack {
 	while (<GETPERMS>) {
 		chomp;
 		my ($mode, $owner, $group, $file) = split(/ /, $_, 4);
+
+		next if -l "$workdir/$file";
+
 		$mode = $mode & 07777; # remove filetype
 		my $uid = getpwnam($owner);
 		if (! defined $uid || $uid != 0) {
@@ -258,12 +261,10 @@ sub unpack {
 		if (defined($owninfo{$file}) && ($mode & 07000 > 0)) {
 			$modeinfo{$file} = sprintf "%lo", $mode;
 		}
-		next unless -e "$workdir/$file"; # skip broken links
 		if ($> == 0) {
 			$this->do("chown", "$uid:$gid", "$workdir/$file") 
 				|| die "failed chowning $file to $uid\:$gid\: $!";
 		}
-		next if -l "$workdir/$file"; # skip links
 		$this->do("chmod", sprintf("%lo", $mode), "$workdir/$file") 
 			|| die "failed changing mode of $file to $mode\: $!";
 	}
