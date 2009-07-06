@@ -1,10 +1,10 @@
-alien (8.77) UNRELEASED; urgency=low
+alien (8.77) unstable; urgency=low
 
   * Don't allow whitespace in package version when parsing debian/changelog.
   * In rpm permission fixup code, avoid processing symlinks since that
     would result in the file the link points to being "fixed". Closes: #535586
 
- -- Joey Hess <joeyh@debian.org>  Wed, 17 Jun 2009 13:06:53 -0400
+ -- Joey Hess <joeyh@debian.org>  Mon, 06 Jul 2009 13:37:01 -0400
 
 alien (8.76) unstable; urgency=low
 
