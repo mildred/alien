@@ -419,7 +419,9 @@ sub build {
 	}
 
 	$opts.=" $ENV{RPMBUILDOPT}" if exists $ENV{RPMBUILDOPT};
-	my $command="cd $dir; $buildcmd -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
+	my $pwd=`pwd`;
+	chomp $pwd;
+	my $command="cd $dir; $buildcmd --buildroot=$pwd/$dir -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
 	my $log=$this->runpipe(1, "$command 2>&1");
 	if ($?) {
 		die "Package build failed. Here's the log of the command ($command):\n", $log;

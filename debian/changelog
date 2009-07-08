@@ -1,3 +1,10 @@
+alien (8.78) UNRELEASED; urgency=low
+
+  * Add support for rpm 4.7.0, which ignores the buildroot setting in the
+    spec file, by passing --buildroot. (Thanks, Pavel Roskin)
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 08 Jul 2009 13:50:12 -0400
+
 alien (8.77) unstable; urgency=low
 
   * Don't allow whitespace in package version when parsing debian/changelog.
