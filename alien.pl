@@ -513,7 +513,7 @@ foreach my $file (@ARGV) {
 				# Make sure $package does not wipe out the
 				# directory when it is destroyed.
 				$package->unpacked_tree('');
-				exit;
+				next;
 			}
 			
 			my $newfile=$package->build;
