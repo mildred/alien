@@ -1,3 +1,9 @@
+alien (8.79) UNRELEASED; urgency=low
+
+  * Typo. Closes: #554379
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 04 Nov 2009 12:08:39 -0500
+
 alien (8.78) unstable; urgency=low
 
   * Add support for rpm 4.7.0, which ignores the buildroot setting in the

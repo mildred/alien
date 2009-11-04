@@ -239,7 +239,7 @@ all 4 package formats.
 
 =head1 ENVIRONMENT
 
-B<alien> recognizes the following environemnt variables:
+B<alien> recognizes the following environment variables:
 
 =over 4
 
