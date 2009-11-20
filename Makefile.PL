@@ -29,9 +29,6 @@ extra_build:
 extra_install:
 	install -d $(PREFIX)/share/alien/patches \
 		   $(VARPREFIX)/var/lib/alien
-	cp -f patches/*.diff $(PREFIX)/share/alien/patches/
-	-rm -f $(PREFIX)/share/alien/patches/*.gz
-	gzip -qf9 $(PREFIX)/share/alien/patches/*
 
 alien:
 	perl -pe '$$_="" if /use lib/; $$_="our \$$Version=\"$(VER)\";\n" if /VERSION_AUTOREPLACE/' alien.pl > alien
