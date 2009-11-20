@@ -3,6 +3,9 @@ alien (8.79) UNRELEASED; urgency=low
   * Typo. Closes: #554379
   * Modify -g and -s to support running on multiple packages at once.
     Closes: #554404
+  * Removed all built-in patches for converting specific packages
+    (j2sdk, jdk, lgtoclnt, motif) with alien. These were out of date,
+    and not maintained. Alien will not include such patches going forward.
 
  -- Joey Hess <joeyh@debian.org>  Wed, 04 Nov 2009 12:08:39 -0500
 
