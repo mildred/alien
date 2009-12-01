@@ -1,4 +1,4 @@
-alien (8.79) UNRELEASED; urgency=low
+alien (8.79) unstable; urgency=low
 
   * Typo. Closes: #554379
   * Modify -g and -s to support running on multiple packages at once.
@@ -6,8 +6,9 @@ alien (8.79) UNRELEASED; urgency=low
   * Removed all built-in patches for converting specific packages
     (j2sdk, jdk, lgtoclnt, motif) with alien. These were out of date,
     and not maintained. Alien will not include such patches going forward.
+  * Depend on the new rpm2cpio package. Closes: #559061
 
- -- Joey Hess <joeyh@debian.org>  Wed, 04 Nov 2009 12:08:39 -0500
+ -- Joey Hess <joeyh@debian.org>  Tue, 01 Dec 2009 13:23:55 -0500
 
 alien (8.78) unstable; urgency=low
 
