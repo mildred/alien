@@ -67,6 +67,9 @@ standard linux directory tree. Do NOT run B<alien> on tar files with source
 code in them, unless you want this source code to be installed in your root
 directory when you install the package!
 
+When using B<alien> to convert a tgz package, all files in /etc in are assumed
+to be configuration files.
+
 =item pkg
 
 To manipulate packages in the Solaris pkg format (which is really the SV 
@@ -257,14 +260,6 @@ If set, B<alien> assumes this is your email address. Email addresses are
 included in generated debian packages.
 
 =back
-
-=head1 NOTES
-
-When using B<alien> to convert a tgz package, all files in /etc in are assumed
-to be configuration files.
-
-If B<alien> is not run as root, the files in the generated package will have
-incorrect owners and permissions.
 
 =head1 AUTHOR
 
