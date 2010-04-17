@@ -76,11 +76,12 @@ sub scan {
 		POSTIN => 'postinst',
 		PREUN => 'prerm',
 		POSTUN => 'postrm',
+		LICENSE => 'copyright', # RPM Copyright tag has been deprecated in favour of License tag since rpm 4.0
 	);
 
 	# Use --queryformat to pull out all the fields we need.
 	foreach my $field (qw{NAME VERSION RELEASE ARCH CHANGELOGTEXT
-		              SUMMARY DESCRIPTION COPYRIGHT PREFIXES},
+		              SUMMARY DESCRIPTION PREFIXES},
 	                   keys(%fieldtrans)) {
 		my $value=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
 		my $key;
@@ -122,11 +123,17 @@ sub scan {
 			$this->summary('Converted RPM package');
 		}
 	}
-	if (! $this->copyright) {
-		$this->copyright('unknown');
-	}
 	if (! $this->description) {
 		$this->description($this->summary);
+	}
+	if (! $this->copyright) {
+		# Older rpms have no licence tag, but have a copyright.
+		$this->copyright($this->runpipe(0, "LANG=C rpm -qp --queryformat \%{COPYRIGHT} $file"));
+
+		# Fallback.
+		if (! $this->copyright) {
+			$this->copyright('unknown');
+		}
 	}
 	if (! $this->release || ! $this->version || 
 	    ! $this->name) {
