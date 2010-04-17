@@ -111,7 +111,7 @@ sub scan {
 	}
 
 	# Sanity check and sanitize fields.
-	unless (defined $this->summary) {
+	if (! $this->summary) {
 		# Older rpms will have no summary, but will have a
 		# description. We'll take the 1st line out of the
 		# description, and use it for the summary.
@@ -122,14 +122,14 @@ sub scan {
 			$this->summary('Converted RPM package');
 		}
 	}
-	unless (defined $this->copyright) {
+	if (! $this->copyright) {
 		$this->copyright('unknown');
 	}
-	unless (defined $this->description) {
+	if (! $this->description) {
 		$this->description($this->summary);
 	}
-	if (! defined $this->release || ! defined $this->version || 
-	    ! defined $this->name) {
+	if (! $this->release || ! $this->version || 
+	    ! $this->name) {
 		die "Error querying rpm file";
 	}
 
