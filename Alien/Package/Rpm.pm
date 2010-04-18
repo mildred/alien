@@ -84,7 +84,7 @@ sub scan {
 		              SUMMARY DESCRIPTION PREFIXES},
 	                   keys(%fieldtrans)) {
 		my $value=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
-		next if $? || $value eq 'none';
+		next if $? || $value eq '(none)';
 		my $key;
 		if (exists $fieldtrans{$field}) {
 			$key=$fieldtrans{$field};
