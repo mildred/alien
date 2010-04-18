@@ -76,7 +76,7 @@ sub scan {
 		POSTIN => 'postinst',
 		PREUN => 'prerm',
 		POSTUN => 'postrm',
-		LICENSE => 'copyright', # RPM Copyright tag has been deprecated in favour of License tag since rpm 4.0
+		LICENSE => 'copyright',
 	);
 
 	# Use --queryformat to pull out all the fields we need.
@@ -84,6 +84,7 @@ sub scan {
 		              SUMMARY DESCRIPTION PREFIXES},
 	                   keys(%fieldtrans)) {
 		my $value=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
+		next if $? || $value eq 'none';
 		my $key;
 		if (exists $fieldtrans{$field}) {
 			$key=$fieldtrans{$field};
@@ -91,7 +92,6 @@ sub scan {
 		else {
 			$key=lc($field);
 		}
-		$value='' if $value eq '(none)';
 		$this->$key($value);
 	}
 
@@ -112,7 +112,7 @@ sub scan {
 	}
 
 	# Sanity check and sanitize fields.
-	if (! $this->summary) {
+	unless (defined $this->summary) {
 		# Older rpms will have no summary, but will have a
 		# description. We'll take the 1st line out of the
 		# description, and use it for the summary.
@@ -123,10 +123,10 @@ sub scan {
 			$this->summary('Converted RPM package');
 		}
 	}
-	if (! $this->description) {
+	unless (defined $this->description) {
 		$this->description($this->summary);
 	}
-	if (! $this->copyright) {
+	unless (defined $this->copyright) {
 		# Older rpms have no licence tag, but have a copyright.
 		$this->copyright($this->runpipe(0, "LANG=C rpm -qp --queryformat \%{COPYRIGHT} $file"));
 
@@ -135,8 +135,8 @@ sub scan {
 			$this->copyright('unknown');
 		}
 	}
-	if (! $this->release || ! $this->version || 
-	    ! $this->name) {
+	if (! defined $this->release || ! defined $this->version || 
+	    ! defined $this->name) {
 		die "Error querying rpm file";
 	}
 
