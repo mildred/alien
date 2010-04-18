@@ -1,9 +1,8 @@
-alien (8.80) UNRELEASED; urgency=low
+alien (8.80) unstable; urgency=low
 
-  * Do not store empty values for fields which rpm does not query.
-  * Support quertying rpm LICENSE field. (Alexey Khoroshilov)
+  * Support querying rpm LICENSE field. (Alexey Khoroshilov)
 
- -- Joey Hess <joeyh@debian.org>  Sun, 18 Apr 2010 15:20:31 -0400
+ -- Joey Hess <joeyh@debian.org>  Sun, 18 Apr 2010 15:44:52 -0400
 
 alien (8.79) unstable; urgency=low
 
