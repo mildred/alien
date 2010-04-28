@@ -491,10 +491,14 @@ sub build {
 
 	chdir $this->unpacked_tree;
 	my $log=$this->runpipe(1, "debian/rules binary 2>&1");
-	if ($?) {
+	chdir "..";
+	my $err=$?;
+	if ($err) {
+		if (! defined $log) {
+			die "Package build failed; could not run generated debian/rules file.\n";
+		}
 		die "Package build failed. Here's the log:\n", $log;
 	}
-	chdir "..";
 
 	return $this->name."_".$this->version."-".$this->release."_".$this->arch.".deb";
 }

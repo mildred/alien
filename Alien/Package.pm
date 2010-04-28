@@ -331,6 +331,8 @@ package was unpacked, it is time now to wipe out the temporary directory.
 sub DESTROY {
 	my $this=shift;
 
+	my $exitcode=$?;
+
 	return if (! defined $this->unpacked_tree || $this->unpacked_tree eq '');
 	# This should never happen, but it pays to check.
 	if ($this->unpacked_tree eq '/') {
@@ -344,7 +346,9 @@ sub DESTROY {
 	
 	$this->do('rm', '-rf', $this->unpacked_tree)
 		or die "unable to delete temporary directory '".$this->unpacked_tree."': $!";
-	$this->unpacked_tree('');	
+	$this->unpacked_tree('');
+
+	$?=$exitcode;
 }
 
 =item AUTOLOAD

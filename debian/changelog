@@ -1,3 +1,11 @@
+alien (8.81) UNRELEASED; urgency=low
+
+  * Avoid uninitialized value warning when debian/rules fails to run
+    due to alien being run in a noexec directory. Closes: #579216
+  * Prevent DESTROY stomping on alien's exit code sometimes.
+
+ -- Joey Hess <joeyh@debian.org>  Wed, 28 Apr 2010 11:29:19 -0400
+
 alien (8.80) unstable; urgency=low
 
   * Support querying rpm LICENSE field. (Alexey Khoroshilov)
