@@ -3,6 +3,8 @@ alien (8.81) UNRELEASED; urgency=low
   * Avoid uninitialized value warning when debian/rules fails to run
     due to alien being run in a noexec directory. Closes: #579216
   * Prevent DESTROY stomping on alien's exit code sometimes.
+  * Support extracting lzma compressed RPMs. 
+    (Patch by unnamed person on some bug tracking system I don't frequent.)
 
  -- Joey Hess <joeyh@debian.org>  Wed, 28 Apr 2010 11:29:19 -0400
 
