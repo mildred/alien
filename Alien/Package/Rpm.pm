@@ -271,7 +271,7 @@ sub unpack {
 			}
 			$gid=0;
 		}
-		if (defined($owninfo{$file}) && ($mode & 07000 > 0)) {
+		if (defined($owninfo{$file}) && (($mode & 07000) > 0)) {
 			$modeinfo{$file} = sprintf "%lo", $mode;
 		}
 		if ($> == 0) {

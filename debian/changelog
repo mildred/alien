@@ -7,6 +7,11 @@ alien (8.81) UNRELEASED; urgency=low
     (Patch by unnamed person on some bug tracking system I don't frequent.)
   * Suggest lzma. If not installed, alien will still fail to decompress
     RPMs using it, but will support most rpms, which are not.
+  * Fix precedence problem that prevented alien from preserving permissions
+    of suid/sgid binaries that are not owned by root.
+    (Patch by Duane Waddle, on a bug tracking system I don't frequent, that
+    was about the "expire" it 4 days from now. We got lucky Duane, but please
+    use the Debian BTS next time!)
 
  -- Joey Hess <joeyh@debian.org>  Wed, 28 Apr 2010 11:29:19 -0400
 
