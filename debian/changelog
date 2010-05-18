@@ -12,6 +12,9 @@ alien (8.81) UNRELEASED; urgency=low
     (Patch by Duane Waddle, on a bug tracking system I don't frequent, that
     was about the "expire" it 4 days from now. We got lucky Duane, but please
     use the Debian BTS next time!)
+  * Support RPMs containing ghost files.
+    (Patch by Ben Webb, who would get his patches applied quicker if he
+    actually communicated them to the program's author.)
 
  -- Joey Hess <joeyh@debian.org>  Wed, 28 Apr 2010 11:29:19 -0400
 

@@ -274,12 +274,17 @@ sub unpack {
 		if (defined($owninfo{$file}) && (($mode & 07000) > 0)) {
 			$modeinfo{$file} = sprintf "%lo", $mode;
 		}
-		if ($> == 0) {
-			$this->do("chown", "$uid:$gid", "$workdir/$file") 
-				|| die "failed chowning $file to $uid\:$gid\: $!";
+		# Note that ghost files exist in the metadata but not
+                # in the cpio archive, so check that the file exists
+		# before trying to access it
+		if (-e "$workdir/$file") {
+			if ($> == 0) {
+				$this->do("chown", "$uid:$gid", "$workdir/$file") 
+					|| die "failed chowning $file to $uid\:$gid\: $!";
+			}
+			$this->do("chmod", sprintf("%lo", $mode), "$workdir/$file") 
+				|| die "failed changing mode of $file to $mode\: $!";
 		}
-		$this->do("chmod", sprintf("%lo", $mode), "$workdir/$file") 
-			|| die "failed changing mode of $file to $mode\: $!";
 	}
 	$this->owninfo(\%owninfo);
 	$this->modeinfo(\%modeinfo);
