@@ -1,4 +1,4 @@
-alien (8.81) UNRELEASED; urgency=low
+alien (8.81) unstable; urgency=low
 
   * Avoid uninitialized value warning when debian/rules fails to run
     due to alien being run in a noexec directory. Closes: #579216
@@ -16,7 +16,7 @@ alien (8.81) UNRELEASED; urgency=low
     (Patch by Ben Webb, who would get his patches applied quicker if he
     actually communicated them to the program's author.)
 
- -- Joey Hess <joeyh@debian.org>  Wed, 28 Apr 2010 11:29:19 -0400
+ -- Joey Hess <joeyh@debian.org>  Mon, 17 May 2010 20:56:59 -0400
 
 alien (8.80) unstable; urgency=low
 
