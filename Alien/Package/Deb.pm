@@ -383,18 +383,17 @@ sub prep {
 		close OUT;
 	}
 
+	# Use debhelper v7
+	open (OUT, ">$dir/debian/compat") || die "$dir/debian/compat: $!";
+	print OUT "7\n";
+	close OUT;
+
 	# A minimal rules file.
 	open (OUT, ">$dir/debian/rules") || die "$dir/debian/rules: $!";
 	my $fixpermscomment = $this->fixperms ? "" : "#";
 	print OUT << "EOF";
 #!/usr/bin/make -f
 # debian/rules for alien
-
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
-
-# Use v4 compatability mode, so ldconfig gets added to maint scripts.
-export DH_COMPAT=4
 
 PACKAGE=\$(shell dh_listpackages)
 
@@ -411,7 +410,7 @@ binary-indep: build
 binary-arch: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k -d
+	dh_prep
 	dh_installdirs
 
 	dh_installdocs

@@ -1,3 +1,11 @@
+alien (8.82) UNRELEASED; urgency=low
+
+  * Use debhelper compat level v7 when building packages. All changes
+    since v4 seem safe for alien's generated rules files.
+  * Use dh_prep instead of deprecated dh_clean -k.
+
+ -- Joey Hess <joeyh@debian.org>  Sun, 23 May 2010 18:55:14 -0400
+
 alien (8.81) unstable; urgency=low
 
   * Avoid uninitialized value warning when debian/rules fails to run
