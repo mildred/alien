@@ -3,6 +3,8 @@ alien (8.82) UNRELEASED; urgency=low
   * Use debhelper compat level v7 when building packages. All changes
     since v4 seem safe for alien's generated rules files.
   * Use dh_prep instead of deprecated dh_clean -k.
+  * Print a nice error message when attempting to build a deb from a package
+    of an unsupported architecture. Closes: #592625
 
  -- Joey Hess <joeyh@debian.org>  Sun, 23 May 2010 18:55:14 -0400
 

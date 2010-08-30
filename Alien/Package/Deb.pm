@@ -487,6 +487,14 @@ Build a deb.
 
 sub build {
 	my $this=shift;
+	
+	# Detect architecture mismatch and abort with a comprehensible
+	# error message.
+	my $arch=$this->arch;
+	my $ret=system("dpkg-architecture", "-i".$arch);
+	if ($ret != 0) {
+		die $this->filename." is for architecture ".$this->arch." ; the package cannot be built on this system"."\n";
+	}
 
 	chdir $this->unpacked_tree;
 	my $log=$this->runpipe(1, "debian/rules binary 2>&1");
