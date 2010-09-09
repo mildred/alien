@@ -491,9 +491,11 @@ sub build {
 	# Detect architecture mismatch and abort with a comprehensible
 	# error message.
 	my $arch=$this->arch;
-	my $ret=system("dpkg-architecture", "-i".$arch);
-	if ($ret != 0) {
-		die $this->filename." is for architecture ".$this->arch." ; the package cannot be built on this system"."\n";
+	if ($arch ne 'all') {
+		my $ret=system("dpkg-architecture", "-i".$arch);
+		if ($ret != 0) {
+			die $this->filename." is for architecture ".$this->arch." ; the package cannot be built on this system"."\n";
+		}
 	}
 
 	chdir $this->unpacked_tree;
