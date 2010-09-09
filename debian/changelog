@@ -1,8 +1,8 @@
-alien (8.83) UNRELEASED; urgency=low
+alien (8.83) unstable; urgency=low
 
   * Correct handling of arch all packages in deb arch check. Closes: #596209
 
- -- Joey Hess <joeyh@debian.org>  Thu, 09 Sep 2010 08:24:27 -0400
+ -- Joey Hess <joeyh@debian.org>  Thu, 09 Sep 2010 08:24:58 -0400
 
 alien (8.82) unstable; urgency=low
 
