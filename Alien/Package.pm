@@ -339,14 +339,17 @@ sub DESTROY {
 		die "alien internal error: unpacked_tree is set to '/'. Please file a bug report!";
 	}
 
-	# Just in case some dir perms are too screwed up for rm to work and
-	# we're not running as root. NB: can't use xargs
-	$this->do('find', $this->unpacked_tree, '-type', 'd', 
-	                  '-exec', 'chmod', '755', '{}', ';');
+	if (-d $this->unpacked_tree) {
+		# Just in case some dir perms are too screwed up for
+		# rm to work and we're not running as root. NB: can't
+		# use xargs
+		$this->do('find', $this->unpacked_tree, '-type', 'd', 
+		                  '-exec', 'chmod', '755', '{}', ';');
 	
-	$this->do('rm', '-rf', $this->unpacked_tree)
-		or die "unable to delete temporary directory '".$this->unpacked_tree."': $!";
-	$this->unpacked_tree('');
+		$this->do('rm', '-rf', $this->unpacked_tree)
+			or die "unable to delete temporary directory '".$this->unpacked_tree."': $!";
+		$this->unpacked_tree('');
+	}
 
 	$?=$exitcode;
 }

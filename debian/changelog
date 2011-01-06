@@ -1,3 +1,10 @@
+alien (8.84) UNRELEASED; urgency=low
+
+  * Silence error message when deleting build tree after making an rpm,
+    if rpmbuild has already deleted it.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 06 Jan 2011 13:47:10 -0400
+
 alien (8.83) unstable; urgency=low
 
   * Correct handling of arch all packages in deb arch check. Closes: #596209
