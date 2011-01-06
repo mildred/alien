@@ -747,7 +747,7 @@ sub postinst {
 	return $postinst unless ref $owninfo;
 
 	# If there is no postinst, let's make one up..
-	$postinst="#!/bin/sh\n" unless length $postinst;
+	$postinst="#!/bin/sh\n" unless defined $postinst && length $postinst;
 	
 	return $postinst unless %$owninfo;
 	
