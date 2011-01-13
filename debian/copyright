@@ -1,35 +1,13 @@
-This is a program originally written by Christoph Lameter
-<clameter@debian.org>.
+Format: http://dep.debian.net/deps/dep5/
+Source: native package
 
-Deb to rpm conversion code was taken from the Martian program by
-Randolph Chung <randolph@tausq.org>.
-
-The Solaris pkg code was written by Mark A. Hershberger
-<mah@everybody.org>.
-
-This program is now maintained by Joey Hess <joeyh@debian.org>.
-
-Copyright 1996, 1997 Christoph Lameter
-Portions copyright 1997 Randolph Chung
-Portions copyright 2001 Mark A. Hershberger
-Copyright 1997-2007 Joey Hess
-
-License:
-
-    alien is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-On Debian systems, the complete text of the GPL can be found in
-/usr/share/common-licenses/GPL.
+Files: *
+Copyright:
+ 1996, 1997 Christoph Lameter
+ 1997 Randolph Chung
+ 2001 Mark A. Hershberger
+ 1997-2011 Joey Hess
+License: GPL-2+
+ On Debian systems, the complete text of the GPL can be found in
+ /usr/share/common-licenses/GPL.
 
