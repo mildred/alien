@@ -1,10 +1,10 @@
-alien (8.84) UNRELEASED; urgency=low
+alien (8.84) unstable; urgency=low
 
   * Silence error message when deleting build tree after making an rpm,
     if rpmbuild has already deleted it. Closes: #622846
   * Squash an uninitialized value when creating a deb.
 
- -- Joey Hess <joeyh@debian.org>  Thu, 06 Jan 2011 13:47:10 -0400
+ -- Joey Hess <joeyh@debian.org>  Fri, 15 Apr 2011 14:13:20 -0400
 
 alien (8.83) unstable; urgency=low
 
