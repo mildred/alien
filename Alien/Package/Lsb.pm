@@ -30,7 +30,7 @@ sub checkfile {
 	my $this=shift;
 	my $file=shift;
 	return unless $file =~ m/^lsb-.*\.rpm$/;
-	my @deps=$this->runpipe(1, "LANG=C rpm -qp -R $file");
+	my @deps=$this->runpipe(1, "LANG=C rpm -qp -R '$file'");
 	return 1 if grep { s/\s+//g; $_ eq 'lsb' } @deps;
 	return;
 }

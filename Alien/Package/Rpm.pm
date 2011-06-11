@@ -83,7 +83,7 @@ sub scan {
 	foreach my $field (qw{NAME VERSION RELEASE ARCH CHANGELOGTEXT
 		              SUMMARY DESCRIPTION PREFIXES},
 	                   keys(%fieldtrans)) {
-		my $value=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} $file");
+		my $value=$this->runpipe(0, "LANG=C rpm -qp --queryformat \%{$field} '$file'");
 		next if $? || $value eq '(none)';
 		my $key;
 		if (exists $fieldtrans{$field}) {
@@ -96,16 +96,16 @@ sub scan {
 	}
 
 	# Get the conffiles list.
-	$this->conffiles([map { chomp; $_ } $this->runpipe(0, "LANG=C rpm -qcp $file")]);
+	$this->conffiles([map { chomp; $_ } $this->runpipe(0, "LANG=C rpm -qcp '$file'")]);
 	if (defined $this->conffiles->[0] &&
 	    $this->conffiles->[0] eq '(contains no files)') {
 		$this->conffiles([]);
 	}
 
-	$this->binary_info(scalar $this->runpipe(0, "rpm -qpi $file"));
+	$this->binary_info(scalar $this->runpipe(0, "rpm -qpi '$file'"));
 
 	# Get the filelist.
-	$this->filelist([map { chomp; $_ } $this->runpipe(0, "LANG=C rpm -qpl $file")]);
+	$this->filelist([map { chomp; $_ } $this->runpipe(0, "LANG=C rpm -qpl '$file'")]);
 	if (defined $this->filelist->[0] &&
 	    $this->filelist->[0] eq '(contains no files)') {
 		$this->filelist([]);
@@ -128,7 +128,7 @@ sub scan {
 	}
 	unless (defined $this->copyright) {
 		# Older rpms have no licence tag, but have a copyright.
-		$this->copyright($this->runpipe(0, "LANG=C rpm -qp --queryformat \%{COPYRIGHT} $file"));
+		$this->copyright($this->runpipe(0, "LANG=C rpm -qp --queryformat \%{COPYRIGHT} '$file'"));
 
 		# Fallback.
 		if (! $this->copyright) {
@@ -439,7 +439,7 @@ sub build {
 	$opts.=" $ENV{RPMBUILDOPT}" if exists $ENV{RPMBUILDOPT};
 	my $pwd=`pwd`;
 	chomp $pwd;
-	my $command="cd $dir; $buildcmd --buildroot=$pwd/$dir -bb $opts ".$this->name."-".$this->version."-".$this->release.".spec";
+	my $command="cd $dir; $buildcmd --buildroot='$pwd/$dir' -bb $opts '".$this->name."-".$this->version."-".$this->release.".spec'";
 	my $log=$this->runpipe(1, "$command 2>&1");
 	if ($?) {
 		die "Package build failed. Here's the log of the command ($command):\n", $log;
