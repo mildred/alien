@@ -292,6 +292,7 @@ use Alien::Package::Tgz;
 use Alien::Package::Slp;
 use Alien::Package::Pkg;
 use Alien::Package::Lsb;
+use Alien::Package::Dir;
 
 # Display alien's version number.
 sub version {
@@ -422,7 +423,12 @@ foreach my $file (@ARGV) {
 
 	# Check lsb before rpm, since lsb packages are really just
 	# glorified rpms.
-	if (Alien::Package::Lsb->checkfile($file)) {
+	if (Alien::Package::Dir->checkfile($file)) {
+		$package=Alien::Package::Dir->new(filename => $file);
+		$package->description($tgzdescription) if defined $tgzdescription;
+		$package->version($tgzversion) if defined $tgzversion;
+	}
+	elsif (Alien::Package::Lsb->checkfile($file)) {
 		$package=Alien::Package::Lsb->new(filename => $file);
 	}
 	elsif (Alien::Package::Rpm->checkfile($file)) {
