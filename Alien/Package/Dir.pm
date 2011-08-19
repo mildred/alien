@@ -149,7 +149,16 @@ Unpack tgz.
 
 sub unpack {
 	my $this=shift;
-	$this->SUPER::unpack(@_);
+	
+	my $workdir = $this->name."-".$this->version.".workdir";
+	$this->do("mkdir $workdir") or
+		die "unable to mkdir $workdir: $!";
+	# If the parent directory is suid/sgid, mkdir will make the root
+	# directory of the package inherit those bits. That is a bad thing,
+	# so explicitly force perms to 755.
+	$this->do("chmod 755 $workdir");
+	$this->unpacked_tree($workdir);
+
 	my $file=abs_path($this->filename);
 
 	# $this->do("cp", "-fa", "-t", $this->unpacked_tree, $file)
