@@ -4,5 +4,8 @@ features will work prior to installation.
 To install alien, become root and type:
 	perl Makefile.PL; make; make install
 
+On a RPM distribution, install redo and:
+        redo rpm ; rpm -ivm alien-*.noarch.rpm
+
 To use alien, you'll need a variety of other software. See the README for
 details.
