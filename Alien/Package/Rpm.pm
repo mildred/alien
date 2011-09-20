@@ -344,6 +344,7 @@ sub prep {
 	print OUT "\%define _rpmdir ../\n"; # write rpm to current directory
 	print OUT "\%define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm\n";
 	print OUT "\%define _unpackaged_files_terminate_build 0\n"; # work on SuSE
+	print OUT "\%define _binaries_in_noarch_packages_terminate_build 0\n";
 	print OUT "\n";
 	if ($this->usescripts) {
 		if ($this->preinst) {
